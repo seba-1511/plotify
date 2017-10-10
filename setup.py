@@ -14,7 +14,6 @@ setup(
 
 install(
     name='plotify',
-    packages='plotify',
     version=VERSION,
     description="Make beautiful plots, fast.",
     long_description=open('README.md').read(),

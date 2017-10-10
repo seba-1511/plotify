@@ -8,14 +8,17 @@ if __name__ == '__main__':
     fn = lambda x, y: - np.sin(x / 2.0) + y**2
 
     # Setup 3D Plot
-    p = Plot3D('3D Rotation')
+    p = Plot3D('3D Rotation', width=360.0, height=180.0, dpi=30)
     p.projection(x, np.cos(x + 0.5), fn)
     p.set_axis('x axis', 'y axis', 'z axis')
     p.set_camera(45, 66)
 
     # 3D Rotation
+    print('Started rotation')
     a3d = Animation()
-    a3d.rotate_3d(p)
+    print('The following should not take more than 2min.')
+    a3d.rotate_3d(p, duration=8)
+    print('saving')
     a3d.save('./outputs/rot3d.gif')
     # a3d.save('./rot3d.mp4')
 
@@ -30,6 +33,6 @@ if __name__ == '__main__':
         return q
     a = Animation()
     a.anim_fn(fn, x)
-    a.save('./output/scatter.gif')
+    a.save('./outputs/scatter.gif')
     a.save('./outputs/scatter.mp4')
 

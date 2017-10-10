@@ -21,9 +21,11 @@ from moviepy.editor import VideoClip
 from moviepy.video.io.bindings import mplfig_to_npimage
 
 try:
-    from io import BytesIO
+    from io import BytesIO as BytesIO
 except:
     pass
+
+MEM_IMG = BytesIO()
 
 
 FONT_SIZE = 20
@@ -127,10 +129,11 @@ class Plot(object):
 
     def numpy(self):
         self._preprint()
-        img = BytesIO()
-        self.figure.savefig(img, format='png')
-        img.seek(0)
-        img_np = np.array(PILImage.open(img))
+        canvas = self.figure.canvas
+        canvas.draw()
+        img_np = np.array(PILImage.frombytes('RGB',
+                                             canvas.get_width_height(),
+                                             canvas.tostring_rgb()))
         return img_np[:, :, :3]
 
     def plot(self, x, y, jitter=0.000, smooth_window=0, *args, **kwargs):
@@ -406,7 +409,7 @@ class Container(Plot):
             self.plots.append([])
             self.canvases.append([])
             for j in range(cols):
-                subplot = self.figure.add_subplot(rows, cols, i*cols + j+1)
+                subplot = self.figure.add_subplot(rows, cols, i * cols + j + 1)
                 subplot.axis('off')
                 self.plots[i].append(None)
                 self.canvases[i].append(subplot)
@@ -462,12 +465,14 @@ class Animation(object):
         change_angle = 360.0 / nframes
         azim = plot.canvas.azim
         for i in range(nframes):
-            plot.set_camera(azim=azim + i*change_angle)
+            plot.set_camera(azim=azim + i * change_angle)
             self.frames.append(plot.numpy())
 
     def _make(self, t):
         self._iter += 1
-        return self.frames[self._iter]
+        # Weird bug where idx might be = len(self.frames)
+        idx = min(self._iter, len(self.frames) - 1)
+        return self.frames[idx]
 
     def save(self, path):
         fname, ext = os.path.splitext(path)
