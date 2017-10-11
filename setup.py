@@ -18,5 +18,6 @@ install(
     download_url='https://github.com/seba-1511/plotify/archive/0.1.1.zip',
     license='License :: OSI Approved :: Apache Software License',
     packages=find_packages(exclude=["tests"]),
-    classifiers=[]
+    classifiers=[],
+    install_requires=[open('requirements.txt').read().split('\n')],
 )
