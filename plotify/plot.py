@@ -136,10 +136,15 @@ class Plot(object):
                                              canvas.tostring_rgb()))
         return img_np[:, :, :3]
 
-    def plot(self, x, y, jitter=0.000, smooth_window=0, *args, **kwargs):
+    def plot(self, x, y, jitter=0.000, smooth_window=0, smooth_std=True, *args, **kwargs):
         with sns.color_palette(self.palette):
             if smooth_window > 0:
-                y = [np.mean(y[abs(i-smooth_window):i+smooth_window]) for i in range(len(y))]
+                std = np.std(y)
+                if smooth_std and jitter == 0.0:
+                    jitter = std
+                xvals = np.linspace(np.min(x), np.max(x), len(x) // smooth_window)
+                y = np.interp(xvals, x, y)
+                x = xvals
             self.canvas.plot(x, y, color=next(self.colors), *args, **kwargs)
             if jitter > 0.0:
                 x = np.array(x)
