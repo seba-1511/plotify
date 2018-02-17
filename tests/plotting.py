@@ -45,6 +45,7 @@ if __name__ == '__main__':
     s.plot(x, np.sin(x + 0.5), label='.5 + sin', smooth_window=1)
     s.plot(x, np.cos(x + 0.5), label='.5 + cos', jitter=0.1)
     s.set_axis('x-axis', 'y-axis')
+    s.save('./outputs/smoothed.html')
     s.save('./outputs/smooth_and_jitter.png')
 
 

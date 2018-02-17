@@ -11,7 +11,7 @@ from matplotlib import cm
 from matplotlib.ticker import LinearLocator, FormatStrFormatter
 from matplotlib.patches import Circle, Rectangle, Arrow, FancyBboxPatch, BoxStyle 
 
-from tempfile import gettempdir
+from tempfile import gettempdir, NamedTemporaryFile
 from collections import Iterable
 from itertools import cycle
 from time import time
@@ -124,8 +124,36 @@ class Plot(object):
         self.figure.set_figwidth(w, forward=True)
 
     def save(self, path, **kwargs):
-        self._preprint()
-        self.figure.savefig(path, **kwargs)
+        if path[-4:] == 'html':
+            try:
+                from plotly.tools import mpl_to_plotly
+                from plotly.offline import plot
+                h, w = self.figure.get_figheight(), self.figure.get_figwidth()
+                self.set_dimensions(500, 500)
+                plotly_fig = mpl_to_plotly(self.figure)
+                plotly_fig['layout']['width'] = '100' 
+                plotly_fig['layout']['height'] = '100'
+                plotly_fig['layout']['title'] = self.title.get_text()
+                plotly_fig['layout']['titlefont'] = {'size': 20.0}
+                plotly_fig['layout']['autosize'] = True
+                plotly_fig['layout']['showlegend'] = True
+                plotly_fig['layout']['xaxis1']['autorange'] = True
+                plotly_fig['layout']['yaxis1']['autorange'] = True
+                content = plot(plotly_fig,
+                               auto_open=False,
+                               include_plotlyjs=False,
+                               output_type='div',
+                )
+                with open(path, 'w') as f:
+                    f.write(content)
+                self.figure.set_figheight(h, forward=True)
+                self.figure.set_figwidth(w, forward=True)
+            except:
+                msg = 'HTML export error. Is plotly installed ?'
+                raise Exception(msg)
+        else:
+            self._preprint()
+            self.figure.savefig(path, **kwargs)
 
     def numpy(self):
         self._preprint()
