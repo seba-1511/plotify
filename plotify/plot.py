@@ -30,6 +30,17 @@ MEM_IMG = BytesIO()
 
 FONT_SIZE = 20
 MAUREENSTONE_COLORS = ['#396AB1', '#DA7C30', '#3E9651', '#CF2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
+Maureen = {
+        'blue': MAUREENSTONE_COLORS[0],
+        'orange': MAUREENSTONE_COLORS[1],
+        'green': MAUREENSTONE_COLORS[2],
+        'red': MAUREENSTONE_COLORS[3],
+        'black': MAUREENSTONE_COLORS[4],
+        'purple': MAUREENSTONE_COLORS[5],
+        'cardinal': MAUREENSTONE_COLORS[6],
+        'gold': MAUREENSTONE_COLORS[7],
+
+}
 LIGHT_GRAY = '#D3D3D3'
 # PALETTE_NAME = 'pastel'
 PALETTE_NAME = MAUREENSTONE_COLORS
@@ -164,7 +175,11 @@ class Plot(object):
                                              canvas.tostring_rgb()))
         return img_np[:, :, :3]
 
-    def plot(self, x, y, jitter=0.000, smooth_window=0, smooth_std=True, *args, **kwargs):
+    def plot(self, x, y=None, jitter=0.000, smooth_window=0, smooth_std=True, *args, **kwargs):
+        if y is None:
+            y = x
+            x = list(range(len(y)))
+
         with sns.color_palette(self.palette):
             if smooth_window > 0:
                 std = np.std(y)
@@ -173,13 +188,18 @@ class Plot(object):
                 xvals = np.linspace(np.min(x), np.max(x), len(x) // smooth_window)
                 y = np.interp(xvals, x, y)
                 x = xvals
-            self.canvas.plot(x, y, color=next(self.colors), *args, **kwargs)
-            if jitter > 0.0:
+            color = kwargs.pop('color', next(self.colors))
+            self.canvas.plot(x, y, color=color, *args, **kwargs)
+            if isinstance(jitter, list):
+                top = [v + j for v, j in zip(y, jitter)]
+                low = [v - j for v, j in zip(y, jitter)]
+                self.canvas.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
+            elif jitter > 0.0:
                 x = np.array(x)
                 y = np.array(y)
                 top = y + jitter
                 low = y - jitter
-                self.canvas.fill_between(x, low, top, alpha=0.15, linewidth=0.0)
+                self.canvas.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
 
     def bar(self, x, y=None, labels=None, errwidth=1.0, *args, **kwargs):
         # TODO: Show variance and mean on bars (as an option)
@@ -198,7 +218,7 @@ class Plot(object):
 
     def scatter(self, *args, **kwargs):
         with sns.color_palette(self.palette):
-            c = next(self.colors)
+            c = kwargs.pop('color', next(self.colors))
             self.canvas.scatter(color=c, *args, **kwargs)
 
     def contour(self, x, y, z=None, fill=True, *args, **kwargs):
@@ -382,13 +402,15 @@ class Plot3D(Plot):
         if hasattr(z, '__call__'):
             z = np.array([z(x1, y1) for x1, y1 in zip(x, y)])
         with sns.color_palette(self.palette):
-            self.canvas.plot(x, y, zs=z, color=next(self.colors), *args, **kwargs)
+            color = kwargs.pop('color', next(self.colors))
+            self.canvas.plot(x, y, zs=z, color=color, *args, **kwargs)
 
     def scatter(self, x, y, z=0, *args, **kwargs):
         if hasattr(z, '__call__'):
             z = np.array([z(x1, y1) for x1, y1 in zip(x, y)])
         with sns.color_palette(self.palette):
-            self.canvas.scatter(xs=x, ys=y, zs=z, c=next(self.colors), *args, **kwargs)
+            color = kwargs.pop('color', next(self.colors))
+            self.canvas.scatter(xs=x, ys=y, zs=z, c=color, *args, **kwargs)
 
     def surface(self, x, y, z=None, alpha=0.25, linewidth=0, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
