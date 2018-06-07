@@ -17,14 +17,14 @@ if __name__ == '__main__':
     print('Started rotation')
     a3d = Animation()
     print('The following should not take more than 2min.')
-    a3d.rotate_3d(p, duration=8)
+#    a3d.rotate_3d(p, duration=8)
     print('saving')
-    a3d.save('./outputs/rot3d.gif')
+#    a3d.save('./outputs/rot3d.gif')
     # a3d.save('./rot3d.mp4')
 
     # Setup Scatter Graph
     x = np.linspace(-7, 7, 30)
-    q = Plot('Scatter (PuBuGn_d)', 500, 500, 100)
+    q = Plot('Scatter \(PuBuGn\)', 500, 500, 100)
     q.canvas.axis('off')
 
     # Scatter animation

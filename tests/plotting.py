@@ -21,20 +21,17 @@ if __name__ == '__main__':
     p.save('./outputs/plot3d.pdf')
 
     x = np.linspace(-7, 7, 30)
-    q = Plot('Scatter (PuBuGn_d)', 500, 500, 100)
-    q.set_palette('PuBuGn_d')
+    q = Plot('Scatter (PuBuGn)', 500, 500, 100)
+    q.set_palette('PuBuGn')
     q.scatter(x=x, y=np.cos(x), label='cos')
     q.scatter(x=x, y=np.sin(x), label='sin')
     q.scatter(x, np.sin(x + 0.5), label='.5 + sin')
     # q.show()
     q.save('./outputs/plot.png')
 
-    r = Plot('Bars (husl)')
-    r.set_palette('husl')
-    # r = Plot('Bar', 500, 500, 150)
-    r.bar([1, 2, 3, 4])
-    r.bar([[1, 2], [2, 3], [3, 4], [4, 5]])
-    # r.show()
+    r = Plot('Bars (blues)')
+    r.set_palette('Blues')
+    r.bar(['a', 'b', 'c', 'd', 'e'], [-4, 1, 2, 3, 4])
     r.save('./outputs/bars.pdf')
 
 
@@ -45,7 +42,7 @@ if __name__ == '__main__':
     s.plot(x, np.sin(x + 0.5), label='.5 + sin', smooth_window=1)
     s.plot(x, np.cos(x + 0.5), label='.5 + cos', jitter=0.1)
     s.set_axis('x-axis', 'y-axis')
-    s.save('./outputs/smoothed.html')
+#    s.save('./outputs/smoothed.html')
     s.save('./outputs/smooth_and_jitter.png')
 
 

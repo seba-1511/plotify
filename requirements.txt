@@ -1,6 +1,5 @@
 numpy
 matplotlib
-seaborn
 Pillow
 moviepy
 plotly

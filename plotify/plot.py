@@ -3,22 +3,16 @@
 import os
 import numpy as np
 import matplotlib as mpl
-import seaborn as sns
 import matplotlib.pyplot as plt
+from mpl_toolkits.mplot3d import Axes3D #required for 3D plots
 from matplotlib import image as mpimg
-from mpl_toolkits.mplot3d import Axes3D
-from matplotlib import cm
-from matplotlib.ticker import LinearLocator, FormatStrFormatter
-from matplotlib.patches import Circle, Rectangle, Arrow, FancyBboxPatch, BoxStyle 
+from matplotlib.patches import Circle, Rectangle, Arrow, FancyBboxPatch, BoxStyle
 
-from tempfile import gettempdir, NamedTemporaryFile
+from tempfile import gettempdir
 from collections import Iterable
 from itertools import cycle
 from time import time
 
-from PIL import Image as PILImage
-from moviepy.editor import VideoClip
-from moviepy.video.io.bindings import mplfig_to_npimage
 
 try:
     from io import BytesIO as BytesIO
@@ -31,14 +25,14 @@ MEM_IMG = BytesIO()
 FONT_SIZE = 20
 MAUREENSTONE_COLORS = ['#396AB1', '#DA7C30', '#3E9651', '#CF2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
 Maureen = {
-        'blue': MAUREENSTONE_COLORS[0],
-        'orange': MAUREENSTONE_COLORS[1],
-        'green': MAUREENSTONE_COLORS[2],
-        'red': MAUREENSTONE_COLORS[3],
-        'black': MAUREENSTONE_COLORS[4],
-        'purple': MAUREENSTONE_COLORS[5],
-        'cardinal': MAUREENSTONE_COLORS[6],
-        'gold': MAUREENSTONE_COLORS[7],
+    'blue': MAUREENSTONE_COLORS[0],
+    'orange': MAUREENSTONE_COLORS[1],
+    'green': MAUREENSTONE_COLORS[2],
+    'red': MAUREENSTONE_COLORS[3],
+    'black': MAUREENSTONE_COLORS[4],
+    'purple': MAUREENSTONE_COLORS[5],
+    'cardinal': MAUREENSTONE_COLORS[6],
+    'gold': MAUREENSTONE_COLORS[7],
 
 }
 LIGHT_GRAY = '#D3D3D3'
@@ -48,30 +42,28 @@ COLORMAP_3D = 'YlGnBu'
 TEMP_FILENAME = os.path.join(gettempdir(), 'sebplot')
 TEMP_FILE_EXT = '.png'
 
-sns.set_palette(PALETTE_NAME)
-sns.set_style('whitegrid')
-sns.despine()
-sns.set_context('talk')
+mpl.style.use('seaborn-poster')
+mpl.rc('text', usetex=True)
 
 
 class Plot(object):
 
-    def __init__(self, title='', height=3600.0, width=7200.0, dpi=600.0, plot3d=False):
+    def __init__(self, title='', height=3600.0, width=7200.0, dpi=600.0, plot3d=False, border=True):
         self.dpi = float(dpi)
         self.figure = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
         if plot3d:
             # self.canvas = self.figure.add_subplot(1, 1, 1, projection='3d')
             self.canvas = self.figure.gca(projection='3d')
         else:
-            self.canvas = self.figure.add_subplot(1, 1, 1, frameon=False)
+            self.canvas = self.figure.add_subplot(1, 1, 1, frameon=border)
         self.title = self.figure.suptitle(title, fontsize=FONT_SIZE)
-        self.palette = PALETTE_NAME
-        self.color_list = sns.color_palette(self.palette)
-        self.colors = cycle(self.color_list)
+        self.set_palette('maureen')
         self.colormap = COLORMAP_3D
 
     def _preprint(self):
-        l = self.canvas.legend(frameon=True)
+        handles, labels = self.canvas.get_legend_handles_labels()
+        if len(handles) > 0:
+            l = self.canvas.legend(frameon=True)
 
     def _3d_preprocess(self, x, y, z):
         assert x.ndim == y.ndim, 'x, y shape mismatch'
@@ -167,6 +159,7 @@ class Plot(object):
             self.figure.savefig(path, **kwargs)
 
     def numpy(self):
+        from PIL import Image as PILImage
         self._preprint()
         canvas = self.figure.canvas
         canvas.draw()
@@ -180,54 +173,50 @@ class Plot(object):
             y = x
             x = list(range(len(y)))
 
-        with sns.color_palette(self.palette):
-            if smooth_window > 0:
-                std = np.std(y)
-                if smooth_std and jitter == 0.0:
-                    jitter = std
-                xvals = np.linspace(np.min(x), np.max(x), len(x) // smooth_window)
-                y = np.interp(xvals, x, y)
-                x = xvals
-            color = kwargs.pop('color', next(self.colors))
-            self.canvas.plot(x, y, color=color, *args, **kwargs)
-            if isinstance(jitter, list):
-                top = [v + j for v, j in zip(y, jitter)]
-                low = [v - j for v, j in zip(y, jitter)]
-                self.canvas.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
-            elif jitter > 0.0:
-                x = np.array(x)
-                y = np.array(y)
-                top = y + jitter
-                low = y - jitter
-                self.canvas.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
+        if smooth_window > 0:
+            std = np.std(y)
+            if smooth_std and jitter == 0.0:
+                jitter = std
+            xvals = np.linspace(np.min(x), np.max(x), len(x) // smooth_window)
+            y = np.interp(xvals, x, y)
+            x = xvals
+        color = kwargs.pop('color', next(self.colors))
+        self.canvas.plot(x, y, color=color, *args, **kwargs)
+        if isinstance(jitter, list):
+            top = [v + j for v, j in zip(y, jitter)]
+            low = [v - j for v, j in zip(y, jitter)]
+            self.canvas.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
+        elif jitter > 0.0:
+            x = np.array(x)
+            y = np.array(y)
+            top = y + jitter
+            low = y - jitter
+            self.canvas.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
 
     def bar(self, x, y=None, labels=None, errwidth=1.0, *args, **kwargs):
         # TODO: Show variance and mean on bars (as an option)
-        with sns.color_palette(self.palette):
-            if y is None:
-                y = x
-                x = range(len(y))
-            if isinstance(y[0], Iterable):
-                y = [np.mean(yi) for yi in y]
-            mean = np.mean
-            x = np.array(x)
-            y = np.array(y)
-            sns.barplot(ax=self.canvas, data=None, x=x, y=y, estimator=mean, errwidth=errwidth, *args, **kwargs)
-            if labels is not None:
-                self.canvas.set_xticklabels(labels)
+        if y is None:
+            y = x
+            x = list(range(len(y)))
+        fake_x = list(range(len(x)))
+        for i in fake_x:
+            color = next(self.colors)
+            self.canvas.bar(x=i, height=y[i], color=color, *args, **kwargs)
+        self.canvas.set_xticks(fake_x)
+        self.canvas.set_xticklabels(x)
+        if labels is not None:
+            self.canvas.set_xticklabels(labels)
 
     def scatter(self, *args, **kwargs):
-        with sns.color_palette(self.palette):
-            c = kwargs.pop('color', next(self.colors))
-            self.canvas.scatter(color=c, *args, **kwargs)
+        c = kwargs.pop('color', next(self.colors))
+        self.canvas.scatter(color=c, *args, **kwargs)
 
     def contour(self, x, y, z=None, fill=True, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
-        with sns.color_palette(self.palette):
-            if fill:
-                self.canvas.contourf(X, Y, Z, zdir='x', cmap=self.colormap)
-            else:
-                self.canvas.contour(X, Y, Z, zdir='x', cmap=self.colormap)
+        if fill:
+            self.canvas.contourf(X, Y, Z, zdir='x', cmap=self.colormap)
+        else:
+            self.canvas.contour(X, Y, Z, zdir='x', cmap=self.colormap)
 
     def circle(self, x, y, radius, fill=None, color=None, alpha=0.5,
                linewidth=1.5, *args, **kwargs):
@@ -316,8 +305,10 @@ class Plot(object):
     def set_palette(self, palette):
         if 'maureen' in palette or 'custom' in palette:
             palette = MAUREENSTONE_COLORS
-        self.palette = palette
-        self.color_list = sns.color_palette(palette)
+        elif isinstance(palette, str):
+            cmap = mpl.cm.get_cmap(palette)
+            palette = [cmap(i) for i in np.linspace(0, 1.0, 8)]
+        self.color_list = palette
         self.colors = cycle(self.color_list)
 
     def set_colormap(self, cm):
@@ -401,41 +392,36 @@ class Plot3D(Plot):
     def plot(self, x, y, z=0, jitter=None, *args, **kwargs):
         if hasattr(z, '__call__'):
             z = np.array([z(x1, y1) for x1, y1 in zip(x, y)])
-        with sns.color_palette(self.palette):
-            color = kwargs.pop('color', next(self.colors))
-            self.canvas.plot(x, y, zs=z, color=color, *args, **kwargs)
+        color = kwargs.pop('color', next(self.colors))
+        self.canvas.plot(x, y, zs=z, color=color, *args, **kwargs)
 
     def scatter(self, x, y, z=0, *args, **kwargs):
         if hasattr(z, '__call__'):
             z = np.array([z(x1, y1) for x1, y1 in zip(x, y)])
-        with sns.color_palette(self.palette):
-            color = kwargs.pop('color', next(self.colors))
-            self.canvas.scatter(xs=x, ys=y, zs=z, c=color, *args, **kwargs)
+        color = kwargs.pop('color', next(self.colors))
+        self.canvas.scatter(xs=x, ys=y, zs=z, c=color, *args, **kwargs)
 
     def surface(self, x, y, z=None, alpha=0.25, linewidth=0, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
-        with sns.color_palette(self.palette):
-            self.canvas.plot_surface(X=X, Y=Y, Z=Z, rstride=1, cstride=1,
-                    cmap=self.colormap, linewidth=linewidth, antialiased=True, alpha=alpha,
-                    *args, **kwargs)
+        self.canvas.plot_surface(X=X, Y=Y, Z=Z, rstride=1, cstride=1,
+                cmap=self.colormap, linewidth=linewidth, antialiased=True, alpha=alpha,
+                *args, **kwargs)
 
     def wireframe(self, x, y, z=None, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
-        with sns.color_palette(self.palette):
-            self.canvas.plot_wireframe(X=X, Y=Y, Z=Z, color=next(self.colors), *args, **kwargs)
+        self.canvas.plot_wireframe(X=X, Y=Y, Z=Z, color=next(self.colors), *args, **kwargs)
 
     def projection(self, x, y, z=None, alpha=0.1, linewidth=0, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
         xmin = np.min(x)
         ymin = np.min(Y)
         zmin = np.min(Z)
-        with sns.color_palette(self.palette):
-            self.canvas.plot_surface(X, Y, Z, rstride=1, cstride=1,
-                    linewidth=linewidth, alpha=alpha, cmap=self.colormap,
-                    *args, **kwargs)
-            self.canvas.contour(X, Y, Z, zdir='z', offset=zmin, cmap=self.colormap)
-            self.canvas.contour(X, Y, Z, zdir='x', offset=xmin, cmap=self.colormap)
-            self.canvas.contour(X, Y, Z, zdir='y', offset=ymin, cmap=self.colormap)
+        self.canvas.plot_surface(X, Y, Z, rstride=1, cstride=1,
+                linewidth=linewidth, alpha=alpha, cmap=self.colormap,
+                *args, **kwargs)
+        self.canvas.contour(X, Y, Z, zdir='z', offset=zmin, cmap=self.colormap)
+        self.canvas.contour(X, Y, Z, zdir='x', offset=xmin, cmap=self.colormap)
+        self.canvas.contour(X, Y, Z, zdir='y', offset=ymin, cmap=self.colormap)
 
     def set_camera(self, elev=None, azim=None):
         self.canvas.view_init(elev, azim)
@@ -530,6 +516,7 @@ class Animation(object):
         return self.frames[idx]
 
     def save(self, path):
+        from moviepy.editor import VideoClip
         fname, ext = os.path.splitext(path)
         duration = (len(self.frames) - 1) / float(self.fps)
         self.animation = VideoClip(self._make, duration=duration)

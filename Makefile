@@ -1,5 +1,5 @@
 
-all: install
+all: plot
 
 install:
 	python setup.py develop
