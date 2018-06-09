@@ -36,14 +36,16 @@ Maureen = {
 
 }
 LIGHT_GRAY = '#D3D3D3'
-# PALETTE_NAME = 'pastel'
 PALETTE_NAME = MAUREENSTONE_COLORS
 COLORMAP_3D = 'YlGnBu'
 TEMP_FILENAME = os.path.join(gettempdir(), 'sebplot')
 TEMP_FILE_EXT = '.png'
 
 mpl.style.use('seaborn-poster')
-mpl.rc('text', usetex=True)
+
+# Latex font
+#mpl.rc('text', usetex=True)  # Renders math with latex program (slow)
+mpl.rcParams['mathtext.fontset'] = 'cm'  # Font for tex
 
 
 class Plot(object):
@@ -58,12 +60,13 @@ class Plot(object):
             self.canvas = self.figure.add_subplot(1, 1, 1, frameon=border)
         self.title = self.figure.suptitle(title, fontsize=FONT_SIZE)
         self.set_palette('maureen')
+        self.set_grid('horizontal')
         self.colormap = COLORMAP_3D
 
     def _preprint(self):
         handles, labels = self.canvas.get_legend_handles_labels()
         if len(handles) > 0:
-            l = self.canvas.legend(frameon=True)
+            l = self.canvas.legend(frameon=True, loc='upper right')
 
     def _3d_preprocess(self, x, y, z):
         assert x.ndim == y.ndim, 'x, y shape mismatch'
@@ -174,12 +177,21 @@ class Plot(object):
             x = list(range(len(y)))
 
         if smooth_window > 0:
-            std = np.std(y)
+            smooth_x = [x[0], ]
+            smooth_y = [y[0], ]
+            std_y = [0.0, ]
+            for i in range(smooth_window, len(x), smooth_window):
+                smooth_x.append(np.mean(x[i-smooth_window: i + smooth_window]))
+                smooth_y.append(np.mean(y[i-smooth_window: i + smooth_window]))
+                std_y.append(np.std(y[i-smooth_window: i + smooth_window]))
+            smooth_x.append(x[-1])
+            smooth_y.append(y[-1])
+            std_y.append(0.0)
             if smooth_std and jitter == 0.0:
-                jitter = std
-            xvals = np.linspace(np.min(x), np.max(x), len(x) // smooth_window)
-            y = np.interp(xvals, x, y)
-            x = xvals
+                jitter = std_y
+            x = smooth_x
+            y = smooth_y
+
         color = kwargs.pop('color', next(self.colors))
         self.canvas.plot(x, y, color=color, *args, **kwargs)
         if isinstance(jitter, list):
@@ -193,7 +205,7 @@ class Plot(object):
             low = y - jitter
             self.canvas.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
 
-    def bar(self, x, y=None, labels=None, errwidth=1.0, *args, **kwargs):
+    def bar(self, x, y=None, *args, **kwargs):
         # TODO: Show variance and mean on bars (as an option)
         if y is None:
             y = x
@@ -204,8 +216,6 @@ class Plot(object):
             self.canvas.bar(x=i, height=y[i], color=color, *args, **kwargs)
         self.canvas.set_xticks(fake_x)
         self.canvas.set_xticklabels(x)
-        if labels is not None:
-            self.canvas.set_xticklabels(labels)
 
     def scatter(self, *args, **kwargs):
         c = kwargs.pop('color', next(self.colors))
@@ -361,6 +371,32 @@ class Plot(object):
             if z[1] is not None:
                 zmax = z[1]
             self.canvas.set_zlim(zmin, zmax)
+
+    def set_grid(self, axis='full'):
+        """
+        Sets a fine, light gray background grid.
+
+        axis values: full, vertical, horizontal, none.
+        """
+        both = axis == 'full'
+        if both or axis == 'vertical':
+            self.canvas.xaxis.grid(
+                which='major',
+                color=LIGHT_GRAY,
+                linestyle='-',
+                linewidth=0.7,
+            )
+        if both or axis == 'horizontal':
+            self.canvas.yaxis.grid(
+                which='major',
+                color=LIGHT_GRAY,
+                linestyle='-',
+                linewidth=0.7,
+            )
+        if axis == 'none':
+            self.canvas.xaxis.grid(False)
+            self.canvas.yaxis.grid(False)
+
 
 
 class Drawing(Plot):

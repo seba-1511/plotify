@@ -5,7 +5,7 @@ from setuptools import (
     find_packages,
 )
 
-VERSION = '0.1.1'
+VERSION = '0.1.5'
 
 install(
     name='plotify',
@@ -15,7 +15,7 @@ install(
     author='Seb Arnold',
     author_email='smr.arnold@gmail.com',
     url='http://www.seba1511.com',
-    download_url='https://github.com/seba-1511/plotify/archive/0.1.1.zip',
+    download_url='https://github.com/seba-1511/plotify/archive/' + str(VERSION) + '.zip',
     license='License :: OSI Approved :: Apache Software License',
     packages=find_packages(exclude=["tests"]),
     classifiers=[],

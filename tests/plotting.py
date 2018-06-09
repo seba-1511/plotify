@@ -23,6 +23,7 @@ if __name__ == '__main__':
     x = np.linspace(-7, 7, 30)
     q = Plot('Scatter (PuBuGn)', 500, 500, 100)
     q.set_palette('PuBuGn')
+    q.set_grid('full')
     q.scatter(x=x, y=np.cos(x), label='cos')
     q.scatter(x=x, y=np.sin(x), label='sin')
     q.scatter(x, np.sin(x + 0.5), label='.5 + sin')
@@ -30,6 +31,7 @@ if __name__ == '__main__':
     q.save('./outputs/plot.png')
 
     r = Plot('Bars (blues)')
+    r.set_grid('none')
     r.set_palette('Blues')
     r.bar(['a', 'b', 'c', 'd', 'e'], [-4, 1, 2, 3, 4])
     r.save('./outputs/bars.pdf')
@@ -37,13 +39,22 @@ if __name__ == '__main__':
 
     s = Plot('Plotting (custom)')
     s.set_palette('maureen')
+    s.set_grid('horizontal')
     s.plot(x, np.cos(x), label='cos')
     s.plot(x, np.sin(x), label='sin', jitter=0.1)
-    s.plot(x, np.sin(x + 0.5), label='.5 + sin', smooth_window=1)
-    s.plot(x, np.cos(x + 0.5), label='.5 + cos', jitter=0.1)
+    s.plot(x, np.sin(x + 0.5), label='$.5 + \sin(x)$')
+    s.plot(x, np.cos(x + 0.5), label='$.5 + \sum_x \cos(x)$', jitter=0.1)
     s.set_axis('x-axis', 'y-axis')
 #    s.save('./outputs/smoothed.html')
     s.save('./outputs/smooth_and_jitter.png')
+
+    v = Plot('Smoothed')
+    rough = np.random.rand(*x.shape)
+    v.plot(x, rough, label='raw')
+    v.plot(x, 1 + rough, smooth_window=1, label='smooth_window=1')
+    v.plot(x, 2 + rough, smooth_window=2, label='smooth_window=2')
+    v.plot(x, 3 + rough, smooth_window=3, label='smooth_window=3')
+    v.save('./outputs/smoothed.pdf')
 
 
     t = Plot('Shapes and Text')
@@ -83,5 +94,6 @@ if __name__ == '__main__':
     cont.set_plot(1, 0, s)
     cont.set_plot(2, 0, t)
     cont.set_plot(2, 1, u)
+    cont.set_plot(2, 1, v)
     cont.save('./outputs/container.pdf')
     # cont.show()
