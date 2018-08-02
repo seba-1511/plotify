@@ -36,7 +36,6 @@ if __name__ == '__main__':
     r.bar(['a', 'b', 'c', 'd', 'e'], [-4, 1, 2, 3, 4])
     r.save('./outputs/bars.pdf')
 
-
     s = Plot('Plotting (custom)')
     s.set_palette('maureen')
     s.set_grid('horizontal')
@@ -47,15 +46,6 @@ if __name__ == '__main__':
     s.set_axis('x-axis', 'y-axis')
 #    s.save('./outputs/smoothed.html')
     s.save('./outputs/smooth_and_jitter.png')
-
-    v = Plot('Smoothed')
-    rough = np.random.rand(*x.shape)
-    v.plot(x, rough, label='raw')
-    v.plot(x, 1 + rough, smooth_window=1, label='smooth_window=1')
-    v.plot(x, 2 + rough, smooth_window=2, label='smooth_window=2')
-    v.plot(x, 3 + rough, smooth_window=3, label='smooth_window=3')
-    v.save('./outputs/smoothed.pdf')
-
 
     t = Plot('Shapes and Text')
     t.set_scales('linear', 'linear')
@@ -85,15 +75,37 @@ if __name__ == '__main__':
 
     i = Image('./outputs/drawing.png')
 
+    v = Plot('Smoothed')
+    rough = np.random.rand(*x.shape)
+    v.plot(x, rough, label='raw')
+    v.plot(x, 1 + rough, smooth_window=1, label='smooth_window=1')
+    v.plot(x, 2 + rough, smooth_window=2, label='smooth_window=2')
+    v.plot(x, 3 + rough, smooth_window=3, label='smooth_window=3')
+    v.save('./outputs/smoothed.pdf')
+
+    w = Plot('Heatmap')
+    grid = [
+        [1, 2, 4, 4, 2],
+        [2, 2, 3, 1, 5],
+        [3, 4, 2, 4, 4],
+        [5, 6, 1, 4, 5],
+    ]
+    xlabels = ['a', 'b', 'c', 'd', 'e']
+    ylabels = [1, 2, 3, 4]
+#    w.set_palette('YlGn')
+    w.heatmap(grid, xlabels, ylabels)
+    w.set_axis('Questions', 'Candidates')
+    w.save('./outputs/heatmap.pdf')
 
     cont = Container(3, 3, title='Container')
     cont.set_plot(0, 0, p)
     cont.set_plot(0, 1, q)
     cont.set_plot(0, 2, i)
-    cont.set_plot(1, 1, r)
     cont.set_plot(1, 0, s)
+    cont.set_plot(1, 1, r)
+    cont.set_plot(1, 2, w)
     cont.set_plot(2, 0, t)
     cont.set_plot(2, 1, u)
-    cont.set_plot(2, 1, v)
+    cont.set_plot(2, 2, v)
     cont.save('./outputs/container.pdf')
     # cont.show()

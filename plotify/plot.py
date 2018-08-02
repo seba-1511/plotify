@@ -53,6 +53,8 @@ class Plot(object):
     def __init__(self, title='', height=3600.0, width=7200.0, dpi=600.0, plot3d=False, border=True):
         self.dpi = float(dpi)
         self.figure = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
+        self.height = height
+        self.width = width
         if plot3d:
             # self.canvas = self.figure.add_subplot(1, 1, 1, projection='3d')
             self.canvas = self.figure.gca(projection='3d')
@@ -62,11 +64,12 @@ class Plot(object):
         self.set_palette('maureen')
         self.set_grid('horizontal')
         self.colormap = COLORMAP_3D
+        self.legend_location = 'upper right'
 
     def _preprint(self):
         handles, labels = self.canvas.get_legend_handles_labels()
         if len(handles) > 0:
-            l = self.canvas.legend(frameon=True, loc='upper right')
+            l = self.canvas.legend(frameon=True, loc=self.legend_location)
 
     def _3d_preprocess(self, x, y, z):
         assert x.ndim == y.ndim, 'x, y shape mismatch'
@@ -216,10 +219,68 @@ class Plot(object):
             self.canvas.bar(x=i, height=y[i], color=color, *args, **kwargs)
         self.canvas.set_xticks(fake_x)
         self.canvas.set_xticklabels(x)
+        plt.setp(self.canvas.get_xticklabels(),
+                 rotation=35,
+                 ha='right',
+                 rotation_mode='anchor')
 
     def scatter(self, *args, **kwargs):
         c = kwargs.pop('color', next(self.colors))
         self.canvas.scatter(color=c, *args, **kwargs)
+
+    def heatmap(self, heatvalues, xlabels=None, ylabels=None, show_values=False, cbar_title='', *args, **kwargs):
+        '''
+        heatvalues: 2D grid to plot. (list of list or np.array)
+        xlabels: list of names
+        ylabels: list of names
+        show_values: bool of whether to write values inside heat box
+        interpolation: nearest / kaiser / hanning / gaussian / spline16
+        '''
+        self.set_grid('none')
+        self.canvas.tick_params(axis=u'both', which=u'both',length=0)
+        self.canvas.set_xticks([])
+        self.canvas.set_yticks([])
+        cmap = kwargs.pop('cmap', None)
+        interpolation = kwargs.pop('interpolation', 'nearest')
+        aspect = kwargs.pop('aspect', None)
+        origin = kwargs.pop('origin', 'upper')
+        norm = kwargs.pop('norm', mpl.colors.Normalize())
+        if 'maureen' not in self.palette:
+            cmap = self.palette
+        im = self.canvas.imshow(heatvalues,
+                                cmap=cmap,
+                                norm=norm,
+                                interpolation=interpolation,
+                                aspect=aspect,
+                                origin=origin,
+                                *args,
+                                **kwargs)
+        cbar = self.figure.colorbar(im, ax=self.canvas)
+        cbar.ax.set_ylabel(cbar_title, rotation=-90, va="bottom")
+        cbar.outline.set_visible(False)
+        cbar.ax.tick_params(axis=u'both', which=u'both', length=0)
+        if xlabels is not None:
+            self.canvas.set_xticks(np.arange(len(heatvalues[0])))
+            self.canvas.set_xticklabels(xlabels)
+            plt.setp(self.canvas.get_xticklabels(),
+                     rotation=35,
+                     ha='right',
+                     rotation_mode='anchor')
+
+        if ylabels is not None:
+            self.canvas.set_yticks(np.arange(len(heatvalues)))
+            self.canvas.set_yticklabels(ylabels)
+
+        if show_values:
+            for y, row in enumerate(heatvalues):
+                for x, val in enumerate(row):
+                    color = 'white' if im.norm(val) > 0.5 else 'black'
+                    im.axes.text(x, y, '%.2f' % val, color=color,
+                                 horizontalalignment='center',
+                                 verticalalignment='center',
+                                 fontweight='light')
+        # Recenter the plot because of colorbar
+        self.figure.subplots_adjust(left=0.3, right=0.8)
 
     def contour(self, x, y, z=None, fill=True, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
@@ -312,12 +373,14 @@ class Plot(object):
         self.canvas.set_xlabel(xtitle)
         self.canvas.set_ylabel(ytitle)
 
-    def set_palette(self, palette):
+    def set_palette(self, palette, num_colors=8):
+        assert isinstance(palette, str), 'list palettes unsupported. (yet)'
+        self.palette = palette
         if 'maureen' in palette or 'custom' in palette:
             palette = MAUREENSTONE_COLORS
         elif isinstance(palette, str):
             cmap = mpl.cm.get_cmap(palette)
-            palette = [cmap(i) for i in np.linspace(0, 1.0, 8)]
+            palette = [cmap(i) for i in np.linspace(0, 1.0, num_colors)]
         self.color_list = palette
         self.colors = cycle(self.color_list)
 
@@ -326,8 +389,10 @@ class Plot(object):
 
     def set_dimensions(self, height=None, width=None):
         if height is not None:
+            self.height = height
             self.figure.set_figheight(height/self.dpi, forward=True)
         if width is not None:
+            self.width = width
             self.figure.set_figwidth(width/self.dpi, forward=True)
 
     def set_dpi(self, dpi):
@@ -393,10 +458,18 @@ class Plot(object):
                 linestyle='-',
                 linewidth=0.7,
             )
-        if axis == 'none':
+        if axis == 'none' or axis == 'off':
             self.canvas.xaxis.grid(False)
             self.canvas.yaxis.grid(False)
 
+    def stretch(self, left=0.0, right=0.0, top=0.0, bottom=0.0):
+        self.figure.subplots_adjust(left=0.125 + left,
+                                    right=0.9 + right,
+                                    top=0.9 + top,
+                                    bottom=0.1 + bottom)
+
+    def close(self):
+        plt.close(self.figure)
 
 
 class Drawing(Plot):
@@ -490,7 +563,7 @@ class Container(Plot):
                 subplot.axis('off')
                 self.plots[i].append(None)
                 self.canvases[i].append(subplot)
-        self.figure.set_tight_layout(True)
+        self.figure.set_tight_layout(False)
 
     def _preprint(self):
         for i in range(self.rows):
