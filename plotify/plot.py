@@ -458,7 +458,7 @@ class Plot(object):
                 linestyle='-',
                 linewidth=0.7,
             )
-        if axis == 'none' or axis == 'off':
+        if axis is None or axis == 'none' or axis == 'off':
             self.canvas.xaxis.grid(False)
             self.canvas.yaxis.grid(False)
 
