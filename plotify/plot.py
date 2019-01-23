@@ -380,7 +380,7 @@ class Plot(object):
             palette = MAUREENSTONE_COLORS
         elif isinstance(palette, str):
             cmap = mpl.cm.get_cmap(palette)
-            palette = [cmap(i) for i in np.linspace(0, 1.0, num_colors)]
+            palette = [cmap(i) for i in np.linspace(0.1, 1.0, num_colors)]
         self.color_list = palette
         self.colors = cycle(self.color_list)
 
