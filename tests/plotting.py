@@ -22,6 +22,8 @@ if __name__ == '__main__':
 
     x = np.linspace(-7, 7, 30)
     q = Plot('Scatter (PuBuGn)', 500, 500, 100)
+    q.set_title('A great scatter plot', loc='left', x=0.13, y=0.95)
+    q.set_subtitle('Subtitle', loc='right', y=0.9)
     q.set_palette('PuBuGn')
     q.set_grid('full')
     q.scatter(x=x, y=np.cos(x), label='cos')

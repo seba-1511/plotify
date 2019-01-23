@@ -55,12 +55,14 @@ class Plot(object):
         self.figure = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
         self.height = height
         self.width = width
+        self.title = self.figure.suptitle(title, fontsize=FONT_SIZE)
         if plot3d:
             # self.canvas = self.figure.add_subplot(1, 1, 1, projection='3d')
             self.canvas = self.figure.gca(projection='3d')
+            self.subtitle = self.canvas.text(x=0.5, y=0.90, z=0.0, s='', transform=self.figure.transFigure, fontsize=FONT_SIZE-2, ha='center', style='italic', color='gray')
         else:
             self.canvas = self.figure.add_subplot(1, 1, 1, frameon=border)
-        self.title = self.figure.suptitle(title, fontsize=FONT_SIZE)
+            self.subtitle = self.canvas.text(x=0.5, y=0.90, s='', transform=self.figure.transFigure, fontsize=FONT_SIZE-2, ha='center', style='italic', color='gray')
         self.set_palette('maureen')
         self.set_grid('horizontal')
         self.colormap = COLORMAP_3D
@@ -366,8 +368,30 @@ class Plot(object):
         self.canvas.annotate(text, xylabel, xytext, xycoords='data', textcoords='data', 
                 arrowprops=arrowprops, *args, **kwargs)
 
-    def set_title(self, title):
-        self.title.set_text(title)
+    def set_title(self, title, loc='center', x=None, y=0.98, text_obj=None):
+        if text_obj is None:
+            text_obj = self.title
+        text_obj.set_text(title)
+        if x is not None:
+            text_obj.set_x(x)
+        text_obj.set_y(y)
+        if loc == 'center':
+            if x is None:
+                text_obj.set_x(0.5)
+            text_obj.set_ha('center')
+        if loc == 'left':
+            if x is None:
+                text_obj.set_x(0.1)
+            text_obj.set_ha('left')
+        if loc == 'right':
+            if x is None:
+                text_obj.set_x(0.9)
+            text_obj.set_ha('right')
+
+    def set_subtitle(self, *args, **kwargs):
+        if 'y' not in kwargs:
+            kwargs['y'] = 0.9
+        self.set_title(text_obj=self.subtitle, *args, **kwargs)
 
     def set_axis(self, xtitle='', ytitle=''):
         self.canvas.set_xlabel(xtitle)
