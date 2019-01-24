@@ -176,6 +176,20 @@ class Plot(object):
                                              canvas.tostring_rgb()))
         return img_np[:, :, :3]
 
+    def errorbar(self, x, y, errors=None, vertical=True, *args, **kwargs):
+        if errors is None:
+            errors = [0.0 for _ in y]
+        name = 'yerr' if vertical else 'xerr'
+        errors = kwargs.pop(name, errors)
+        kwargs[name] = errors
+        color = kwargs.pop('color', next(self.colors))
+        capthick = kwargs.pop('capthick', 2)
+        capsize = kwargs.pop('capsize', 6)
+        elinewidth = kwargs['linewidth'] if 'linewidth' in kwargs else 2
+        elinewidth = kwargs.pop('elinewidth', elinewidth)
+        self.canvas.errorbar(x=x, y=y, color=color, capsize=capsize, capthick=capthick,
+                             elinewidth=elinewidth, *args, **kwargs)
+
     def plot(self, x, y=None, jitter=0.000, smooth_window=0, smooth_std=True, *args, **kwargs):
         if y is None:
             y = x
