@@ -1,15 +1,11 @@
 #!/usr/bin/env python
 
-import os
-
 from setuptools import (
     setup as install,
     find_packages,
 )
 
-dir_path = os.path.dirname(os.path.realpath(__file__))
-
-VERSION = '0.1.7'
+VERSION = '0.1.7b'
 
 install(
     name='plotify',
@@ -23,5 +19,5 @@ install(
     license='License :: OSI Approved :: Apache Software License',
     packages=find_packages(exclude=["tests"]),
     classifiers=[],
-    install_requires=[open(os.path.join(dir_path, 'requirements.txt')).read().split('\n')],
+    install_requires=['numpy', 'matplotlib', 'Pillow', 'plotly'],
 )
