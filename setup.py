@@ -1,9 +1,13 @@
 #!/usr/bin/env python
 
+import os
+
 from setuptools import (
     setup as install,
     find_packages,
 )
+
+dir_path = os.path.dirname(os.path.realpath(__file__))
 
 VERSION = '0.1.6'
 
@@ -19,5 +23,5 @@ install(
     license='License :: OSI Approved :: Apache Software License',
     packages=find_packages(exclude=["tests"]),
     classifiers=[],
-    install_requires=[open('requirements.txt').read().split('\n')],
+    install_requires=[open(os.path.join(dir_path, 'requirements.txt')).read().split('\n')],
 )
