@@ -5,13 +5,13 @@ from setuptools import (
     find_packages,
 )
 
-VERSION = '0.1.5'
+VERSION = '0.1.6'
 
 install(
     name='plotify',
     version=VERSION,
     description="Make beautiful plots, fast.",
-    long_description=open('README.md').read(),
+#    long_description=open('README.md').read(),
     author='Seb Arnold',
     author_email='smr.arnold@gmail.com',
     url='http://www.seba1511.com',

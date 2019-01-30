@@ -50,7 +50,7 @@ mpl.rcParams['mathtext.fontset'] = 'cm'  # Font for tex
 
 class Plot(object):
 
-    def __init__(self, title='', height=3600.0, width=7200.0, dpi=600.0, plot3d=False, border=True):
+    def __init__(self, title='', height=3900.0, width=7200.0, dpi=600.0, plot3d=False, border=True):
         self.dpi = float(dpi)
         self.figure = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
         self.height = height
@@ -179,7 +179,7 @@ class Plot(object):
     def plot(self, x, y=None, jitter=0.000, smooth_window=0, smooth_std=True, *args, **kwargs):
         if y is None:
             y = x
-            x = list(range(len(y)))
+            x = list( range(1, 1 +len(y)))
 
         if smooth_window > 0:
             smooth_x = [x[0], ]
