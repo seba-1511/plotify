@@ -9,7 +9,7 @@ from setuptools import (
 
 dir_path = os.path.dirname(os.path.realpath(__file__))
 
-VERSION = '0.1.6'
+VERSION = '0.1.7'
 
 install(
     name='plotify',
