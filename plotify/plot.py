@@ -122,10 +122,10 @@ class Plot(object):
     def show(self):
         h, w = self.figure.get_figheight(), self.figure.get_figwidth()
         dpi = self.figure.get_dpi()
-        self.figure.set_dpi(150.0)
+        self.figure.set_dpi(75.0)
         self.figure.set_figheight(3.5, forward=True)
         self.figure.set_figwidth(3.5, forward=True)
-        self.figure.set_size_inches((3.5, 3.5), forward=True)
+        self.figure.set_size_inches((2*3.5, 2*3.5), forward=True)
         self._preprint()
         self.figure.show()
         plt.draw()
