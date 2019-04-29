@@ -66,7 +66,8 @@ class Plot(object):
         self.set_palette('maureen')
         self.set_grid('horizontal')
         self.colormap = COLORMAP_3D
-        self.legend_location = 'upper right'
+#        self.legend_location = 'upper right'
+        self.legend_location = 'best'
 
     def _preprint(self):
         handles, labels = self.canvas.get_legend_handles_labels()
@@ -90,7 +91,7 @@ class Plot(object):
             else:
                 X, Y = x, y
                 Z = z + np.zeros_like(X)
-        else: # function
+        else:  # function
             if ndim == 1:
                 Z = np.zeros((len(x), len(x)))
                 for i, xi in enumerate(x):
@@ -300,10 +301,11 @@ class Plot(object):
 
     def contour(self, x, y, z=None, fill=True, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
+        self.set_grid(axis=None)
         if fill:
-            self.canvas.contourf(X, Y, Z, zdir='x', cmap=self.colormap)
+            self.canvas.contourf(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
         else:
-            self.canvas.contour(X, Y, Z, zdir='x', cmap=self.colormap)
+            self.canvas.contour(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
 
     def circle(self, x, y, radius, fill=None, color=None, alpha=0.5,
                linewidth=1.5, *args, **kwargs):
@@ -601,7 +603,7 @@ class Container(Plot):
                 subplot.axis('off')
                 self.plots[i].append(None)
                 self.canvases[i].append(subplot)
-        self.figure.set_tight_layout(False)
+#        self.figure.set_tight_layout(False)
 
     def _preprint(self):
         for i in range(self.rows):
