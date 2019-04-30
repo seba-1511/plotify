@@ -36,12 +36,14 @@ class ListContainer(Container):
     def __init__(self, list_plots, *args, **kwargs):
         rows = len(list_plots)
         cols = len(list_plots[0])
-        height = list_plots[0].height
-        width = list_plots[0].width
+        height = kwargs.pop('height', 2.5*list_plots[0][0].height)
+        width = kwargs.pop('width', 2.5*list_plots[0][0].width)
+        dpi = kwargs.pop('dpi', list_plots[0][0].dpi / 6.0)
         super(ListContainer, self).__init__(rows=rows,
                                             cols=cols,
                                             height=height,
                                             width=width,
+                                            dpi=dpi,
                                             *args,
                                             **kwargs)
 
