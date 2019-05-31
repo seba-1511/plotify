@@ -470,7 +470,7 @@ class Plot(object):
                 ymax = y[1]
             self.canvas.set_ylim(ymin, ymax)
         if z is not None:
-            zmin, zmaz = self.canvas.get_zlim()
+            zmin, zmax = self.canvas.get_zlim()
             if z[0] is not None:
                 zmin = z[0]
             if z[1] is not None:
