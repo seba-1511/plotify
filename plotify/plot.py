@@ -427,6 +427,18 @@ class Plot(object):
     def set_colormap(self, cm):
         self.colormap = cm
 
+    def set_xticks(self, positions, labels=None):
+        self.canvas.set_xticks([])
+        self.canvas.set_xticks(positions)
+        if labels is not None:
+            self.canvas.set_xticklabels(ticks)
+
+    def set_yticks(self, positions, labels=None):
+        self.canvas.set_yticks([])
+        self.canvas.set_yticks(positions)
+        if labels is not None:
+            self.canvas.set_yticklabels(ticks)
+
     def set_dimensions(self, height=None, width=None):
         if height is not None:
             self.height = height
@@ -486,14 +498,14 @@ class Plot(object):
         both = axis == 'full'
         if both or axis == 'vertical':
             self.canvas.xaxis.grid(
-                which='major',
+                which='minor',
                 color=LIGHT_GRAY,
                 linestyle='-',
                 linewidth=0.7,
             )
         if both or axis == 'horizontal':
             self.canvas.yaxis.grid(
-                which='major',
+                which='minor',
                 color=LIGHT_GRAY,
                 linestyle='-',
                 linewidth=0.7,
