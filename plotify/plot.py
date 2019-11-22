@@ -409,6 +409,18 @@ class Plot(object):
             kwargs['y'] = 0.9
         self.set_title(text_obj=self.subtitle, *args, **kwargs)
 
+    def set_notation(self, x='decimal', y='decimal'):
+        if x == 'scientific':
+            xra = 0.0
+        elif x == 'decimal':
+            xra = float('inf')
+        if y == 'scientific':
+            yra = 0.0
+        elif y == 'decimal':
+            yra = float('inf')
+        self.canvas.ticklabel_format(style='sci', axis='x', scilimits=(-xra, xra))
+        self.canvas.ticklabel_format(style='sci', axis='y', scilimits=(-yra, yra))
+
     def set_axis(self, xtitle='', ytitle=''):
         self.canvas.set_xlabel(xtitle)
         self.canvas.set_ylabel(ytitle)
@@ -489,23 +501,28 @@ class Plot(object):
                 zmax = z[1]
             self.canvas.set_zlim(zmin, zmax)
 
-    def set_grid(self, axis='full'):
+    def set_grid(self, axis='full', granularity='fine'):
         """
         Sets a fine, light gray background grid.
 
         axis values: full, vertical, horizontal, none.
+        granularity: coarse, fine
         """
         both = axis == 'full'
+        if granularity == 'fine':
+            granularity = 'both'
+        elif granularity == 'coarse':
+            granularity = 'major'
         if both or axis == 'vertical':
             self.canvas.xaxis.grid(
-                which='minor',
+                which=granularity,
                 color=LIGHT_GRAY,
                 linestyle='-',
                 linewidth=0.7,
             )
         if both or axis == 'horizontal':
             self.canvas.yaxis.grid(
-                which='minor',
+                which=granularity,
                 color=LIGHT_GRAY,
                 linestyle='-',
                 linewidth=0.7,
@@ -587,7 +604,24 @@ class Plot3D(Plot):
     def set_camera(self, elev=None, azim=None):
         self.canvas.view_init(elev, azim)
 
-    def set_axis(self, xtitle='', ytitle='', ztitle=''):
+    def set_notation(self, x='decimal', y='decimal', z='decimal'):
+        if x == 'scientific':
+            xra = 0.0
+        elif x == 'decimal':
+            xra = float('inf')
+        if y == 'scientific':
+            yra = 0.0
+        elif y == 'decimal':
+            yra = float('inf')
+        if z == 'scientific':
+            zra = 0.0
+        elif z == 'decimal':
+            zra = float('inf')
+        self.canvas.ticklabel_format(style='sci', axis='x', scilimits=(-xra, xra))
+        self.canvas.ticklabel_format(style='sci', axis='y', scilimits=(-yra, yra))
+        self.canvas.ticklabel_format(style='sci', axis='z', scilimits=(-zra, zra))
+
+    def set_axis(self, xtitle='', ytitle='', ztitle='', notation='scientific'):
         self.canvas.set_xlabel(xtitle, labelpad=12)
         self.canvas.set_ylabel(ytitle, labelpad=12)
         self.canvas.set_zlabel(ztitle, labelpad=12)
