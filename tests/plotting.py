@@ -117,12 +117,12 @@ if __name__ == '__main__':
     values = [np.random.random_integers(-10, 10, 10) + i for i, _ in enumerate(labels)]
     box.box(labels, values, num_box_sets=2)
     values = [np.random.random_integers(-10, 10, 10) + i for i, _ in enumerate(labels)]
-    box.box(labels, values, label='Data 2', print_values=True, center_ticks=True)
+    box.box(labels, values, label='Data 2', show_values=True, center_ticks=True)
     box.save('./outputs/box.pdf')
 
     box_unique = Plot('Box Plot')
     labels = ['Aa', 'Bb', 'Cc', 'D', 'E', 'F']
     values = [np.random.random_integers(-10, 10, 10) + i for i, _ in enumerate(labels)]
     for l, v in zip(labels, values):
-        box_unique.box(l, v, print_value=True, num_box_sets=len(labels))
+        box_unique.box(l, v, show_values=True, num_box_sets=len(labels))
     box_unique.save('./outputs/box_unique.pdf')

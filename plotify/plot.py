@@ -2,6 +2,7 @@
 
 import os
 import numpy as np
+import statistics as stats
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D #required for 3D plots
@@ -255,7 +256,7 @@ class Plot(object):
                  ha='right',
                  rotation_mode='anchor')
 
-    def box(self, x, y, print_values=False, num_box_sets=None, spacing=2.0, center_ticks=False, *args, **kwargs):
+    def box(self, x, y, show_values=False, num_box_sets=None, spacing=2.0, center_ticks=False, *args, **kwargs):
         # Arguments and Defaults
         if num_box_sets is not None:
             self._box_num_sets = num_box_sets
@@ -280,6 +281,18 @@ class Plot(object):
                                       )
         set_box_color(self.canvas, boxplot, color)
 
+        # Print median values on plot
+        if show_values:
+            y_means = [stats.median(v) for v in y]
+            x_means = self.canvas.get_xticks()
+            # Reversed because we want the latest plotted ticks.
+            # (e.g. when plotted one at a time.)
+            for x_m, y_m in zip(reversed(x_means), reversed(y_means)):
+                self.canvas.text(x_m, y_m, '%.2f' % y_m, color='black',
+                             horizontalalignment='center',
+                             verticalalignment='bottom',
+                             fontweight='bold')
+
         # Ticks formatting
         if center_ticks:
             mid_positions = np.array(range(len(x))) * (spacing * self._box_num_sets) + (self._box_num_sets - 1) * 0.4
@@ -290,7 +303,7 @@ class Plot(object):
                  rotation=35,
                  ha='right',
                  rotation_mode='anchor')
-
+        
         # Legend
         if label is not None:
             self.plot([], color=color, label=label)
