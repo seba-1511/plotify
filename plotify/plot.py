@@ -286,10 +286,10 @@ class Plot(object):
             self.canvas.set_xticks([], False)
             self.canvas.set_xticks(mid_positions, False)
             self.canvas.set_xticklabels(x)
-            plt.setp(self.canvas.get_xticklabels(),
-                     rotation=35,
-                     ha='right',
-                     rotation_mode='anchor')
+        plt.setp(self.canvas.get_xticklabels(),
+                 rotation=35,
+                 ha='right',
+                 rotation_mode='anchor')
 
         # Legend
         if label is not None:
