@@ -48,6 +48,14 @@ mpl.style.use('seaborn-poster')
 mpl.rcParams['mathtext.fontset'] = 'cm'  # Font for tex
 
 
+def set_box_color(canvas, bp, color):
+    artists = bp['boxes'] + bp['whiskers'] + bp['caps']
+    for a in artists:
+        a.set_color(color)
+    for a in bp['medians']:
+        a.set_color('white')
+
+
 class Plot(object):
 
     def __init__(self, title='', height=3900.0, width=7200.0, dpi=600.0, plot3d=False, border=True):
@@ -68,6 +76,8 @@ class Plot(object):
         self.colormap = COLORMAP_3D
 #        self.legend_location = 'upper right'
         self.legend_location = 'best'
+        self._box_num_sets = 2
+        self._box_curr_set = 0
 
     def _preprint(self):
         handles, labels = self.canvas.get_legend_handles_labels()
@@ -183,7 +193,9 @@ class Plot(object):
         name = 'yerr' if vertical else 'xerr'
         errors = kwargs.pop(name, errors)
         kwargs[name] = errors
-        color = kwargs.pop('color', next(self.colors))
+        color = kwargs.pop('color', None)
+        if color is None:
+            color = next(self.colors)
         capthick = kwargs.pop('capthick', 2)
         capsize = kwargs.pop('capsize', 6)
         elinewidth = kwargs['linewidth'] if 'linewidth' in kwargs else 2
@@ -212,7 +224,9 @@ class Plot(object):
             x = smooth_x
             y = smooth_y
 
-        color = kwargs.pop('color', next(self.colors))
+        color = kwargs.pop('color', None)
+        if color is None:
+            color = next(self.colors)
         self.canvas.plot(x, y, color=color, *args, **kwargs)
         if isinstance(jitter, list):
             top = [v + j for v, j in zip(y, jitter)]
@@ -241,8 +255,51 @@ class Plot(object):
                  ha='right',
                  rotation_mode='anchor')
 
+    def box(self, x, y, print_values=False, num_box_sets=None, spacing=2.0, center_ticks=False, *args, **kwargs):
+        # Arguments and Defaults
+        if num_box_sets is not None:
+            self._box_num_sets = num_box_sets
+        if not isinstance(y[0], Iterable):
+            y = [y, ]
+        if isinstance(x, str):
+            x = [x, ]
+        color = kwargs.pop('color', None)
+        if color is None:
+            color = next(self.colors)
+        label = kwargs.pop('label', None)
+        assert len(x) == len(y), 'x, y not same length'
+
+        # Boxes
+        positions = np.array(range(len(x))) * (spacing * self._box_num_sets) + self._box_curr_set * 0.8
+        boxplot = self.canvas.boxplot(y,
+                                      positions=positions,
+                                      sym='',
+                                      patch_artist=True,
+                                      widths=0.6,
+                                      labels=x,
+                                      )
+        set_box_color(self.canvas, boxplot, color)
+
+        # Ticks formatting
+        if center_ticks:
+            mid_positions = np.array(range(len(x))) * (spacing * self._box_num_sets) + (self._box_num_sets - 1) * 0.4
+            self.canvas.set_xticks([], False)
+            self.canvas.set_xticks(mid_positions, False)
+            self.canvas.set_xticklabels(x)
+            plt.setp(self.canvas.get_xticklabels(),
+                     rotation=35,
+                     ha='right',
+                     rotation_mode='anchor')
+
+        # Legend
+        if label is not None:
+            self.plot([], color=color, label=label)
+        self._box_curr_set += 1
+
     def scatter(self, *args, **kwargs):
-        c = kwargs.pop('color', next(self.colors))
+        c = kwargs.pop('color', None)
+        if color is None:
+            color = next(self.colors)
         self.canvas.scatter(color=c, *args, **kwargs)
 
     def heatmap(self, heatvalues, xlabels=None, ylabels=None, show_values=False, cbar_title='', *args, **kwargs):
@@ -570,13 +627,17 @@ class Plot3D(Plot):
     def plot(self, x, y, z=0, jitter=None, *args, **kwargs):
         if hasattr(z, '__call__'):
             z = np.array([z(x1, y1) for x1, y1 in zip(x, y)])
-        color = kwargs.pop('color', next(self.colors))
+        color = kwargs.pop('color', None)
+        if color is None:
+            color = next(self.colors)
         self.canvas.plot(x, y, zs=z, color=color, *args, **kwargs)
 
     def scatter(self, x, y, z=0, *args, **kwargs):
         if hasattr(z, '__call__'):
             z = np.array([z(x1, y1) for x1, y1 in zip(x, y)])
-        color = kwargs.pop('color', next(self.colors))
+        color = kwargs.pop('color', None)
+        if color is None:
+            color = next(self.colors)
         self.canvas.scatter(xs=x, ys=y, zs=z, c=color, *args, **kwargs)
 
     def surface(self, x, y, z=None, alpha=0.25, linewidth=0, *args, **kwargs):
