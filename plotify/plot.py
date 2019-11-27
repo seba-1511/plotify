@@ -8,6 +8,7 @@ import matplotlib.pyplot as plt
 from mpl_toolkits.mplot3d import Axes3D #required for 3D plots
 from matplotlib import image as mpimg
 from matplotlib.patches import Circle, Rectangle, Arrow, FancyBboxPatch, BoxStyle
+from matplotlib import patheffects
 
 from tempfile import gettempdir
 from collections import Iterable
@@ -288,10 +289,11 @@ class Plot(object):
             # Reversed because we want the latest plotted ticks.
             # (e.g. when plotted one at a time.)
             for x_m, y_m in zip(reversed(x_means), reversed(y_means)):
-                self.canvas.text(x_m, y_m, '%.2f' % y_m, color='black',
-                             horizontalalignment='center',
-                             verticalalignment='bottom',
-                             fontweight='bold')
+                text = self.canvas.text(x_m, y_m, '%.2f' % y_m, color='white',
+                                        horizontalalignment='center',
+                                        verticalalignment='bottom',
+                                        fontweight='bold')
+                text.set_path_effects([patheffects.withStroke(linewidth=2.0, foreground=color)])
 
         # Ticks formatting
         if center_ticks:
