@@ -312,10 +312,10 @@ class Plot(object):
         self._box_curr_set += 1
 
     def scatter(self, *args, **kwargs):
-        c = kwargs.pop('color', None)
+        color = kwargs.pop('color', None)
         if color is None:
             color = next(self.colors)
-        self.canvas.scatter(color=c, *args, **kwargs)
+        self.canvas.scatter(color=color, *args, **kwargs)
 
     def heatmap(self, heatvalues, xlabels=None, ylabels=None, show_values=False, cbar_title='', *args, **kwargs):
         '''
