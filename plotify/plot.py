@@ -310,6 +310,7 @@ class Plot(object):
         if label is not None:
             self.plot([], color=color, label=label)
         self._box_curr_set += 1
+        return positions
 
     def scatter(self, *args, **kwargs):
         color = kwargs.pop('color', None)

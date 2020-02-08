@@ -117,7 +117,8 @@ if __name__ == '__main__':
     values = [np.random.random_integers(-10, 10, 10) + i for i, _ in enumerate(labels)]
     box.box(labels, values, num_box_sets=2)
     values = [np.random.random_integers(-10, 10, 10) + i for i, _ in enumerate(labels)]
-    box.box(labels, values, label='Data 2', show_values=True, center_ticks=True)
+    positions = box.box(labels, values, label='Data 2', show_values=True, center_ticks=True)
+    box.plot(positions, [sum(v)/len(v) for v in values])
     box.save('./outputs/box.pdf')
 
     box_unique = Plot('Box Plot')
