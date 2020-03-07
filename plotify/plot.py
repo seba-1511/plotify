@@ -634,7 +634,14 @@ class Plot(object):
         self._legend_options = legend_options
 
     def get_legend(self):
-        return self
+        handles, labels = self.canvas.get_legend_handles_labels()
+        if len(handles) > 0:
+            legend_options = copy.copy(self._legend_options)
+            show = legend_options.pop('visible', True)
+            legend = self.canvas.legend(frameon=True, **legend_options)
+            legend.set_visible(show)
+        import pdb; pdb.set_trace()
+        return legend
 
     def stretch(self, left=0.0, right=0.0, top=0.0, bottom=0.0):
         self.figure.subplots_adjust(left=0.125 + left,
