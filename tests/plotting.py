@@ -115,8 +115,8 @@ if __name__ == '__main__':
     np.random.seed(42)
     box = LowResPlot('Box Plot')
 #    box.set_legend(loc='upper center', show=True, inset=False, ncol=2, alpha=1.0)
-    box.set_subtitle('Haha')
-    box.set_legend(loc='lower right', show=True, inset=False, ncol=1, alpha=0.8)
+    box.set_subtitle('That\'s a nice subtitle')
+    box.set_legend(loc='upper right', show=True, inset=False, ncol=1, alpha=0.8)
     labels = ['A', 'B', 'C', 'D', 'E', 'F']
     values = [np.random.randint(-10, 10, 10) + i for i, _ in enumerate(labels)]
     box.box(labels, values, num_box_sets=2)
@@ -125,7 +125,7 @@ if __name__ == '__main__':
     box.plot(positions, [sum(v)/len(v) for v in values], label='Connection')
     box.set_axis('Letters', 'Values')
     box.save('./outputs/box.pdf', bbox_inches='tight')
-    box.get_legend().save('./outputs/box_legend.pdf')
+    box.save_legend('./outputs/box_legend.pdf')
 #
 #    box_unique = Plot('Box Plot')
 #    labels = ['Aa', 'Bb', 'Cc', 'D', 'E', 'F']

@@ -633,15 +633,19 @@ class Plot(object):
         legend_options.update(kwargs)
         self._legend_options = legend_options
 
-    def get_legend(self):
+    def save_legend(self, path):
         handles, labels = self.canvas.get_legend_handles_labels()
         if len(handles) > 0:
             legend_options = copy.copy(self._legend_options)
             show = legend_options.pop('visible', True)
             legend = self.canvas.legend(frameon=True, **legend_options)
-            legend.set_visible(show)
-        import pdb; pdb.set_trace()
-        return legend
+            expand = [-5, -5, 5, 5]
+            fig = legend.figure
+            fig.canvas.draw()
+            bbox = legend.get_window_extent()
+            bbox = bbox.from_extents(*(bbox.extents + np.array(expand)))
+            bbox = bbox.transformed(fig.dpi_scale_trans.inverted())
+            fig.savefig(path, dpi="figure", bbox_inches=bbox)
 
     def stretch(self, left=0.0, right=0.0, top=0.0, bottom=0.0):
         self.figure.subplots_adjust(left=0.125 + left,
