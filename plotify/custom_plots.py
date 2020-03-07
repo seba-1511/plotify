@@ -9,11 +9,17 @@ class PublicationPlot(Plot):
         super(PublicationPlot, self).__init__(title, height, width, dpi, *args, **kwargs)
         self.set_title(title)
         self.stretch(top=-0.02, left=0.15, right=0.05, bottom=0.1)
+        self._outset_bbox_to_anchor = {
+            'upper center': (0.5, 1.32),
+            'lower center': (0.5, -0.43),
+            'upper right': (1.7, 1.035),
+            'lower right': (1.7, -0.035),
+        }
 
-    def set_title(self, title, loc='left', x=0.26, y=0.97, text_obj=None):
+    def set_title(self, title, loc='left', x=0.27, y=0.97, text_obj=None):
         super(PublicationPlot, self).set_title(title, loc, x, y, text_obj)
 
-    def set_subtitle(self, title, loc='right', x=0.96, y=0.92):
+    def set_subtitle(self, title, loc='right', x=0.95, y=0.92):
         super(PublicationPlot, self).set_subtitle(title, loc=loc, x=x, y=y)
 
 
@@ -26,6 +32,15 @@ class LowResPlot(Plot):
                                          dpi,
                                          *args,
                                          **kwargs)
+        self._outset_bbox_to_anchor = {
+            'upper center': (0.5, 1.17),
+            'lower center': (0.5, -0.40),
+            'upper right': (1.35, 1.035),
+            'lower right': (1.35, -0.035),
+        }
+
+    def set_subtitle(self, title, loc='right', x=0.9, y=0.92):
+        super(LowResPlot, self).set_subtitle(title, loc=loc, x=x, y=y)
 
     def save(self, *args, bbox_inches='tight', **kwargs):
         super(LowResPlot, self).save(*args, bbox_inches=bbox_inches, **kwargs)

@@ -2,6 +2,7 @@
 
 import os
 import numpy as np
+import copy
 import statistics as stats
 import matplotlib as mpl
 import matplotlib.pyplot as plt
@@ -76,15 +77,25 @@ class Plot(object):
         self.set_palette('maureen')
         self.set_grid('horizontal')
         self.colormap = COLORMAP_3D
-#        self.legend_location = 'upper right'
-        self.legend_location = 'best'
         self._box_num_sets = 2
         self._box_curr_set = 0
+#        self.legend_location = 'upper right'
+#        self.legend_location = 'best'
+        self.set_legend(loc='best')
+        self._outset_bbox_to_anchor = {
+            'upper center': (0.5, 1.12),
+            'lower center': (0.5, -0.30),
+            'upper right': (1.25, 1.025),
+            'lower right': (1.25, -0.025),
+        }
 
     def _preprint(self):
         handles, labels = self.canvas.get_legend_handles_labels()
         if len(handles) > 0:
-            l = self.canvas.legend(frameon=True, loc=self.legend_location)
+            legend_options = copy.copy(self._legend_options)
+            show = legend_options.pop('visible', True)
+            legend = self.canvas.legend(frameon=True, **legend_options)
+            legend.set_visible(show)
 
     def _3d_preprocess(self, x, y, z):
         assert x.ndim == y.ndim, 'x, y shape mismatch'
@@ -603,6 +614,27 @@ class Plot(object):
         if axis is None or axis == 'none' or axis == 'off':
             self.canvas.xaxis.grid(False)
             self.canvas.yaxis.grid(False)
+
+    def set_legend(self, loc='best', show=True, inset=True, ncol=1, alpha=0.8, **kwargs):
+        # Here process the position
+        legend_options = {}
+        legend_location = loc
+        bbox_to_anchor = None
+        if not inset:
+            bbox_to_anchor = self._outset_bbox_to_anchor[loc]
+
+        legend_options = {
+            'loc': legend_location,
+            'bbox_to_anchor': bbox_to_anchor,
+            'visible': show,
+            'ncol': ncol,
+            'framealpha': alpha,
+        }
+        legend_options.update(kwargs)
+        self._legend_options = legend_options
+
+    def get_legend(self):
+        return self
 
     def stretch(self, left=0.0, right=0.0, top=0.0, bottom=0.0):
         self.figure.subplots_adjust(left=0.125 + left,
