@@ -387,9 +387,10 @@ class Plot(object):
         X, Y, Z = self._3d_preprocess(x, y, z)
         self.set_grid(axis=None)
         if fill:
-            self.canvas.contourf(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
+            cont = self.canvas.contourf(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
         else:
-            self.canvas.contour(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
+            cont = self.canvas.contour(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
+        return cont
 
     def circle(self, x, y, radius, fill=None, color=None, alpha=0.5,
                linewidth=1.5, *args, **kwargs):
