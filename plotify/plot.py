@@ -616,7 +616,7 @@ class Plot(object):
             self.canvas.xaxis.grid(False)
             self.canvas.yaxis.grid(False)
 
-    def set_legend(self, loc='best', show=True, inset=True, ncol=1, alpha=0.8, **kwargs):
+    def set_legend(self, loc='best', title=None, show=True, inset=True, ncol=1, alpha=0.8, **kwargs):
         # Here process the position
         legend_options = {}
         legend_location = loc
@@ -630,6 +630,7 @@ class Plot(object):
             'visible': show,
             'ncol': ncol,
             'framealpha': alpha,
+            'title': title,
         }
         legend_options.update(kwargs)
         self._legend_options = legend_options
