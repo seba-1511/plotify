@@ -11,7 +11,7 @@ class PublicationPlot(Plot):
         self.stretch(top=-0.02, left=0.15, right=0.05, bottom=0.1)
         self._outset_bbox_to_anchor = {
             'upper center': (0.5, 1.32),
-            'lower center': (0.5, -0.43),
+            'lower center': (0.5, -0.45),
             'upper right': (1.7, 1.035),
             'lower right': (1.7, -0.035),
         }

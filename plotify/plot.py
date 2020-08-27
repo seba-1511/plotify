@@ -702,8 +702,12 @@ class Plot3D(Plot):
     def surface(self, x, y, z=None, alpha=0.25, linewidth=0, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
         self.canvas.plot_surface(X=X, Y=Y, Z=Z, rstride=1, cstride=1,
-                cmap=self.colormap, linewidth=linewidth, antialiased=True, alpha=alpha,
-                *args, **kwargs)
+                                 cmap=self.colormap,
+                                 linewidth=linewidth,
+                                 antialiased=True,
+                                 alpha=alpha,
+                                 *args,
+                                 **kwargs)
 
     def wireframe(self, x, y, z=None, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
@@ -722,6 +726,9 @@ class Plot3D(Plot):
         self.canvas.contour(X, Y, Z, zdir='y', offset=ymin, cmap=self.colormap)
 
     def set_camera(self, elev=None, azim=None):
+        """
+        Both parameters are angles in [0, 360].
+        """
         self.canvas.view_init(elev, azim)
 
     def set_notation(self, x='decimal', y='decimal', z='decimal'):
@@ -742,9 +749,9 @@ class Plot3D(Plot):
         self.canvas.ticklabel_format(style='sci', axis='z', scilimits=(-zra, zra))
 
     def set_axis(self, xtitle='', ytitle='', ztitle='', notation='scientific'):
-        self.canvas.set_xlabel(xtitle, labelpad=12)
-        self.canvas.set_ylabel(ytitle, labelpad=12)
-        self.canvas.set_zlabel(ztitle, labelpad=12)
+        self.canvas.set_xlabel(xtitle, labelpad=25)
+        self.canvas.set_ylabel(ytitle, labelpad=25)
+        self.canvas.set_zlabel(ztitle, labelpad=25)
 
 
 class Container(Plot):
