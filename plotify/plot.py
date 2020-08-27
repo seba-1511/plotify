@@ -38,6 +38,7 @@ Maureen = {
     'gold': MAUREENSTONE_COLORS[7],
 
 }
+MARKERS = ['o', 'X', 'v', '*', 'd', 's', '*', 'p']
 LIGHT_GRAY = '#D3D3D3'
 PALETTE_NAME = MAUREENSTONE_COLORS
 COLORMAP_3D = 'YlGnBu'
@@ -88,6 +89,7 @@ class Plot(object):
             'upper right': (1.25, 1.025),
             'lower right': (1.25, -0.025),
         }
+        self.markers = cycle(MARKERS)
 
     def _preprint(self):
         handles, labels = self.canvas.get_legend_handles_labels()
@@ -240,7 +242,22 @@ class Plot(object):
         color = kwargs.pop('color', None)
         if color is None:
             color = next(self.colors)
-        self.canvas.plot(x, y, color=color, *args, **kwargs)
+        marker = kwargs.pop('marker', None)
+        if marker is None:
+            marker = next(self.markers)
+        elif marker is False:
+            marker = None
+        markevery = 1 if len(x) < 20 else len(x) // 10
+        markersize = kwargs.pop('markersize', 8.5)
+        self.canvas.plot(
+            x,
+            y,
+            color=color,
+            marker=marker,
+            markevery=markevery,
+            markersize=markersize,
+            *args,
+            **kwargs)
         if isinstance(jitter, list):
             top = [v + j for v, j in zip(y, jitter)]
             low = [v - j for v, j in zip(y, jitter)]
@@ -327,7 +344,12 @@ class Plot(object):
         color = kwargs.pop('color', None)
         if color is None:
             color = next(self.colors)
-        self.canvas.scatter(color=color, *args, **kwargs)
+        marker = kwargs.pop('marker', None)
+        if marker is None:
+            marker = next(self.markers)
+        elif marker is False:
+            marker = None
+        self.canvas.scatter(color=color, marker=marker, *args, **kwargs)
 
     def heatmap(self, heatvalues, xlabels=None, ylabels=None, show_values=False, cbar_title='', *args, **kwargs):
         '''
