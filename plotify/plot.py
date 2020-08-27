@@ -387,9 +387,10 @@ class Plot(object):
         X, Y, Z = self._3d_preprocess(x, y, z)
         self.set_grid(axis=None)
         if fill:
-            self.canvas.contourf(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
+            cont = self.canvas.contourf(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
         else:
-            self.canvas.contour(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
+            cont = self.canvas.contour(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
+        return cont
 
     def circle(self, x, y, radius, fill=None, color=None, alpha=0.5,
                linewidth=1.5, *args, **kwargs):
@@ -615,7 +616,7 @@ class Plot(object):
             self.canvas.xaxis.grid(False)
             self.canvas.yaxis.grid(False)
 
-    def set_legend(self, loc='best', show=True, inset=True, ncol=1, alpha=0.8, **kwargs):
+    def set_legend(self, loc='best', title=None, show=True, inset=True, ncol=1, alpha=0.8, **kwargs):
         # Here process the position
         legend_options = {}
         legend_location = loc
@@ -629,6 +630,7 @@ class Plot(object):
             'visible': show,
             'ncol': ncol,
             'framealpha': alpha,
+            'title': title,
         }
         legend_options.update(kwargs)
         self._legend_options = legend_options
