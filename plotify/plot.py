@@ -38,6 +38,7 @@ Maureen = {
     'gold': MAUREENSTONE_COLORS[7],
 
 }
+MARKERS = ['o', 'X', 'v', '*', 'd', 's', '*', 'p']
 LIGHT_GRAY = '#D3D3D3'
 PALETTE_NAME = MAUREENSTONE_COLORS
 COLORMAP_3D = 'YlGnBu'
@@ -88,6 +89,7 @@ class Plot(object):
             'upper right': (1.25, 1.025),
             'lower right': (1.25, -0.025),
         }
+        self.markers = cycle(MARKERS)
 
     def _preprint(self):
         handles, labels = self.canvas.get_legend_handles_labels()
@@ -240,7 +242,22 @@ class Plot(object):
         color = kwargs.pop('color', None)
         if color is None:
             color = next(self.colors)
-        self.canvas.plot(x, y, color=color, *args, **kwargs)
+        marker = kwargs.pop('marker', None)
+        if marker is None:
+            marker = next(self.markers)
+        elif marker is False:
+            marker = None
+        markevery = 1 if len(x) < 20 else len(x) // 10
+        markersize = kwargs.pop('markersize', 8.5)
+        self.canvas.plot(
+            x,
+            y,
+            color=color,
+            marker=marker,
+            markevery=markevery,
+            markersize=markersize,
+            *args,
+            **kwargs)
         if isinstance(jitter, list):
             top = [v + j for v, j in zip(y, jitter)]
             low = [v - j for v, j in zip(y, jitter)]
@@ -327,7 +344,12 @@ class Plot(object):
         color = kwargs.pop('color', None)
         if color is None:
             color = next(self.colors)
-        self.canvas.scatter(color=color, *args, **kwargs)
+        marker = kwargs.pop('marker', None)
+        if marker is None:
+            marker = next(self.markers)
+        elif marker is False:
+            marker = None
+        self.canvas.scatter(color=color, marker=marker, *args, **kwargs)
 
     def heatmap(self, heatvalues, xlabels=None, ylabels=None, show_values=False, cbar_title='', *args, **kwargs):
         '''
@@ -616,7 +638,7 @@ class Plot(object):
             self.canvas.xaxis.grid(False)
             self.canvas.yaxis.grid(False)
 
-    def set_legend(self, loc='best', show=True, inset=True, ncol=1, alpha=0.8, **kwargs):
+    def set_legend(self, loc='best', title=None, show=True, inset=True, ncol=1, alpha=0.8, **kwargs):
         # Here process the position
         legend_options = {}
         legend_location = loc
@@ -630,6 +652,7 @@ class Plot(object):
             'visible': show,
             'ncol': ncol,
             'framealpha': alpha,
+            'title': title,
         }
         legend_options.update(kwargs)
         self._legend_options = legend_options
@@ -703,8 +726,12 @@ class Plot3D(Plot):
     def surface(self, x, y, z=None, alpha=0.25, linewidth=0, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
         self.canvas.plot_surface(X=X, Y=Y, Z=Z, rstride=1, cstride=1,
-                cmap=self.colormap, linewidth=linewidth, antialiased=True, alpha=alpha,
-                *args, **kwargs)
+                                 cmap=self.colormap,
+                                 linewidth=linewidth,
+                                 antialiased=True,
+                                 alpha=alpha,
+                                 *args,
+                                 **kwargs)
 
     def wireframe(self, x, y, z=None, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
@@ -723,6 +750,9 @@ class Plot3D(Plot):
         self.canvas.contour(X, Y, Z, zdir='y', offset=ymin, cmap=self.colormap)
 
     def set_camera(self, elev=None, azim=None):
+        """
+        Both parameters are angles in [0, 360].
+        """
         self.canvas.view_init(elev, azim)
 
     def set_notation(self, x='decimal', y='decimal', z='decimal'):
@@ -743,9 +773,9 @@ class Plot3D(Plot):
         self.canvas.ticklabel_format(style='sci', axis='z', scilimits=(-zra, zra))
 
     def set_axis(self, xtitle='', ytitle='', ztitle='', notation='scientific'):
-        self.canvas.set_xlabel(xtitle, labelpad=12)
-        self.canvas.set_ylabel(ytitle, labelpad=12)
-        self.canvas.set_zlabel(ztitle, labelpad=12)
+        self.canvas.set_xlabel(xtitle, labelpad=25)
+        self.canvas.set_ylabel(ytitle, labelpad=25)
+        self.canvas.set_zlabel(ztitle, labelpad=25)
 
 
 class Container(Plot):
