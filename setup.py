@@ -19,5 +19,5 @@ install(
     license='License :: OSI Approved :: Apache Software License',
     packages=find_packages(exclude=["tests"]),
     classifiers=[],
-    install_requires=['numpy', 'matplotlib', 'Pillow', 'plotly'],
+    install_requires=['numpy', 'matplotlib>=3.3.0', 'Pillow', 'plotly'],
 )
