@@ -326,8 +326,8 @@ class Plot(object):
         # Ticks formatting
         if center_ticks:
             mid_positions = np.array(range(len(x))) * (spacing * self._box_num_sets) + (self._box_num_sets - 1) * 0.4
-            self.canvas.set_xticks([], False)
-            self.canvas.set_xticks(mid_positions, False)
+            self.canvas.set_xticks(ticks=[], minor=False)
+            self.canvas.set_xticks(ticks=mid_positions, minor=False)
             self.canvas.set_xticklabels(x)
         plt.setp(self.canvas.get_xticklabels(),
                  rotation=35,
