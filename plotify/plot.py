@@ -36,7 +36,15 @@ Maureen = {
     'purple': MAUREENSTONE_COLORS[5],
     'cardinal': MAUREENSTONE_COLORS[6],
     'gold': MAUREENSTONE_COLORS[7],
-
+}
+Vibrant = {
+    'cyan': '#33BBEE',
+    'magenta': '#EE3377',
+    'teal': '#009988',
+    'orange': '#EE7733',
+    'blue': '#0077BB',
+    'red': '#CC3311',
+    'gray': '#BBBBBB',
 }
 MARKERS = ['o', 'X', 'v', '*', 'd', 's', '*', 'p']
 LIGHT_GRAY = '#D3D3D3'
@@ -539,6 +547,10 @@ class Plot(object):
         self.palette = palette
         if 'maureen' in palette or 'custom' in palette:
             palette = MAUREENSTONE_COLORS
+        elif palette == 'vibrant':
+            vibrant_order = ['cyan', 'magenta', 'orange',
+                             'teal', 'blue', 'red', 'gray']
+            palette = [Vibrant[vo] for vo in vibrant_order]
         elif isinstance(palette, str):
             cmap = mpl.cm.get_cmap(palette)
             palette = [cmap(i) for i in np.linspace(0.1, 1.0, num_colors)]
