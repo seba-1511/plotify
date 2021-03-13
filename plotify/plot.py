@@ -1,20 +1,26 @@
 #!/usr/bin/env python3
 
 import os
+import subprocess
 import numpy as np
 import copy
 import statistics as stats
+import colorsys
 import matplotlib as mpl
 import matplotlib.pyplot as plt
+import matplotlib.colors as mc
+
 from mpl_toolkits.mplot3d import Axes3D #required for 3D plots
 from matplotlib import image as mpimg
 from matplotlib.patches import Circle, Rectangle, Arrow, FancyBboxPatch, BoxStyle
 from matplotlib import patheffects
 
+from distutils.spawn import find_executable
 from tempfile import gettempdir
 from collections import Iterable
 from itertools import cycle
 from time import time
+from subprocess import Popen
 
 
 try:
@@ -52,6 +58,37 @@ mpl.style.use('seaborn-poster')
 mpl.rcParams['mathtext.fontset'] = 'cm'  # Font for tex
 
 
+def usetex(use=True, silent=False):
+    if not use:
+        mpl.rc('text', usetex=False)
+    elif find_executable('latex') and \
+        Popen(['kpsewhich', 'type1ec.sty'], stdout=subprocess.PIPE).communicate()[0]:
+        mpl.rc('text', usetex=True)
+    elif not silent:
+        print('texlive-full is not installed, plotify cannot use tex.')
+
+
+def lighten_color(color, amount=0.5):
+    """
+    Taken from:
+    https://stackoverflow.com/questions/37765197/darken-or-lighten-a-color-in-matplotlib/49601444
+
+    Lightens the given color by multiplying (1-luminosity) by the given amount.
+    Input can be matplotlib color string, hex string, or RGB tuple.
+
+    Examples:
+    >> lighten_color('g', 0.3)
+    >> lighten_color('#F034A3', 0.6)
+    >> lighten_color((.3,.55,.1), 0.5)
+    """
+    try:
+        c = mc.cnames[color]
+    except:
+        c = color
+    c = colorsys.rgb_to_hls(*mc.to_rgb(c))
+    return colorsys.hls_to_rgb(c[0], max(0, min(1, amount * c[1])), c[2])
+
+
 def set_box_color(canvas, bp, color):
     artists = bp['boxes'] + bp['whiskers'] + bp['caps']
     for a in artists:
@@ -63,6 +100,7 @@ def set_box_color(canvas, bp, color):
 class Plot(object):
 
     def __init__(self, title='', height=3900.0, width=7200.0, dpi=600.0, plot3d=False, border=True):
+        usetex(True, silent=True)
         self.dpi = float(dpi)
         self.figure = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
         self.height = height
@@ -269,21 +307,38 @@ class Plot(object):
             low = y - jitter
             self.canvas.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
 
-    def bar(self, x, y=None, *args, **kwargs):
+    def bar(self, x, y=None, show_values=False, *args, **kwargs):
         # TODO: Show variance and mean on bars (as an option)
         if y is None:
             y = x
             x = list(range(len(y)))
-        fake_x = list(range(len(x)))
-        for i in fake_x:
+        fake_x = list(range(1, 1 + len(x)))
+        used_colors = []
+        for i in range(len(fake_x)):
             color = next(self.colors)
-            self.canvas.bar(x=i, height=y[i], color=color, *args, **kwargs)
+            self.canvas.bar(x=fake_x[i], height=y[i], color=color, *args, **kwargs)
+            used_colors.append(color)
         self.canvas.set_xticks(fake_x)
         self.canvas.set_xticklabels(x)
         plt.setp(self.canvas.get_xticklabels(),
                  rotation=35,
                  ha='right',
                  rotation_mode='anchor')
+
+        if show_values:
+            y_means = y
+            x_means = fake_x
+            # Reversed because we want the latest plotted ticks.
+            # (e.g. when plotted one at a time.)
+            for x_m, y_m, c_m in zip(reversed(x_means), reversed(y_means), reversed(used_colors)):
+                text = self.canvas.text(x_m, y_m, '%.2f' % y_m, color=c_m,
+                                        horizontalalignment='center',
+                                        verticalalignment='bottom',
+                                        fontweight='bold')
+                text.set_path_effects([patheffects.withStroke(linewidth=0.7, foreground=c_m)])
+        return fake_x
+
+
 
     def box(self, x, y, show_values=False, num_box_sets=None, spacing=2.0, center_ticks=False, *args, **kwargs):
         # Arguments and Defaults
@@ -300,7 +355,10 @@ class Plot(object):
         assert len(x) == len(y), 'x, y not same length'
 
         # Boxes
-        positions = np.array(range(len(x))) * (spacing * self._box_num_sets) + self._box_curr_set * 0.8
+        positions = kwargs.pop('positions', None)
+        if positions is None:
+            positions = np.array(range(len(x))) * (spacing * self._box_num_sets) \
+                      + self._box_curr_set * 0.8
         boxplot = self.canvas.boxplot(y,
                                       positions=positions,
                                       sym='',
@@ -679,6 +737,9 @@ class Plot(object):
 
     def close(self):
         plt.close(self.figure)
+
+    def usetex(self, *args, **kwargs):
+        usetex(*args, **kwargs)
 
 
 class Drawing(Plot):
