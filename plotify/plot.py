@@ -285,7 +285,9 @@ class Plot(object):
             marker = next(self.markers)
         elif marker is False:
             marker = None
-        markevery = 1 if len(x) < 20 else len(x) // 10
+        markevery = kwargs.pop('markevery', None)
+        if markevery is None:
+            markevery = 1 if len(x) < 20 else len(x) // 10
         markersize = kwargs.pop('markersize', 8.5)
         self.canvas.plot(
             x,
