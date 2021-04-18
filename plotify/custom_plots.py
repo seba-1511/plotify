@@ -39,6 +39,9 @@ class LowResPlot(Plot):
             'lower right': (1.35, -0.035),
         }
 
+    def set_title(self, title, loc='left', x=0.12, y=0.98, text_obj=None):
+        super(LowResPlot, self).set_title(title, loc=loc, x=x, y=y, text_obj=text_obj)
+
     def set_subtitle(self, title, loc='right', x=0.9, y=0.92):
         super(LowResPlot, self).set_subtitle(title, loc=loc, x=x, y=y)
 

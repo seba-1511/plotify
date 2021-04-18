@@ -6,6 +6,7 @@ import numpy as np
 import copy
 import statistics as stats
 import colorsys
+import warnings
 import matplotlib as mpl
 import matplotlib.pyplot as plt
 import matplotlib.colors as mc
@@ -67,13 +68,18 @@ mpl.rcParams['mathtext.fontset'] = 'cm'  # Font for tex
 
 
 def usetex(use=True, silent=False):
-    if not use:
-        mpl.rc('text', usetex=False)
-    elif find_executable('latex') and \
-        Popen(['kpsewhich', 'type1ec.sty'], stdout=subprocess.PIPE).communicate()[0]:
-        mpl.rc('text', usetex=True)
-    elif not silent:
-        print('texlive-full is not installed, plotify cannot use tex.')
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore")
+        if not use:
+            mpl.rc('text', usetex=False)
+        elif find_executable('latex') and \
+            Popen(
+                ['kpsewhich', 'type1ec.sty'],
+                stdout=subprocess.DEVNULL,
+                stderr=subprocess.DEVNULL).communicate()[0]:
+            mpl.rc('text', usetex=True)
+        elif not silent:
+            print('texlive-full is not installed, plotify cannot use tex.')
 
 
 def lighten_color(color, amount=0.5):
@@ -207,6 +213,11 @@ class Plot(object):
         self.figure.set_figwidth(w, forward=True)
 
     def save(self, path, **kwargs):
+        # create path if non-existant
+        plot_dir = os.path.dirname(path)
+        os.makedirs(plot_dir, exist_ok=True)
+
+        # save figure
         if path[-4:] == 'html':
             try:
                 from plotly.tools import mpl_to_plotly
