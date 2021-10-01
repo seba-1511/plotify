@@ -5,7 +5,7 @@ from setuptools import (
     find_packages,
 )
 
-VERSION = '0.1.15'
+VERSION = '0.1.16'
 
 install(
     name='plotify',

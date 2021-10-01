@@ -110,12 +110,10 @@ def wandb_plot(config):
                 run_ys = (y_cumsum[smooth_window:] - y_cumsum[:-smooth_window]) / smooth_window
                 run_xs = run_xs[:-smooth_window]
 
-            # debug: plot original curve
-            #  plot.plot(run_xs, run_ys, label='original')
-
             # average y values that have the same x values
             xs_increasing = np.diff(run_xs)
-            if not np.all(xs_increasing):  # TODO: implement with scipy lfilter
+            if not np.all(xs_increasing):
+                # TODO: implement with scipy lfilter
                 new_xs = []
                 new_ys = []
                 accum = run_ys[0]
