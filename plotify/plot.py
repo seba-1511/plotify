@@ -67,17 +67,17 @@ mpl.style.use('seaborn-poster')
 mpl.rcParams['mathtext.fontset'] = 'cm'  # Font for tex
 
 
-def usetex(use=True, silent=False):
+def usetex(use=True, silent=False, force=False):
     with warnings.catch_warnings():
         warnings.simplefilter("ignore")
         if not use:
             mpl.rc('text', usetex=False)
-        elif find_executable('latex') and \
-            Popen(
+        elif find_executable('latex'):
+            if force or Popen(
                 ['kpsewhich', 'type1ec.sty'],
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL).communicate()[0]:
-            mpl.rc('text', usetex=True)
+                    mpl.rc('text', usetex=True)
         elif not silent:
             print('texlive-full is not installed, plotify cannot use tex.')
 
