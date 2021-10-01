@@ -11,6 +11,8 @@ config = {
     'ytitle': 'Returns',
     'xlims': (0, 3_000_000),
     'ylims': (0.0, 15000.0),
+    'notation': 'scientific',
+    'y_notation': 'decimal',
     'legend': {
         'inset': True,
         'loc': 'best',
@@ -31,23 +33,28 @@ config = {
                 'arnolds/qmcrl/xpouxt8w',
             ],
             'x_key': 'iteration',
-            'y_key': 'valid/accuracy',
-            'label': 'Varnish',
+            'y_key': 'test/episode_returns',
+            'label': 'MC',
             'color': pl.Maureen['blue'],
-            'temperature': 50.0,
-            'markevery': 100,
+            'linewidth': 1.8,
+            'smooth_window': 1,
+            'markevery': 1000,
+            'samples': 4196,
+            'shade': 'std',
         },
         {
-            'wandb_id': 'arnolds/meta-features/11r23eby',
+            'wandb_id': 'arnolds/qmcrl/xpouxt8w',
             'x_key': 'iteration',
-            'y_key': 'valid/accuracy',
-            'label': 'No Varnish',
+            'y_key': 'test/episode_returns',
+            'label': 'RQMC',
             'color': pl.Maureen['orange'],
-            'temperature': 50.0,
-            'markevery': 100,
+            'linewidth': 1.8,
+            'smooth_window': 50,
+            'samples': 10000,
+            'markevery': 1000,
         },
     ],
 }
 
 plot = pl.wandb_plots.wandb_plot(config)
-plot.save('outputs/wandb_plot.pdf', bbox_inches='tight')
+plot.save('outputs/wandb_plot.pdf')
