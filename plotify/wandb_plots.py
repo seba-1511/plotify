@@ -65,10 +65,15 @@ def wandb_plot(config):
     plot.set_subtitle(config.get('subtitle'))
     plot.set_axis(config.get('xtitle'), config.get('ytitle'))
     plot.set_lims(config.get('xlims'), config.get('ylims'))
+    plot.set_palette(config.get('palette', 'maureen'))
     notation = config.get('notation', 'scientific')
     plot.set_notation(
         x=config.get('x_notation', notation),
         y=config.get('y_notation', notation),
+    )
+    plot.set_scales(
+        x=config.get('x_scale', 'linear'),
+        y=config.get('y_scale', 'linear'),
     )
     plot.set_legend(**config.get('legend', {}))
 
@@ -90,10 +95,24 @@ def wandb_plot(config):
         runs_min_x = - float('inf')
         runs_max_x = float('inf')
         for run_id in run_ids:
-            run = api.run(run_id)
-            values = run.history(keys=[x_key, y_key], samples=samples)
-            run_xs = values[x_key].to_numpy()
-            run_ys = values[y_key].to_numpy()
+            try:
+                run = api.run(run_id)
+                values = run.history(keys=[x_key, y_key], samples=samples)
+            except (wandb.errors.CommError, ValueError):
+                print('Run not found: ' + run_id + ' - skipping.')
+                continue
+
+            try:
+                run_xs = values[x_key].to_numpy()
+            except KeyError:
+                print('Key \'' + x_key + '\' not found for run: ' + run_id + ' - skipping.')
+                continue
+
+            try:
+                run_ys = values[y_key].to_numpy()
+            except KeyError:
+                print('Key \'' + y_key + '\' not found for run: ' + run_id + ' - skipping.')
+                continue
 
             # cut x_values to x_lims here (before smoothing)
             if max_x is not None and max_x < run_xs[-1]:
@@ -136,55 +155,58 @@ def wandb_plot(config):
             runs_min_x = max(runs_min_x, np.min(run_xs))
             runs_max_x = min(runs_max_x, np.max(run_xs))
 
-        # interpolate within [runs_min_x, runs_max_x] bounds
-        x_linear = np.linspace(
-            start=runs_min_x,
-            stop=runs_max_x,
-            num=samples,
-        )
-        for run_xs, run_ys in zip(x_values, y_values):
-            run_interpolate = scipy.interpolate.interp1d(run_xs, run_ys)
-            run_ys[:] = run_interpolate(x_linear)
+        # plot only if we have values
+        if len(x_values) > 0:
 
-        # compute mean y
-        if len(y_values) > 1:
-            y_linear = [np.mean(ys) for ys in zip(*y_values)]
-        else:
-            y_linear = y_values[0]
-
-        # plot curve
-        color = result.get('color', next(plot.colors))
-        plot.plot(
-            x=x_linear,
-            y=y_linear,
-            label=result.get('label'),
-            color=color,
-            linestyle=result.get('linestyle'),
-            linewidth=result.get('linewidth'),
-            markevery=result.get('markevery'),
-        )
-
-        # optionally: show std or ci95
-        shade = result.get('shade')
-        if shade is not None and len(y_values) > 1:
-            y_stds = [np.std(ys) for ys in zip(*y_values)]
-            if shade == 'std':
-                y_shade = y_stds
-            elif shade == 'ci95':
-                sqrt_n_runs = float(len(y_values))**0.5
-                y_shade = [1.96 * y_std / sqrt_n_runs for y_std in y_stds]
-            else:
-                raise ValueError(f'Unknown \'shade\': {shade}')
-
-            y_shade = np.array(y_shade)
-            plot.canvas.fill_between(
-                x=x_linear,
-                y1=y_linear - y_shade,
-                y2=y_linear + y_shade,
-                alpha=0.5,
-                color=color,
-                linewidth=0.0,
-                step='mid',
+            # interpolate within [runs_min_x, runs_max_x] bounds
+            x_linear = np.linspace(
+                start=runs_min_x,
+                stop=runs_max_x,
+                num=samples,
             )
+            for run_xs, run_ys in zip(x_values, y_values):
+                run_interpolate = scipy.interpolate.interp1d(run_xs, run_ys)
+                run_ys[:] = run_interpolate(x_linear)
+
+            # compute mean y
+            if len(y_values) > 1:
+                y_linear = [np.mean(ys) for ys in zip(*y_values)]
+            else:
+                y_linear = y_values[0]
+
+            # plot curve
+            color = result.get('color', next(plot.colors))
+            plot.plot(
+                x=x_linear,
+                y=y_linear,
+                label=result.get('label'),
+                color=color,
+                linestyle=result.get('linestyle'),
+                linewidth=result.get('linewidth'),
+                markevery=result.get('markevery'),
+            )
+
+            # optionally: show std or ci95
+            shade = result.get('shade')
+            if shade is not None and len(y_values) > 1:
+                y_stds = [np.std(ys) for ys in zip(*y_values)]
+                if shade == 'std':
+                    y_shade = y_stds
+                elif shade == 'ci95':
+                    sqrt_n_runs = float(len(y_values))**0.5
+                    y_shade = [1.96 * y_std / sqrt_n_runs for y_std in y_stds]
+                else:
+                    raise ValueError(f'Unknown \'shade\': {shade}')
+
+                y_shade = np.array(y_shade)
+                plot.canvas.fill_between(
+                    x=x_linear,
+                    y1=y_linear - y_shade,
+                    y2=y_linear + y_shade,
+                    alpha=0.5,
+                    color=color,
+                    linewidth=0.0,
+                    step='mid',
+                )
 
     return plot
