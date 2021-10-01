@@ -5,6 +5,8 @@ import scipy.interpolate
 import plotify as pl
 import wandb
 
+from .smoothing import smooth
+
 
 def wandb_plot(config):
     """
@@ -100,15 +102,13 @@ def wandb_plot(config):
                 run_ys = run_ys[:cutoff]
 
             # smooth each run
-            if 'smooth_window' in result:
-                """
-                From:
-                https://stackoverflow.com/questions/11352047/finding-moving-average-from-data-points-in-python/34387987#34387987
-                """
-                smooth_window = result.get('smooth_window')
-                y_cumsum = np.cumsum(run_ys)
-                run_ys = (y_cumsum[smooth_window:] - y_cumsum[:-smooth_window]) / smooth_window
-                run_xs = run_xs[:-smooth_window]
+            if 'smooth_temperature' in result:
+                smooth_temperature = result.get('smooth_temperature')
+                run_xs, run_ys = smooth(
+                    x=run_xs,
+                    y=run_ys,
+                    temperature=smooth_temperature,
+                )
 
             # average y values that have the same x values
             xs_increasing = np.diff(run_xs)
@@ -184,6 +184,7 @@ def wandb_plot(config):
                 alpha=0.5,
                 color=color,
                 linewidth=0.0,
+                step='mid',
             )
 
     return plot
