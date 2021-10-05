@@ -633,13 +633,13 @@ class Plot(object):
         self.canvas.set_xticks([])
         self.canvas.set_xticks(positions)
         if labels is not None:
-            self.canvas.set_xticklabels(ticks)
+            self.canvas.set_xticklabels(labels)
 
     def set_yticks(self, positions, labels=None):
         self.canvas.set_yticks([])
         self.canvas.set_yticks(positions)
         if labels is not None:
-            self.canvas.set_yticklabels(ticks)
+            self.canvas.set_yticklabels(labels)
 
     def set_dimensions(self, height=None, width=None):
         if height is not None:
@@ -655,14 +655,28 @@ class Plot(object):
 
     def set_scales(self, x=None, y=None, z=None):
         """
-        Possible values: 'linear', 'log', 'symlog', 'logit'
+        Possible values: 'linear', 'log', 'log2', 'symlog', 'symlog2', 'logit'
         """
+        def scale_base(scale):
+            return (scale[:-1], 2) if '2' in scale else (scale, 10)
         if x is not None:
-            self.canvas.set_xscale(x)
+            x_scale, x_base = scale_base(x)
+            if x_scale in ('log', 'symlog'):
+                self.canvas.set_xscale(x_scale, base=x_base)
+            else:
+                self.canvas.set_xscale(x_scale)
         if y is not None:
-            self.canvas.set_yscale(y)
+            y_scale, y_base = scale_base(y)
+            if y_scale in ('log', 'symlog'):
+                self.canvas.set_yscale(y_scale, base=y_base)
+            else:
+                self.canvas.set_yscale(y_scale)
         if z is not None:
-            self.canvas.set_zscale(z)
+            z_scale, z_base = scale_base(z)
+            if z_scale in ('log', 'symlog'):
+                self.canvas.set_zscale(z_scale, base=z_base)
+            else:
+                self.canvas.set_zscale(z_scale)
 
     def set_lims(self, x=None, y=None, z=None):
         """

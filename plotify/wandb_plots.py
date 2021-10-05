@@ -4,6 +4,7 @@ import numpy as np
 import scipy.interpolate
 import plotify as pl
 import wandb
+import math
 
 from .smoothing import smooth
 
@@ -121,8 +122,8 @@ def wandb_plot(config):
                 run_ys = run_ys[:cutoff]
 
             # smooth each run
-            if 'smooth_temperature' in result:
-                smooth_temperature = result.get('smooth_temperature')
+            smooth_temperature = result.get('smooth_temperature', 0.0)
+            if smooth_temperature > 0.0:
                 run_xs, run_ys = smooth(
                     x=run_xs,
                     y=run_ys,
@@ -158,20 +159,38 @@ def wandb_plot(config):
         # plot only if we have values
         if len(x_values) > 0:
 
-            # interpolate within [runs_min_x, runs_max_x] bounds
-            x_linear = np.linspace(
-                start=runs_min_x,
-                stop=runs_max_x,
-                num=samples,
-            )
-            for run_xs, run_ys in zip(x_values, y_values):
-                run_interpolate = scipy.interpolate.interp1d(run_xs, run_ys)
-                run_ys[:] = run_interpolate(x_linear)
+            if len(x_values) > 1:
+                # interpolate within [runs_min_x, runs_max_x] bounds.
+                # needed to ensure all runs are aligned.
+                num_interpolate = min(samples, len(run_ys))
+                if 'log2' in config.get('x_scale', 'linear'):
+                    x_linear = np.logspace(
+                        start=math.log(runs_min_x, 2.0),
+                        stop=math.log(runs_max_x, 2.0),
+                        num=num_interpolate,
+                        base=2.0,
+                    )
+                elif 'log' in config.get('x_scale', 'linear'):
+                    x_linear = np.logspace(
+                        start=math.log(runs_min_x, 10.0),
+                        stop=math.log(runs_max_x, 10.0),
+                        num=num_interpolate,
+                        base=10.0,
+                    )
+                else:
+                    x_linear = np.linspace(
+                        start=runs_min_x,
+                        stop=runs_max_x,
+                        num=num_interpolate,
+                    )
+                for run_xs, run_ys in zip(x_values, y_values):
+                    run_interpolate = scipy.interpolate.interp1d(run_xs, run_ys)
+                    run_ys[:] = run_interpolate(x_linear)
 
-            # compute mean y
-            if len(y_values) > 1:
+                # compute mean y
                 y_linear = [np.mean(ys) for ys in zip(*y_values)]
             else:
+                x_linear = x_values[0]
                 y_linear = y_values[0]
 
             # plot curve
@@ -184,6 +203,7 @@ def wandb_plot(config):
                 linestyle=result.get('linestyle'),
                 linewidth=result.get('linewidth'),
                 markevery=result.get('markevery'),
+                marker=result.get('marker'),
             )
 
             # optionally: show std or ci95
@@ -206,7 +226,26 @@ def wandb_plot(config):
                     alpha=0.5,
                     color=color,
                     linewidth=0.0,
-                    step='mid',
+                )
+            # optionally: show error bars
+            errorbars = result.get('errorbars')
+            if errorbars is not None and len(y_values) > 1:
+                y_stds = [np.std(ys) for ys in zip(*y_values)]
+                if errorbars == 'std':
+                    y_errorbars = y_stds
+                elif errorbars == 'ci95':
+                    sqrt_n_runs = float(len(y_values))**0.5
+                    y_errorbars = [1.96 * y_std / sqrt_n_runs for y_std in y_stds]
+                else:
+                    raise ValueError(f'Unknown \'errorbars\': {errorbars}')
+
+                y_errorbars = np.array(y_errorbars)
+                plot.errorbar(
+                    x=x_linear,
+                    y=y_linear,
+                    errors=y_errorbars,
+                    vertical=True,
+                    color=color,
                 )
 
     return plot
