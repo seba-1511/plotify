@@ -595,7 +595,7 @@ class Plot(object):
             kwargs['y'] = 0.9
         self.set_title(text_obj=self.subtitle, *args, **kwargs)
 
-    def set_notation(self, x='decimal', y='decimal'):
+    def set_notation(self, x=None, y=None):
         if x == 'scientific':
             xra = 0.0
         elif x == 'decimal':
@@ -604,8 +604,10 @@ class Plot(object):
             yra = 0.0
         elif y == 'decimal':
             yra = float('inf')
-        self.canvas.ticklabel_format(style='sci', axis='x', scilimits=(-xra, xra))
-        self.canvas.ticklabel_format(style='sci', axis='y', scilimits=(-yra, yra))
+        if x is not None:
+            self.canvas.ticklabel_format(style='sci', axis='x', scilimits=(-xra, xra))
+        if y is not None:
+            self.canvas.ticklabel_format(style='sci', axis='y', scilimits=(-yra, yra))
 
     def set_axis(self, xtitle='', ytitle=''):
         self.canvas.set_xlabel(xtitle)
@@ -855,7 +857,7 @@ class Plot3D(Plot):
         """
         self.canvas.view_init(elev, azim)
 
-    def set_notation(self, x='decimal', y='decimal', z='decimal'):
+    def set_notation(self, x=None, y=None, z=None):
         if x == 'scientific':
             xra = 0.0
         elif x == 'decimal':
@@ -868,9 +870,13 @@ class Plot3D(Plot):
             zra = 0.0
         elif z == 'decimal':
             zra = float('inf')
-        self.canvas.ticklabel_format(style='sci', axis='x', scilimits=(-xra, xra))
-        self.canvas.ticklabel_format(style='sci', axis='y', scilimits=(-yra, yra))
-        self.canvas.ticklabel_format(style='sci', axis='z', scilimits=(-zra, zra))
+        print(x, y, z)
+        if x is not None:
+            self.canvas.ticklabel_format(style='sci', axis='x', scilimits=(-xra, xra))
+        if y is not None:
+            self.canvas.ticklabel_format(style='sci', axis='y', scilimits=(-yra, yra))
+        if z is not None:
+            self.canvas.ticklabel_format(style='sci', axis='z', scilimits=(-zra, zra))
 
     def set_axis(self, xtitle='', ytitle='', ztitle='', notation='scientific'):
         self.canvas.set_xlabel(xtitle, labelpad=25)
