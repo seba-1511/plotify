@@ -203,6 +203,7 @@ def wandb_plot(config):
                 linewidth=result.get('linewidth'),
                 markevery=result.get('markevery'),
                 marker=result.get('marker'),
+                alpha=result.get('alpha'),
             )
 
             # optionally: show std or ci95
