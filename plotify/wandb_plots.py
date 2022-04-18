@@ -67,15 +67,14 @@ def wandb_plot(config):
     plot.set_axis(config.get('xtitle'), config.get('ytitle'))
     plot.set_lims(config.get('xlims'), config.get('ylims'))
     plot.set_palette(config.get('palette', 'maureen'))
+    x_scale = config.get('x_scale', 'linear')
+    y_scale = config.get('y_scale', 'linear')
+    plot.set_scales(x=x_scale, y=y_scale)
     notation = config.get('notation', 'scientific')
-    plot.set_notation(
-        x=config.get('x_notation', notation),
-        y=config.get('y_notation', notation),
-    )
-    plot.set_scales(
-        x=config.get('x_scale', 'linear'),
-        y=config.get('y_scale', 'linear'),
-    )
+    if x_scale == 'linear':
+        plot.set_notation(x=config.get('x_notation', notation))
+    if y_scale == 'linear':
+        plot.set_notation(y=config.get('y_notation', notation))
     plot.set_legend(**config.get('legend', {}))
 
     max_x = config.get('xlims')[1] if 'xlims' in config else None
@@ -204,6 +203,7 @@ def wandb_plot(config):
                 linewidth=result.get('linewidth'),
                 markevery=result.get('markevery'),
                 marker=result.get('marker'),
+                alpha=result.get('alpha'),
             )
 
             # optionally: show std or ci95
