@@ -18,7 +18,7 @@ from matplotlib import patheffects
 
 from distutils.spawn import find_executable
 from tempfile import gettempdir
-from collections import Iterable
+from collections.abc import Iterable
 from itertools import cycle
 from time import time
 from subprocess import Popen
