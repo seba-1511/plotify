@@ -9,7 +9,7 @@ import math
 from .smoothing import smooth
 
 
-def get_smoothed_curves(
+def fetch_smooth_curves(
     x_key,
     y_key,
     wandb_ids,
@@ -83,10 +83,11 @@ def get_smoothed_curves(
     return x_curves, y_curves
 
 
-def align_curves(x_curves, y_curves, samples=2048, x_scale='linear'):
-    runs_min_x = min(sum(x_curves, []))
-    runs_max_x = max(sum(x_curves, []))
+def average_align_curves(x_curves, y_curves, samples=2048, x_scale='linear'):
     if len(x_curves) > 1:
+        runs_min_x = min(sum(x_curves, []))
+        runs_max_x = max(sum(x_curves, []))
+
         # interpolate within [runs_min_x, runs_max_x] bounds.
         # needed to ensure all runs are aligned.
         num_interpolate = min(samples, len(y_curves[0]))
@@ -201,7 +202,7 @@ def wandb_plot(config):
         samples = result.get('samples', 2048)
         smooth_temperature = result.get('smooth_temperature', 0.0)
 
-        x_curves, y_curves = get_smoothed_curves(
+        x_curves, y_curves = fetch_smooth_curves(
             x_key=x_key,
             y_key=y_key,
             wandb_ids=run_ids,
@@ -214,7 +215,7 @@ def wandb_plot(config):
         if len(x_curves) > 0:
 
             x_scale = config.get('x_scale', 'linear')
-            x_linear, y_linear = align_curves(
+            x_linear, y_linear = average_align_curves(
                 x_curves,
                 y_curves,
                 samples=samples,
