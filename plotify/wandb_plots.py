@@ -9,6 +9,120 @@ import math
 from .smoothing import smooth
 
 
+def get_smoothed_curves(
+    x_key,
+    y_key,
+    wandb_ids,
+    samples=2048,
+    max_x=None,
+    smooth_temperature=0.0,
+):
+    if not isinstance(wandb_ids, (list, tuple, set)):
+        wandb_ids = [wandb_ids, ]
+
+    x_curves = []
+    y_curves = []
+    api = wandb.Api()
+    for run_id in wandb_ids:
+        try:
+            run = api.run(run_id)
+            values = run.history(keys=[x_key, y_key], samples=samples)
+        except (wandb.errors.CommError, ValueError):
+            print('Run not found: ' + run_id + ' - skipping.')
+            continue
+
+        try:
+            run_xs = values[x_key].to_numpy()
+        except KeyError:
+            print('Key \'' + x_key + '\' not found for run: ' + run_id + ' - skipping.')
+            continue
+
+        try:
+            run_ys = values[y_key].to_numpy()
+        except KeyError:
+            print('Key \'' + y_key + '\' not found for run: ' + run_id + ' - skipping.')
+            continue
+
+        # cut x_curves to x_lims here (before smoothing)
+        if max_x is not None and max_x < run_xs[-1]:
+            cutoff = np.argmax(run_xs > max_x)
+            run_xs = run_xs[:cutoff]
+            run_ys = run_ys[:cutoff]
+
+        # smooth each run
+        if smooth_temperature > 0.0:
+            run_xs, run_ys = smooth(
+                x=run_xs,
+                y=run_ys,
+                temperature=smooth_temperature,
+            )
+
+        # average y values that have the same x values
+        xs_increasing = np.diff(run_xs)
+        if not np.all(xs_increasing):
+            # TODO: implement with scipy lfilter
+            new_xs = []
+            new_ys = []
+            accum = run_ys[0]
+            count = 1
+            for i in range(1, len(run_xs)):
+                if run_xs[i] > run_xs[i-1]:
+                    new_xs.append(run_xs[i-1])
+                    new_ys.append(accum / count)
+                    accum = run_ys[i]
+                    count = 1
+                else:
+                    accum += run_ys[i]
+                    count += 1
+            run_xs = new_xs
+            run_ys = new_ys
+
+        # append run result
+        x_curves.append(run_xs)
+        y_curves.append(run_ys)
+    return x_curves, y_curves
+
+
+def align_curves(x_curves, y_curves, samples=2048, x_scale='linear'):
+    runs_min_x = min(sum(x_curves, []))
+    runs_max_x = max(sum(x_curves, []))
+    if len(x_curves) > 1:
+        # interpolate within [runs_min_x, runs_max_x] bounds.
+        # needed to ensure all runs are aligned.
+        num_interpolate = min(samples, len(y_curves[0]))
+        if 'log2' in x_scale:
+            x_linear = np.logspace(
+                start=math.log(runs_min_x, 2.0),
+                stop=math.log(runs_max_x, 2.0),
+                num=num_interpolate,
+                base=2.0,
+            )
+        elif 'log' in x_scale:
+            x_linear = np.logspace(
+                start=math.log(runs_min_x, 10.0),
+                stop=math.log(runs_max_x, 10.0),
+                num=num_interpolate,
+                base=10.0,
+            )
+        else:
+            x_linear = np.linspace(
+                start=runs_min_x,
+                stop=runs_max_x,
+                num=num_interpolate,
+            )
+        for run_xs, run_ys in zip(x_curves, y_curves):
+            run_interpolate = scipy.interpolate.interp1d(run_xs, run_ys)
+            run_ys[:] = run_interpolate(x_linear)
+
+        # compute mean y
+        y_linear = [np.mean(ys) for ys in zip(*y_curves)]
+    else:
+        x_linear = x_curves[0]
+        y_linear = y_curves[0]
+
+    return x_linear, y_linear
+
+
 def wandb_plot(config):
     """
     Generates a new plot from a configuration dictionary.
@@ -80,117 +194,32 @@ def wandb_plot(config):
     max_x = config.get('xlims')[1] if 'xlims' in config else None
 
     # plot the results
-    api = wandb.Api()
     for result in config.get('results'):
         x_key = result.get('x_key', '_step')
         y_key = result.get('y_key')
         run_ids = result.get('wandb_id')
         samples = result.get('samples', 2048)
+        smooth_temperature = result.get('smooth_temperature', 0.0)
 
-        if not isinstance(run_ids, (list, tuple, set)):
-            run_ids = [run_ids, ]
-
-        x_values = []
-        y_values = []
-        runs_min_x = - float('inf')
-        runs_max_x = float('inf')
-        for run_id in run_ids:
-            try:
-                run = api.run(run_id)
-                values = run.history(keys=[x_key, y_key], samples=samples)
-            except (wandb.errors.CommError, ValueError):
-                print('Run not found: ' + run_id + ' - skipping.')
-                continue
-
-            try:
-                run_xs = values[x_key].to_numpy()
-            except KeyError:
-                print('Key \'' + x_key + '\' not found for run: ' + run_id + ' - skipping.')
-                continue
-
-            try:
-                run_ys = values[y_key].to_numpy()
-            except KeyError:
-                print('Key \'' + y_key + '\' not found for run: ' + run_id + ' - skipping.')
-                continue
-
-            # cut x_values to x_lims here (before smoothing)
-            if max_x is not None and max_x < run_xs[-1]:
-                cutoff = np.argmax(run_xs > max_x)
-                run_xs = run_xs[:cutoff]
-                run_ys = run_ys[:cutoff]
-
-            # smooth each run
-            smooth_temperature = result.get('smooth_temperature', 0.0)
-            if smooth_temperature > 0.0:
-                run_xs, run_ys = smooth(
-                    x=run_xs,
-                    y=run_ys,
-                    temperature=smooth_temperature,
-                )
-
-            # average y values that have the same x values
-            xs_increasing = np.diff(run_xs)
-            if not np.all(xs_increasing):
-                # TODO: implement with scipy lfilter
-                new_xs = []
-                new_ys = []
-                accum = run_ys[0]
-                count = 1
-                for i in range(1, len(run_xs)):
-                    if run_xs[i] > run_xs[i-1]:
-                        new_xs.append(run_xs[i-1])
-                        new_ys.append(accum / count)
-                        accum = run_ys[i]
-                        count = 1
-                    else:
-                        accum += run_ys[i]
-                        count += 1
-                run_xs = new_xs
-                run_ys = new_ys
-
-            # append run result
-            x_values.append(run_xs)
-            y_values.append(run_ys)
-            runs_min_x = max(runs_min_x, np.min(run_xs))
-            runs_max_x = min(runs_max_x, np.max(run_xs))
+        x_curves, y_curves = get_smoothed_curves(
+            x_key=x_key,
+            y_key=y_key,
+            wandb_ids=run_ids,
+            samples=samples,
+            max_x=max_x,
+            smooth_temperature=smooth_temperature,
+        )
 
         # plot only if we have values
-        if len(x_values) > 0:
+        if len(x_curves) > 0:
 
-            if len(x_values) > 1:
-                # interpolate within [runs_min_x, runs_max_x] bounds.
-                # needed to ensure all runs are aligned.
-                num_interpolate = min(samples, len(run_ys))
-                if 'log2' in config.get('x_scale', 'linear'):
-                    x_linear = np.logspace(
-                        start=math.log(runs_min_x, 2.0),
-                        stop=math.log(runs_max_x, 2.0),
-                        num=num_interpolate,
-                        base=2.0,
-                    )
-                elif 'log' in config.get('x_scale', 'linear'):
-                    x_linear = np.logspace(
-                        start=math.log(runs_min_x, 10.0),
-                        stop=math.log(runs_max_x, 10.0),
-                        num=num_interpolate,
-                        base=10.0,
-                    )
-                else:
-                    x_linear = np.linspace(
-                        start=runs_min_x,
-                        stop=runs_max_x,
-                        num=num_interpolate,
-                    )
-                for run_xs, run_ys in zip(x_values, y_values):
-                    run_interpolate = scipy.interpolate.interp1d(run_xs, run_ys)
-                    run_ys[:] = run_interpolate(x_linear)
-
-                # compute mean y
-                y_linear = [np.mean(ys) for ys in zip(*y_values)]
-            else:
-                x_linear = x_values[0]
-                y_linear = y_values[0]
+            x_scale = config.get('x_scale', 'linear')
+            x_linear, y_linear = align_curves(
+                x_curves,
+                y_curves,
+                samples=samples,
+                x_scale=x_scale,
+            )
 
             # plot curve
             color = result.get('color', next(plot.colors))
@@ -208,12 +237,12 @@ def wandb_plot(config):
 
             # optionally: show std or ci95
             shade = result.get('shade')
-            if shade is not None and len(y_values) > 1:
-                y_stds = [np.std(ys) for ys in zip(*y_values)]
+            if shade is not None and len(y_curves) > 1:
+                y_stds = [np.std(ys) for ys in zip(*y_curves)]
                 if shade == 'std':
                     y_shade = y_stds
                 elif shade == 'ci95':
-                    sqrt_n_runs = float(len(y_values))**0.5
+                    sqrt_n_runs = float(len(y_curves))**0.5
                     y_shade = [1.96 * y_std / sqrt_n_runs for y_std in y_stds]
                 else:
                     raise ValueError(f'Unknown \'shade\': {shade}')
@@ -229,12 +258,12 @@ def wandb_plot(config):
                 )
             # optionally: show error bars
             errorbars = result.get('errorbars')
-            if errorbars is not None and len(y_values) > 1:
-                y_stds = [np.std(ys) for ys in zip(*y_values)]
+            if errorbars is not None and len(y_curves) > 1:
+                y_stds = [np.std(ys) for ys in zip(*y_curves)]
                 if errorbars == 'std':
                     y_errorbars = y_stds
                 elif errorbars == 'ci95':
-                    sqrt_n_runs = float(len(y_values))**0.5
+                    sqrt_n_runs = float(len(y_curves))**0.5
                     y_errorbars = [1.96 * y_std / sqrt_n_runs for y_std in y_stds]
                 else:
                     raise ValueError(f'Unknown \'errorbars\': {errorbars}')
