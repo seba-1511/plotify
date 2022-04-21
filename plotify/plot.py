@@ -64,6 +64,8 @@ mpl.style.use('seaborn-poster')
 
 # Latex font
 #mpl.rc('text', usetex=True)  # Renders math with latex program (slow)
+mpl.rcParams['pdf.fonttype'] = 42
+mpl.rcParams['ps.fonttype'] = 42
 mpl.rcParams['mathtext.fontset'] = 'cm'  # Font for tex
 
 
