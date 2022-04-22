@@ -16,10 +16,10 @@ class PublicationPlot(Plot):
             'lower right': (1.7, -0.035),
         }
 
-    def set_title(self, title, loc='left', x=0.27, y=0.97, text_obj=None):
+    def set_title(self, title, loc='left', x=0.27, y=0.95, text_obj=None):
         super(PublicationPlot, self).set_title(title, loc, x, y, text_obj)
 
-    def set_subtitle(self, title, loc='right', x=0.95, y=0.92):
+    def set_subtitle(self, title, loc='right', x=0.95, y=0.91):
         super(PublicationPlot, self).set_subtitle(title, loc=loc, x=x, y=y)
 
 

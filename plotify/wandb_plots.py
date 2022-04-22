@@ -85,8 +85,8 @@ def fetch_smooth_curves(
 
 def average_align_curves(x_curves, y_curves, samples=2048, x_scale='linear'):
     if len(x_curves) > 1:
-        runs_min_x = min(sum(x_curves, []))
-        runs_max_x = max(sum(x_curves, []))
+        runs_min_x = max([min(xs) for xs in x_curves])
+        runs_max_x = min([max(xs) for xs in x_curves])
 
         # interpolate within [runs_min_x, runs_max_x] bounds.
         # needed to ensure all runs are aligned.
@@ -253,7 +253,7 @@ def wandb_plot(config):
                     x=x_linear,
                     y1=y_linear - y_shade,
                     y2=y_linear + y_shade,
-                    alpha=0.5,
+                    alpha=0.3,
                     color=color,
                     linewidth=0.0,
                 )
