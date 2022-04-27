@@ -111,9 +111,9 @@ def average_align_curves(x_curves, y_curves, samples=2048, x_scale='linear'):
                 stop=runs_max_x,
                 num=num_interpolate,
             )
-        for run_xs, run_ys in zip(x_curves, y_curves):
+        for run_i, (run_xs, run_ys) in enumerate(zip(x_curves, y_curves)):
             run_interpolate = scipy.interpolate.interp1d(run_xs, run_ys)
-            run_ys[:] = run_interpolate(x_linear)
+            y_curves[run_i] = run_interpolate(x_linear)
 
         # compute mean y
         y_linear = [np.mean(ys) for ys in zip(*y_curves)]
