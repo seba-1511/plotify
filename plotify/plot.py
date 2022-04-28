@@ -616,7 +616,6 @@ class Plot(object):
         self.canvas.set_ylabel(ytitle)
 
     def set_palette(self, palette, num_colors=8):
-        assert isinstance(palette, str), 'list palettes unsupported. (yet)'
         self.palette = palette
         if 'maureen' in palette or 'custom' in palette:
             palette = MAUREENSTONE_COLORS
