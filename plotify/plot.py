@@ -330,36 +330,109 @@ class Plot(object):
             low = y - jitter
             self.canvas.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
 
-    def bar(self, x, y=None, show_values=False, *args, **kwargs):
-        # TODO: Show variance and mean on bars (as an option)
-        if y is None:
-            y = x
-            x = list(range(len(y)))
-        fake_x = list(range(1, 1 + len(x)))
-        used_colors = []
-        for i in range(len(fake_x)):
+    def bar(self, x, y, show_values=False, num_box_sets=None, spacing=1.0, center_ticks=False, *args, **kwargs):
+
+        # Arguments and Defaults
+        if num_box_sets is not None:
+            self._box_num_sets = num_box_sets
+
+        if isinstance(y[0], Iterable):
+            # TODO: Compute CI95
+            y_means = [np.mean(ys) for ys in y]
+            y_ci95 = [np.std(ys) for ys in y]
+        else:
+            y_means = y
+            y_ci95 = [None] * len(y)
+        assert len(x) == len(y_means), 'x, y not same shapes'
+
+        color = kwargs.pop('color', None)
+        if color is None:
             color = next(self.colors)
-            self.canvas.bar(x=fake_x[i], height=y[i], color=color, *args, **kwargs)
-            used_colors.append(color)
-        self.canvas.set_xticks(fake_x)
-        self.canvas.set_xticklabels(x)
+        label = kwargs.pop('label', None)
+        assert len(x) == len(y), 'x, y not same length'
+        box_set_spacing = 0.9
+
+        # Draw bars
+        positions = kwargs.pop('positions', None)
+        if positions is None:
+            positions = np.arange(len(x)) * (spacing * self._box_num_sets) \
+                + self._box_curr_set * box_set_spacing
+        for pos, value, ci95 in zip(positions, y_means, y_ci95):
+            self.canvas.bar(
+                x=pos,
+                height=value,
+                width=0.7,
+                color=color,
+                #  edgecolor='black',
+                yerr=ci95,
+                capsize=7,
+                *args,
+                **kwargs,
+            )
+
+        if show_values:
+            x_means = positions
+            # Reversed because we want the latest plotted ticks.
+            # (e.g. when plotted one at a time.)
+            margin = 0.05 * min(y_means)
+            for x_m, y_m in zip(reversed(x_means), reversed(y_means)):
+                text = self.canvas.text(x_m, y_m-margin, '%.2f' % y_m, color='white',
+                                        horizontalalignment='center',
+                                        verticalalignment='top',
+                                        fontweight='bold')
+                text.set_path_effects([patheffects.withStroke(linewidth=2.0, foreground=color)])
+
+        # Ticks formatting
+        self.canvas.set_xticks(ticks=[], minor=False)
+        if center_ticks:
+            mid_positions = np.array(range(len(x))) * (spacing * self._box_num_sets) + (self._box_num_sets - 1) * (box_set_spacing / 2.0)
+            self.canvas.set_xticks(ticks=mid_positions, minor=False)
+            self.canvas.set_xticklabels(x)
+        else:
+            self.canvas.set_xticks(ticks=positions, minor=False)
+            self.canvas.set_xticklabels(x)
         plt.setp(self.canvas.get_xticklabels(),
                  rotation=35,
                  ha='right',
                  rotation_mode='anchor')
 
-        if show_values:
-            y_means = y
-            x_means = fake_x
-            # Reversed because we want the latest plotted ticks.
-            # (e.g. when plotted one at a time.)
-            for x_m, y_m, c_m in zip(reversed(x_means), reversed(y_means), reversed(used_colors)):
-                text = self.canvas.text(x_m, y_m, '%.2f' % y_m, color=c_m,
-                                        horizontalalignment='center',
-                                        verticalalignment='bottom',
-                                        fontweight='bold')
-                text.set_path_effects([patheffects.withStroke(linewidth=0.7, foreground=c_m)])
-        return fake_x
+
+        
+        # Legend
+        if label is not None:
+            self.plot([], color=color, label=label, marker=False)
+        self._box_curr_set += 1
+        return positions
+
+
+        #  if y is None:
+            #  y = x
+            #  x = list(range(len(y)))
+        #  fake_x = list(range(1, 1 + len(x)))
+        #  used_colors = []
+        #  for i in range(len(fake_x)):
+            #  color = next(self.colors)
+            #  self.canvas.bar(x=fake_x[i], height=y[i], color=color, *args, **kwargs)
+            #  used_colors.append(color)
+        #  self.canvas.set_xticks(fake_x)
+        #  self.canvas.set_xticklabels(x)
+        #  plt.setp(self.canvas.get_xticklabels(),
+                 #  rotation=35,
+                 #  ha='right',
+                 #  rotation_mode='anchor')
+
+        #  if show_values:
+            #  y_means = y
+            #  x_means = fake_x
+            #  # Reversed because we want the latest plotted ticks.
+            #  # (e.g. when plotted one at a time.)
+            #  for x_m, y_m, c_m in zip(reversed(x_means), reversed(y_means), reversed(used_colors)):
+                #  text = self.canvas.text(x_m, y_m, '%.2f' % y_m, color=c_m,
+                                        #  horizontalalignment='center',
+                                        #  verticalalignment='bottom',
+                                        #  fontweight='bold')
+                #  text.set_path_effects([patheffects.withStroke(linewidth=0.7, foreground=c_m)])
+        #  return fake_x
 
 
 
@@ -417,7 +490,7 @@ class Plot(object):
         
         # Legend
         if label is not None:
-            self.plot([], color=color, label=label)
+            self.plot([], color=color, label=label, marker=False)
         self._box_curr_set += 1
         return positions
 
