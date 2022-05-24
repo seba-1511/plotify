@@ -405,37 +405,6 @@ class Plot(object):
         return positions
 
 
-        #  if y is None:
-            #  y = x
-            #  x = list(range(len(y)))
-        #  fake_x = list(range(1, 1 + len(x)))
-        #  used_colors = []
-        #  for i in range(len(fake_x)):
-            #  color = next(self.colors)
-            #  self.canvas.bar(x=fake_x[i], height=y[i], color=color, *args, **kwargs)
-            #  used_colors.append(color)
-        #  self.canvas.set_xticks(fake_x)
-        #  self.canvas.set_xticklabels(x)
-        #  plt.setp(self.canvas.get_xticklabels(),
-                 #  rotation=35,
-                 #  ha='right',
-                 #  rotation_mode='anchor')
-
-        #  if show_values:
-            #  y_means = y
-            #  x_means = fake_x
-            #  # Reversed because we want the latest plotted ticks.
-            #  # (e.g. when plotted one at a time.)
-            #  for x_m, y_m, c_m in zip(reversed(x_means), reversed(y_means), reversed(used_colors)):
-                #  text = self.canvas.text(x_m, y_m, '%.2f' % y_m, color=c_m,
-                                        #  horizontalalignment='center',
-                                        #  verticalalignment='bottom',
-                                        #  fontweight='bold')
-                #  text.set_path_effects([patheffects.withStroke(linewidth=0.7, foreground=c_m)])
-        #  return fake_x
-
-
-
     def box(self, x, y, show_values=False, num_box_sets=None, spacing=2.0, center_ticks=False, *args, **kwargs):
         # Arguments and Defaults
         if num_box_sets is not None:
