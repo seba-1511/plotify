@@ -33,7 +33,7 @@ MEM_IMG = BytesIO()
 
 
 FONT_SIZE = 20
-MAUREENSTONE_COLORS = ['#396AB1', '#DA7C30', '#3E9651', '#CF2529', '#535154', '#6B4C9A', '#922428', '#948B3D']
+MAUREENSTONE_COLORS = ['#396AB1', '#DA7C30', '#3E9651', '#CF2529', '#535154', '#6B4C9A', '#922428', '#F8B620', '#E377C2']
 Maureen = {
     'blue': MAUREENSTONE_COLORS[0],
     'orange': MAUREENSTONE_COLORS[1],
@@ -43,6 +43,7 @@ Maureen = {
     'purple': MAUREENSTONE_COLORS[5],
     'cardinal': MAUREENSTONE_COLORS[6],
     'gold': MAUREENSTONE_COLORS[7],
+    'pink': MAUREENSTONE_COLORS[8],
 }
 Vibrant = {
     'cyan': '#33BBEE',
@@ -348,6 +349,10 @@ class Plot(object):
         color = kwargs.pop('color', None)
         if color is None:
             color = next(self.colors)
+        if isinstance(color, Iterable):
+          colors = color
+        else:
+          colors = [color, ] * len(y_means)
         label = kwargs.pop('label', None)
         assert len(x) == len(y), 'x, y not same length'
         box_set_spacing = 0.9
@@ -357,12 +362,13 @@ class Plot(object):
         if positions is None:
             positions = np.arange(len(x)) * (spacing * self._box_num_sets) \
                 + self._box_curr_set * box_set_spacing
-        for pos, value, ci95 in zip(positions, y_means, y_ci95):
+        for pos, value, ci95, col in zip(positions, y_means, y_ci95, colors):
+            print(col)
             self.canvas.bar(
                 x=pos,
                 height=value,
                 width=0.7,
-                color=color,
+                color=col,
                 #  edgecolor='black',
                 yerr=ci95,
                 capsize=7,
@@ -375,12 +381,12 @@ class Plot(object):
             # Reversed because we want the latest plotted ticks.
             # (e.g. when plotted one at a time.)
             margin = 0.05 * min(y_means)
-            for x_m, y_m in zip(reversed(x_means), reversed(y_means)):
+            for x_m, y_m, col in zip(reversed(x_means), reversed(y_means), reversed(colors)):
                 text = self.canvas.text(x_m, y_m-margin, '%.2f' % y_m, color='white',
                                         horizontalalignment='center',
                                         verticalalignment='top',
                                         fontweight='bold')
-                text.set_path_effects([patheffects.withStroke(linewidth=2.0, foreground=color)])
+                text.set_path_effects([patheffects.withStroke(linewidth=2.0, foreground=col)])
 
         # Ticks formatting
         self.canvas.set_xticks(ticks=[], minor=False)
@@ -395,11 +401,9 @@ class Plot(object):
                  rotation=35,
                  ha='right',
                  rotation_mode='anchor')
-
-
         
         # Legend
-        if label is not None:
+        if label is not None and not isinstance(color, Iterable):
             self.plot([], color=color, label=label, marker=False)
         self._box_curr_set += 1
         return positions
