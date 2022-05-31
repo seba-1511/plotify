@@ -363,7 +363,6 @@ class Plot(object):
             positions = np.arange(len(x)) * (spacing * self._box_num_sets) \
                 + self._box_curr_set * box_set_spacing
         for pos, value, ci95, col in zip(positions, y_means, y_ci95, colors):
-            print(col)
             self.canvas.bar(
                 x=pos,
                 height=value,
