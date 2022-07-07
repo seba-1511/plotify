@@ -23,6 +23,12 @@ from itertools import cycle
 from time import time
 from subprocess import Popen
 
+# high-definition images in IPython notebooks
+try:
+    from IPython.display import set_matplotlib_formats
+    set_matplotlib_formats('retina')
+except:
+    pass
 
 try:
     from io import BytesIO as BytesIO
