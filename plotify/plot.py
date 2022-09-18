@@ -346,7 +346,12 @@ class Plot(object):
         if isinstance(y[0], Iterable):
             # TODO: Compute CI95
             y_means = [np.mean(ys) for ys in y]
-            y_ci95 = [np.std(ys) for ys in y]
+            y_stds = [np.std(ys) for ys in y]
+            sqrt_n_runs = [float(len(ys))**0.5 for ys in y]
+            y_ci95 = [
+                1.96 * y_std / snr
+                for y_std, snr in zip(y_stds, sqrt_n_runs)
+            ]
         else:
             y_means = y
             y_ci95 = [None] * len(y)
