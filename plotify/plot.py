@@ -25,8 +25,9 @@ from subprocess import Popen
 
 # high-definition images in IPython notebooks
 try:
-    from IPython.display import set_matplotlib_formats
-    set_matplotlib_formats('retina')
+    if hasattr(__builtins__,'__IPYTHON__'):
+        from IPython.display import set_matplotlib_formats
+        set_matplotlib_formats('retina')
 except:
     pass
 
