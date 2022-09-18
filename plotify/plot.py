@@ -282,8 +282,28 @@ class Plot(object):
         capsize = kwargs.pop('capsize', 6)
         elinewidth = kwargs['linewidth'] if 'linewidth' in kwargs else 2
         elinewidth = kwargs.pop('elinewidth', elinewidth)
-        self.canvas.errorbar(x=x, y=y, color=color, capsize=capsize, capthick=capthick,
-                             elinewidth=elinewidth, *args, **kwargs)
+        marker = kwargs.pop('marker', None)
+        if marker is None:
+            marker = next(self.markers)
+        elif marker is False:
+            marker = None
+        markevery = kwargs.pop('markevery', None)
+        if markevery is None:
+            markevery = 1 if len(x) < 20 else len(x) // 10
+        markersize = kwargs.pop('markersize', 8.5)
+        self.canvas.errorbar(
+            x=x,
+            y=y,
+            color=color,
+            capsize=capsize,
+            capthick=capthick,
+            elinewidth=elinewidth,
+            marker=marker,
+            markevery=markevery,
+            markersize=markersize,
+            *args,
+            **kwargs,
+        )
 
     def plot(self, x, y=None, jitter=0.000, smooth_window=0, smooth_std=True, *args, **kwargs):
         if y is None:
