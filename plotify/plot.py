@@ -222,10 +222,11 @@ class Plot(object):
         self.figure.set_figheight(h, forward=True)
         self.figure.set_figwidth(w, forward=True)
 
-    def save(self, path, **kwargs):
+    def save(self, path, bbox_inches='tight', **kwargs):
         # create path if non-existant
         plot_dir = os.path.dirname(path)
-        os.makedirs(plot_dir, exist_ok=True)
+        if plot_dir:
+            os.makedirs(plot_dir, exist_ok=True)
 
         # save figure
         if path[-4:] == 'html':
@@ -257,7 +258,7 @@ class Plot(object):
                 raise Exception(msg)
         else:
             self._preprint()
-            self.figure.savefig(path, **kwargs)
+            self.figure.savefig(path, bbox_inches=bbox_inches, **kwargs)
 
     def numpy(self):
         from PIL import Image as PILImage
