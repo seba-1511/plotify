@@ -1,0 +1,1943 @@
+
+
+
+
+<!doctype html>
+<html lang="en" class="no-js">
+  <head>
+    
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width,initial-scale=1">
+      <meta http-equiv="x-ua-compatible" content="ie=edge">
+      
+      
+        <link rel="canonical" href="http://plotify.net/api/plots/">
+      
+      
+        <meta name="author" content="Séb Arnold">
+      
+      
+        <meta name="lang:clipboard.copy" content="Copy to clipboard">
+      
+        <meta name="lang:clipboard.copied" content="Copied to clipboard">
+      
+        <meta name="lang:search.language" content="en">
+      
+        <meta name="lang:search.pipeline.stopwords" content="True">
+      
+        <meta name="lang:search.pipeline.trimmer" content="True">
+      
+        <meta name="lang:search.result.none" content="No matching documents">
+      
+        <meta name="lang:search.result.one" content="1 matching document">
+      
+        <meta name="lang:search.result.other" content="# matching documents">
+      
+        <meta name="lang:search.tokenizer" content="[\s\-]+">
+      
+      <link rel="shortcut icon" href="../../assets/images/favicon.ico">
+      <meta name="generator" content="mkdocs-1.2.4, mkdocs-material-4.6.3">
+    
+    
+      
+        <title>Plot - plotify</title>
+      
+    
+    
+      <link rel="stylesheet" href="../../assets/stylesheets/application.adb8469c.css">
+      
+        <link rel="stylesheet" href="../../assets/stylesheets/application-palette.a8b3c06d.css">
+      
+      
+        
+        
+        <meta name="theme-color" content="">
+      
+    
+    
+      <script src="../../assets/javascripts/modernizr.86422ebf.js"></script>
+    
+    
+      
+        <link href="https://fonts.gstatic.com" rel="preconnect" crossorigin>
+        <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700%7CUbuntu+Mono&display=fallback">
+        <style>body,input{font-family:"Source Sans Pro","Helvetica Neue",Helvetica,Arial,sans-serif}code,kbd,pre{font-family:"Ubuntu Mono","Courier New",Courier,monospace}</style>
+      
+    
+    <link rel="stylesheet" href="../../assets/fonts/material-icons.css">
+    
+    
+      <link rel="stylesheet" href="../../assets/_mkdocstrings.css">
+    
+      <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css">
+    
+      <link rel="stylesheet" href="../../assets/css/custom.css">
+    
+    
+      
+        
+<script>
+  window.ga = window.ga || function() {
+    (ga.q = ga.q || []).push(arguments)
+  }
+  ga.l = +new Date
+  /* Setup integration and send page view */
+  ga("create", "UA-68693545-3", "seba-1511.github.com")
+  ga("set", "anonymizeIp", true)
+  ga("send", "pageview")
+  /* Register handler to log search on blur */
+  document.addEventListener("DOMContentLoaded", () => {
+    if (document.forms.search) {
+      var query = document.forms.search.query
+      query.addEventListener("blur", function() {
+        if (this.value) {
+          var path = document.location.pathname;
+          ga("send", "pageview", path + "?q=" + this.value)
+        }
+      })
+    }
+  })
+</script>
+<script async src="https://www.google-analytics.com/analytics.js"></script>
+      
+    
+    
+  </head>
+  
+    
+    
+    <body dir="ltr" data-md-color-primary="white" data-md-color-accent="orange">
+  
+    <svg class="md-svg">
+      <defs>
+        
+        
+          <svg xmlns="http://www.w3.org/2000/svg" width="416" height="448" viewBox="0 0 416 448" id="__github"><path fill="currentColor" d="M160 304q0 10-3.125 20.5t-10.75 19T128 352t-18.125-8.5-10.75-19T96 304t3.125-20.5 10.75-19T128 256t18.125 8.5 10.75 19T160 304zm160 0q0 10-3.125 20.5t-10.75 19T288 352t-18.125-8.5-10.75-19T256 304t3.125-20.5 10.75-19T288 256t18.125 8.5 10.75 19T320 304zm40 0q0-30-17.25-51T296 232q-10.25 0-48.75 5.25Q229.5 240 208 240t-39.25-2.75Q130.75 232 120 232q-29.5 0-46.75 21T56 304q0 22 8 38.375t20.25 25.75 30.5 15 35 7.375 37.25 1.75h42q20.5 0 37.25-1.75t35-7.375 30.5-15 20.25-25.75T360 304zm56-44q0 51.75-15.25 82.75-9.5 19.25-26.375 33.25t-35.25 21.5-42.5 11.875-42.875 5.5T212 416q-19.5 0-35.5-.75t-36.875-3.125-38.125-7.5-34.25-12.875T37 371.5t-21.5-28.75Q0 312 0 260q0-59.25 34-99-6.75-20.5-6.75-42.5 0-29 12.75-54.5 27 0 47.5 9.875t47.25 30.875Q171.5 96 212 96q37 0 70 8 26.25-20.5 46.75-30.25T376 64q12.75 25.5 12.75 54.5 0 21.75-6.75 42 34 40 34 99.5z"/></svg>
+        
+      </defs>
+    </svg>
+    <input class="md-toggle" data-md-toggle="drawer" type="checkbox" id="__drawer" autocomplete="off">
+    <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
+    <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
+    
+      <a href="#plot" tabindex="0" class="md-skip">
+        Skip to content
+      </a>
+    
+    
+      <header class="md-header" data-md-component="header">
+  <nav class="md-header-nav md-grid">
+    <div class="md-flex">
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <a href="http://plotify.net/" title="plotify" aria-label="plotify" class="md-header-nav__button md-logo">
+          
+            <img alt="logo" src="../../assets/images/plotify-logo.png" width="24" height="24">
+          
+        </a>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        <label class="md-icon md-icon--menu md-header-nav__button" for="__drawer"></label>
+      </div>
+      <div class="md-flex__cell md-flex__cell--stretch">
+        <div class="md-flex__ellipsis md-header-nav__title" data-md-component="title">
+          
+            <span class="md-header-nav__topic">
+              plotify
+            </span>
+            <span class="md-header-nav__topic">
+              
+                Plot
+              
+            </span>
+          
+        </div>
+      </div>
+      <div class="md-flex__cell md-flex__cell--shrink">
+        
+          <label class="md-icon md-icon--search md-header-nav__button" for="__search"></label>
+          
+<div class="md-search" data-md-component="search" role="dialog">
+  <label class="md-search__overlay" for="__search"></label>
+  <div class="md-search__inner" role="search">
+    <form class="md-search__form" name="search">
+      <input type="text" class="md-search__input" aria-label="search" name="query" placeholder="Search" autocapitalize="off" autocorrect="off" autocomplete="off" spellcheck="false" data-md-component="query" data-md-state="active">
+      <label class="md-icon md-search__icon" for="__search"></label>
+      <button type="reset" class="md-icon md-search__icon" data-md-component="reset" tabindex="-1">
+        &#xE5CD;
+      </button>
+    </form>
+    <div class="md-search__output">
+      <div class="md-search__scrollwrap" data-md-scrollfix>
+        <div class="md-search-result" data-md-component="result">
+          <div class="md-search-result__meta">
+            Type to start searching
+          </div>
+          <ol class="md-search-result__list"></ol>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+        
+      </div>
+      
+        <div class="md-flex__cell md-flex__cell--shrink">
+          <div class="md-header-nav__source">
+            
+
+
+  
+
+<a href="https://github.com/seba-1511/plotify" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    seba-1511/plotify
+  </div>
+</a>
+          </div>
+        </div>
+      
+    </div>
+  </nav>
+</header>
+    
+    <div class="md-container">
+      
+        
+      
+      
+      <main class="md-main" role="main">
+        <div class="md-main__inner md-grid" data-md-component="container">
+          
+            
+              <div class="md-sidebar md-sidebar--primary" data-md-component="navigation">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    <nav class="md-nav md-nav--primary" data-md-level="0">
+  <label class="md-nav__title md-nav__title--site" for="__drawer">
+    <a href="http://plotify.net/" title="plotify" class="md-nav__button md-logo">
+      
+        <img alt="logo" src="../../assets/images/plotify-logo.png" width="48" height="48">
+      
+    </a>
+    plotify
+  </label>
+  
+    <div class="md-nav__source">
+      
+
+
+  
+
+<a href="https://github.com/seba-1511/plotify" title="Go to repository" class="md-source" data-md-source="github">
+  
+    <div class="md-source__icon">
+      <svg viewBox="0 0 24 24" width="24" height="24">
+        <use xlink:href="#__github" width="24" height="24"></use>
+      </svg>
+    </div>
+  
+  <div class="md-source__repository">
+    seba-1511/plotify
+  </div>
+</a>
+    </div>
+  
+  <ul class="md-nav__list" data-md-scrollfix>
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../.." title="Home" class="md-nav__link">
+      Home
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active md-nav__item--nested">
+    
+      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-2" type="checkbox" id="nav-2" checked>
+    
+    <label class="md-nav__link" for="nav-2">
+      Documentation
+    </label>
+    <nav class="md-nav" data-md-component="collapsible" data-md-level="1">
+      <label class="md-nav__title" for="nav-2">
+        Documentation
+      </label>
+      <ul class="md-nav__list" data-md-scrollfix>
+        
+        
+          
+          
+          
+
+  
+
+
+  <li class="md-nav__item md-nav__item--active">
+    
+    <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
+    
+      
+    
+    
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Plot
+      </label>
+    
+    <a href="./" title="Plot" class="md-nav__link md-nav__link--active">
+      Plot
+    </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#plotify.Plot" class="md-nav__link">
+    Plot
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.annotate" class="md-nav__link">
+    annotate()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.arrow" class="md-nav__link">
+    arrow()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.bar" class="md-nav__link">
+    bar()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.box" class="md-nav__link">
+    box()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.circle" class="md-nav__link">
+    circle()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.close" class="md-nav__link">
+    close()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.contour" class="md-nav__link">
+    contour()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.errorbar" class="md-nav__link">
+    errorbar()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.fancybox" class="md-nav__link">
+    fancybox()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.heatmap" class="md-nav__link">
+    heatmap()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.numpy" class="md-nav__link">
+    numpy()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.plot" class="md-nav__link">
+    plot()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.rectangle" class="md-nav__link">
+    rectangle()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.save" class="md-nav__link">
+    save()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.scatter" class="md-nav__link">
+    scatter()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_axis" class="md-nav__link">
+    set_axis()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_colormap" class="md-nav__link">
+    set_colormap()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_dimensions" class="md-nav__link">
+    set_dimensions()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_dpi" class="md-nav__link">
+    set_dpi()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_grid" class="md-nav__link">
+    set_grid()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_legend" class="md-nav__link">
+    set_legend()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_lims" class="md-nav__link">
+    set_lims()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_notation" class="md-nav__link">
+    set_notation()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_palette" class="md-nav__link">
+    set_palette()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_scales" class="md-nav__link">
+    set_scales()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_subtitle" class="md-nav__link">
+    set_subtitle()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_title" class="md-nav__link">
+    set_title()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_xticks" class="md-nav__link">
+    set_xticks()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_yticks" class="md-nav__link">
+    set_yticks()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.show" class="md-nav__link">
+    show()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.stretch" class="md-nav__link">
+    stretch()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.text" class="md-nav__link">
+    text()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.usetex" class="md-nav__link">
+    usetex()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+    
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../more_plots/" title="More Plots" class="md-nav__link">
+      More Plots
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../colors/" title="Colors" class="md-nav__link">
+      Colors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../smoothing/" title="Smoothing" class="md-nav__link">
+      Smoothing
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../utils/" title="Utilities" class="md-nav__link">
+      Utilities
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../wandb/" title="WandB" class="md-nav__link">
+      WandB
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../tensorboard/" title="TensorBoard" class="md-nav__link">
+      TensorBoard
+    </a>
+  </li>
+
+        
+      </ul>
+    </nav>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="../../changelog/" title="Changelog" class="md-nav__link">
+      Changelog
+    </a>
+  </li>
+
+    
+      
+      
+      
+
+
+  <li class="md-nav__item">
+    <a href="https://github.com/seba-1511/plotify/" title="GitHub" class="md-nav__link">
+      GitHub
+    </a>
+  </li>
+
+    
+  </ul>
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+            
+              <div class="md-sidebar md-sidebar--secondary" data-md-component="toc">
+                <div class="md-sidebar__scrollwrap">
+                  <div class="md-sidebar__inner">
+                    
+<nav class="md-nav md-nav--secondary">
+  
+  
+    
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#plotify.Plot" class="md-nav__link">
+    Plot
+  </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.__init__" class="md-nav__link">
+    __init__()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.annotate" class="md-nav__link">
+    annotate()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.arrow" class="md-nav__link">
+    arrow()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.bar" class="md-nav__link">
+    bar()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.box" class="md-nav__link">
+    box()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.circle" class="md-nav__link">
+    circle()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.close" class="md-nav__link">
+    close()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.contour" class="md-nav__link">
+    contour()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.errorbar" class="md-nav__link">
+    errorbar()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.fancybox" class="md-nav__link">
+    fancybox()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.heatmap" class="md-nav__link">
+    heatmap()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.numpy" class="md-nav__link">
+    numpy()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.plot" class="md-nav__link">
+    plot()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.rectangle" class="md-nav__link">
+    rectangle()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.save" class="md-nav__link">
+    save()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.scatter" class="md-nav__link">
+    scatter()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_axis" class="md-nav__link">
+    set_axis()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_colormap" class="md-nav__link">
+    set_colormap()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_dimensions" class="md-nav__link">
+    set_dimensions()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_dpi" class="md-nav__link">
+    set_dpi()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_grid" class="md-nav__link">
+    set_grid()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_legend" class="md-nav__link">
+    set_legend()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_lims" class="md-nav__link">
+    set_lims()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_notation" class="md-nav__link">
+    set_notation()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_palette" class="md-nav__link">
+    set_palette()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_scales" class="md-nav__link">
+    set_scales()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_subtitle" class="md-nav__link">
+    set_subtitle()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_title" class="md-nav__link">
+    set_title()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_xticks" class="md-nav__link">
+    set_xticks()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.set_yticks" class="md-nav__link">
+    set_yticks()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.show" class="md-nav__link">
+    show()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.stretch" class="md-nav__link">
+    stretch()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.text" class="md-nav__link">
+    text()
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#plotify.Plot.usetex" class="md-nav__link">
+    usetex()
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
+                  </div>
+                </div>
+              </div>
+            
+          
+          <div class="md-content">
+            <article class="md-content__inner md-typeset">
+              
+                
+                
+                <h1 id="plot">Plot<a class="headerlink" href="#plot" title="Permanent link">&para;</a></h1>
+<p>The API for creating Plot objects.</p>
+<div class="admonition note">
+<p class="admonition-title">Note</p>
+<p>The examples assume plotify is imported as follows:</p>
+<div class="highlight"><pre><span></span><code><span class="kn">import</span> <span class="nn">plotify</span> <span class="k">as</span> <span class="nn">pl</span>
+</code></pre></div>
+</div>
+
+
+  <div class="doc doc-object doc-class">
+
+
+
+<h3 id="plotify.Plot" class="doc doc-heading">
+        <code>
+plotify.Plot        </code>
+
+
+
+<a href="#plotify.Plot" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+
+
+
+
+  <div class="doc doc-children">
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.__init__" class="doc doc-heading">
+<code class="highlight language-python"><span class="fm">__init__</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="mf">3900.0</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mf">7200.0</span><span class="p">,</span> <span class="n">dpi</span> <span class="o">=</span> <span class="mf">600.0</span><span class="p">,</span> <span class="n">plot3d</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">border</span> <span class="o">=</span> <span class="kc">True</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.__init__" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <h6 id="plotify.Plot.__init__--description">Description<a class="headerlink" href="#plotify.Plot.__init__--description" title="Permanent link">&para;</a></h6>
+<p>Creates a Plot object.</p>
+<h6 id="plotify.Plot.__init__--arguments">Arguments<a class="headerlink" href="#plotify.Plot.__init__--arguments" title="Permanent link">&para;</a></h6>
+<ul>
+<li><code>title</code>: The title of the plot. See <code>set_title</code>.</li>
+<li><code>height</code>: The height of the plot.</li>
+<li><code>width</code>: The width of the plot.</li>
+<li><code>dpi</code>: The resolution of the plot.</li>
+<li><code>plot3d</code>: Whether the plot is a 3D plot or not.</li>
+<li><code>border</code>: Whether to draw a thin black border around the frame of the plot.</li>
+</ul>
+<h6 id="plotify.Plot.__init__--example">Example<a class="headerlink" href="#plotify.Plot.__init__--example" title="Permanent link">&para;</a></h6>
+<div class="highlight"><pre><span></span><code><span class="n">plot</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Title&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p><img alt="basic" src="/assets/images/api/basic.png" /></p>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.annotate" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">annotate</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">xytext</span><span class="p">,</span> <span class="n">xylabel</span><span class="p">,</span> <span class="n">rad</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">shape</span> <span class="o">=</span> <span class="s1">&#39;-&gt;&#39;</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="s1">&#39;#000000&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.annotate" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.arrow" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">arrow</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">start</span><span class="p">,</span> <span class="n">end</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.arrow" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Start and end are (z, y) tuples.</p>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.bar" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">bar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">show_values</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">num_box_sets</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spacing</span> <span class="o">=</span> <span class="mf">1.0</span><span class="p">,</span> <span class="n">center_ticks</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.bar" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.box" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">box</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">show_values</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">num_box_sets</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">spacing</span> <span class="o">=</span> <span class="mf">2.0</span><span class="p">,</span> <span class="n">center_ticks</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.box" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.circle" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">circle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">radius</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.circle" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.close" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">close</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.close" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.contour" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">contour</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.contour" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <h6 id="plotify.Plot.contour--description">Description<a class="headerlink" href="#plotify.Plot.contour--description" title="Permanent link">&para;</a></h6>
+<p>Draws the contours of a 3D function.</p>
+<h6 id="plotify.Plot.contour--arguments">Arguments<a class="headerlink" href="#plotify.Plot.contour--arguments" title="Permanent link">&para;</a></h6>
+<ul>
+<li><code>x</code>: x-coordinates of the points where z is evaluated.</li>
+<li><code>y</code>: y-coordinates of the points where z is evaluated.</li>
+<li><code>z</code>: function or 2D-array of values where a function was evaluated given <code>x</code> and <code>y</code> values.</li>
+<li><code>fill</code>: whether to fill the contour plot.</li>
+<li><code>*args</code>: positional arguments passed to  Matplotlib's contour / contourf function.</li>
+<li><code>**kwargs</code>: keyword arguments passed to Matplotlib's contour / contourf function.</li>
+</ul>
+<h6 id="plotify.Plot.contour--example">Example<a class="headerlink" href="#plotify.Plot.contour--example" title="Permanent link">&para;</a></h6>
+<div class="highlight"><pre><span></span><code><span class="n">x</span> <span class="o">=</span> <span class="n">y</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">linspace</span><span class="p">(</span><span class="o">-</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">,</span> <span class="n">num</span><span class="o">=</span><span class="mi">100</span><span class="p">)</span>
+<span class="n">f</span> <span class="o">=</span> <span class="k">lambda</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">:</span> <span class="mf">0.5</span> <span class="o">*</span> <span class="n">x</span><span class="o">**</span><span class="mi">3</span> <span class="o">+</span> <span class="mf">10.0</span> <span class="o">*</span> <span class="n">y</span><span class="o">**</span><span class="mi">2</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Title&#39;</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">contour</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">f</span><span class="p">,</span> <span class="n">fill</span><span class="o">=</span><span class="kc">True</span><span class="p">)</span>
+</code></pre></div>
+<p><img alt="plot" src="/assets/images/api/contour.png" /></p>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.errorbar" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">errorbar</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">errors</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">vertical</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.errorbar" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <h6 id="plotify.Plot.errorbar--description">Description<a class="headerlink" href="#plotify.Plot.errorbar--description" title="Permanent link">&para;</a></h6>
+<p>Like <code>plot</code>, but also adds error bars on the points.</p>
+<p>The size of the error bars is given by <code>errors</code> (a list).</p>
+<h6 id="plotify.Plot.errorbar--arguments">Arguments<a class="headerlink" href="#plotify.Plot.errorbar--arguments" title="Permanent link">&para;</a></h6>
+<ul>
+<li><code>x</code>: x-coordinates of the points to plot.</li>
+<li><code>y</code>: y-coordinates of the points to plot.</li>
+<li><code>errors</code>: list of error sizes of length <code>len(x)</code>.</li>
+<li><code>vertical</code>: whether error bars are drawn vertically or horizontally. </li>
+<li><code>*args</code>: positional arguments passed to  Matplotlib's errorbar function.</li>
+<li><code>**kwargs</code>: keyword arguments passed to Matplotlib's errorbar function.</li>
+</ul>
+<h6 id="plotify.Plot.errorbar--example">Example<a class="headerlink" href="#plotify.Plot.errorbar--example" title="Permanent link">&para;</a></h6>
+<div class="highlight"><pre><span></span><code><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Title&#39;</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">errorbar</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">errors</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$f(x) = x^2$&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p><img alt="plot" src="/assets/images/api/errorbar.png" /></p>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.fancybox" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">fancybox</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">style</span> <span class="o">=</span> <span class="s1">&#39;round&#39;</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.fancybox" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.heatmap" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">heatmap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">heatvalues</span><span class="p">,</span> <span class="n">xlabels</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">ylabels</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">show_values</span> <span class="o">=</span> <span class="kc">False</span><span class="p">,</span> <span class="n">cbar_title</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.heatmap" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <h6 id="plotify.Plot.heatmap--description">Description<a class="headerlink" href="#plotify.Plot.heatmap--description" title="Permanent link">&para;</a></h6>
+<p>Draws a heatmap given an array of heat values.</p>
+<h6 id="plotify.Plot.heatmap--arguments">Arguments<a class="headerlink" href="#plotify.Plot.heatmap--arguments" title="Permanent link">&para;</a></h6>
+<ul>
+<li><code>heatvalues</code>: 2D grid to plot. (list of list or np.array)</li>
+<li><code>xlabels</code>: list of names.</li>
+<li><code>ylabels</code>: list of names.</li>
+<li><code>show_values</code>: bool of whether to write values inside heat box.</li>
+<li><code>cbar_title</code>: title of the color bar.</li>
+<li><code>*args</code>: positional arguments passed to  Matplotlib's imshow function.</li>
+<li><code>**kwargs</code>: keyword arguments passed to Matplotlib's imshow function.</li>
+</ul>
+<p>Keyword arguments of interest:</p>
+<ul>
+<li><code>interpolation</code>: nearest / kaiser / hanning / gaussian / spline16</li>
+</ul>
+<h6 id="plotify.Plot.heatmap--example">Example<a class="headerlink" href="#plotify.Plot.heatmap--example" title="Permanent link">&para;</a></h6>
+<div class="highlight"><pre><span></span><code><span class="n">values</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">100</span><span class="p">)</span><span class="o">.</span><span class="n">reshape</span><span class="p">(</span><span class="mi">10</span><span class="p">,</span> <span class="mi">10</span><span class="p">)</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Title&#39;</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">heatmap</span><span class="p">(</span>
+    <span class="n">heatvalues</span><span class="o">=</span><span class="n">values</span><span class="p">,</span>
+    <span class="n">xlabels</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)],</span>
+    <span class="n">ylabels</span><span class="o">=</span><span class="p">[</span><span class="nb">str</span><span class="p">(</span><span class="mi">10</span> <span class="o">-</span> <span class="n">x</span><span class="p">)</span> <span class="k">for</span> <span class="n">x</span> <span class="ow">in</span> <span class="nb">range</span><span class="p">(</span><span class="mi">10</span><span class="p">)],</span>
+    <span class="n">show_values</span><span class="o">=</span><span class="kc">True</span><span class="p">,</span>
+    <span class="n">cbar_title</span><span class="o">=</span><span class="s1">&#39;My Color Bar&#39;</span><span class="p">,</span>
+<span class="p">)</span>
+</code></pre></div>
+<p><img alt="plot" src="/assets/images/api/heatmap.png" /></p>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.numpy" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">numpy</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.numpy" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.plot" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">plot</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">jitter</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">smooth_window</span> <span class="o">=</span> <span class="mi">0</span><span class="p">,</span> <span class="n">smooth_std</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.plot" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <h6 id="plotify.Plot.plot--description">Description<a class="headerlink" href="#plotify.Plot.plot--description" title="Permanent link">&para;</a></h6>
+<p>Plots a line defined by points in <code>x</code> (and <code>y</code>).</p>
+<h6 id="plotify.Plot.plot--arguments">Arguments<a class="headerlink" href="#plotify.Plot.plot--arguments" title="Permanent link">&para;</a></h6>
+<ul>
+<li><code>x</code>: x-coordinates.</li>
+<li><code>y</code>: y-coordinates, if None then <code>x</code> is used as <code>y</code> and <code>x</code> is <code>range(0, len(x))</code>.</li>
+<li><code>jitter</code>: Pointwise or float value for shading around curve.</li>
+<li><code>*args</code>: positional arguments passed to  Matplotlib's plot function.</li>
+<li><code>**kwargs</code>: keyword arguments passed to Matplotlib's plot function.</li>
+</ul>
+<h6 id="plotify.Plot.plot--example">Example<a class="headerlink" href="#plotify.Plot.plot--example" title="Permanent link">&para;</a></h6>
+<div class="highlight"><pre><span></span><code><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Title&#39;</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">plot</span><span class="p">(</span><span class="n">x</span><span class="o">=</span><span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">jitter</span><span class="o">=</span><span class="mf">5.0</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$f(x) = x^2$&#39;</span><span class="p">,</span> <span class="n">linestyle</span><span class="o">=</span><span class="s1">&#39;dashed&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p><img alt="plot" src="/assets/images/api/plot.png" /></p>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.rectangle" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">rectangle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span><span class="p">,</span> <span class="n">y</span><span class="p">,</span> <span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">,</span> <span class="n">fill</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">color</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">,</span> <span class="n">linewidth</span> <span class="o">=</span> <span class="mf">1.5</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.rectangle" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.save" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">save</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">path</span><span class="p">,</span> <span class="n">bbox_inches</span> <span class="o">=</span> <span class="s1">&#39;tight&#39;</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.save" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.scatter" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">scatter</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.scatter" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <h6 id="plotify.Plot.scatter--description">Description<a class="headerlink" href="#plotify.Plot.scatter--description" title="Permanent link">&para;</a></h6>
+<p>Scatter points defined by <code>x</code> (and <code>y</code>).</p>
+<h6 id="plotify.Plot.scatter--arguments">Arguments<a class="headerlink" href="#plotify.Plot.scatter--arguments" title="Permanent link">&para;</a></h6>
+<ul>
+<li><code>*args</code>: positional arguments passed to  Matplotlib's plot function.</li>
+<li><code>**kwargs</code>: keyword arguments passed to Matplotlib's plot function.</li>
+</ul>
+<h6 id="plotify.Plot.scatter--example">Example<a class="headerlink" href="#plotify.Plot.scatter--example" title="Permanent link">&para;</a></h6>
+<div class="highlight"><pre><span></span><code><span class="n">x</span> <span class="o">=</span> <span class="n">np</span><span class="o">.</span><span class="n">arange</span><span class="p">(</span><span class="mi">10</span><span class="p">)</span>
+<span class="n">plot</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Title&#39;</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">scatter</span><span class="p">(</span><span class="n">x</span><span class="p">,</span> <span class="n">x</span><span class="o">**</span><span class="mi">2</span><span class="p">,</span> <span class="n">label</span><span class="o">=</span><span class="sa">r</span><span class="s1">&#39;$f(x) = x^2$&#39;</span><span class="p">)</span>
+</code></pre></div>
+<p><img alt="plot" src="/assets/images/api/scatter.png" /></p>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_axis" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_axis</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">xtitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">,</span> <span class="n">ytitle</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_axis" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_colormap" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_colormap</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">cm</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_colormap" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_dimensions" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_dimensions</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">height</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">width</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_dimensions" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_dpi" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_dpi</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">dpi</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_dpi" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_grid" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_grid</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">axis</span> <span class="o">=</span> <span class="s1">&#39;full&#39;</span><span class="p">,</span> <span class="n">granularity</span> <span class="o">=</span> <span class="s1">&#39;fine&#39;</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_grid" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Sets a fine, light gray background grid.</p>
+<p>axis values: full, vertical, horizontal, none.
+granularity: coarse, fine</p>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_legend" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_legend</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;best&#39;</span><span class="p">,</span> <span class="n">title</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">show</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">inset</span> <span class="o">=</span> <span class="kc">True</span><span class="p">,</span> <span class="n">ncol</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">alpha</span> <span class="o">=</span> <span class="mf">0.8</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_legend" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_lims" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_lims</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_lims" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Expects (min_val, max_val) tuples for each arguments, where vals can be
+none to re-use current ones.</p>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_notation" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_notation</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_notation" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_palette" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_palette</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">palette</span><span class="p">,</span> <span class="n">num_colors</span> <span class="o">=</span> <span class="mi">8</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_palette" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_scales" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_scales</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">z</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_scales" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <p>Possible values: 'linear', 'log', 'log2', 'symlog', 'symlog2', 'logit'</p>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_subtitle" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_subtitle</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_subtitle" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_title" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_title</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">title</span><span class="p">,</span> <span class="n">loc</span> <span class="o">=</span> <span class="s1">&#39;center&#39;</span><span class="p">,</span> <span class="n">x</span> <span class="o">=</span> <span class="kc">None</span><span class="p">,</span> <span class="n">y</span> <span class="o">=</span> <span class="mf">0.98</span><span class="p">,</span> <span class="n">text_obj</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_title" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+      <h6 id="plotify.Plot.set_title--description">Description<a class="headerlink" href="#plotify.Plot.set_title--description" title="Permanent link">&para;</a></h6>
+<p>Sets the title of the plot.</p>
+<h6 id="plotify.Plot.set_title--arguments">Arguments<a class="headerlink" href="#plotify.Plot.set_title--arguments" title="Permanent link">&para;</a></h6>
+<ul>
+<li><code>title</code>: Text of the title.</li>
+<li><code>loc</code>: Location of the title.</li>
+<li><code>x</code>: x-coordinate of the title.</li>
+<li><code>y</code>: y-coordinate of the title.</li>
+<li><code>text_obj</code>: A text object where the title is set.</li>
+</ul>
+<h6 id="plotify.Plot.set_title--example">Example<a class="headerlink" href="#plotify.Plot.set_title--example" title="Permanent link">&para;</a></h6>
+<div class="highlight"><pre><span></span><code><span class="n">plot</span> <span class="o">=</span> <span class="n">pl</span><span class="o">.</span><span class="n">Plot</span><span class="p">(</span><span class="s1">&#39;Title&#39;</span><span class="p">)</span>
+<span class="n">plot</span><span class="o">.</span><span class="n">set_title</span><span class="p">(</span><span class="s1">&#39;New and Much Longer Title&#39;</span><span class="p">,</span> <span class="n">loc</span><span class="o">=</span><span class="s1">&#39;right&#39;</span><span class="p">,</span> <span class="n">x</span><span class="o">=</span><span class="mf">0.9</span><span class="p">,</span> <span class="n">y</span><span class="o">=</span><span class="mf">0.92</span><span class="p">)</span>
+</code></pre></div>
+<p><img alt="plot" src="/assets/images/api/set_title.png" /></p>
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_xticks" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_xticks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_xticks" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.set_yticks" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">set_yticks</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">positions</span><span class="p">,</span> <span class="n">labels</span> <span class="o">=</span> <span class="kc">None</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.set_yticks" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.show" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">show</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.show" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.stretch" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">stretch</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">left</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">right</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">top</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">,</span> <span class="n">bottom</span> <span class="o">=</span> <span class="mf">0.0</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.stretch" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.text" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">text</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="n">text</span><span class="p">,</span> <span class="n">xytext</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.text" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  <div class="doc doc-object doc-method">
+
+
+
+<h4 id="plotify.Plot.usetex" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">usetex</span><span class="p">(</span><span class="bp">self</span><span class="p">,</span> <span class="o">*</span><span class="n">args</span><span class="p">,</span> <span class="o">**</span><span class="n">kwargs</span><span class="p">)</span></code>
+
+
+<a href="#plotify.Plot.usetex" class="headerlink" title="Permanent link">&para;</a></h4>
+
+    <div class="doc doc-contents ">
+
+
+    </div>
+
+  </div>
+
+
+
+
+
+  </div>
+
+    </div>
+
+  </div>
+                
+                  
+                
+                
+              
+              
+                
+
+
+              
+            </article>
+          </div>
+        </div>
+      </main>
+      
+        
+<footer class="md-footer">
+  
+    <div class="md-footer-nav">
+      <nav class="md-footer-nav__inner md-grid">
+        
+          <a href="../.." title="Home" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
+            </div>
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Previous
+                </span>
+                Home
+              </span>
+            </div>
+          </a>
+        
+        
+          <a href="../more_plots/" title="More Plots" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+            <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
+              <span class="md-flex__ellipsis">
+                <span class="md-footer-nav__direction">
+                  Next
+                </span>
+                More Plots
+              </span>
+            </div>
+            <div class="md-flex__cell md-flex__cell--shrink">
+              <i class="md-icon md-icon--arrow-forward md-footer-nav__button"></i>
+            </div>
+          </a>
+        
+      </nav>
+    </div>
+  
+  <div class="md-footer-meta md-typeset">
+    <div class="md-footer-meta__inner md-grid">
+      <div class="md-footer-copyright">
+        
+        powered by
+        <a href="https://www.mkdocs.org" target="_blank" rel="noopener">MkDocs</a>
+        and
+        <a href="https://squidfunk.github.io/mkdocs-material/" target="_blank" rel="noopener">
+          Material for MkDocs</a>
+      </div>
+      
+  <div class="md-footer-social">
+    <link rel="stylesheet" href="../../assets/fonts/font-awesome.css">
+    
+      <a href="https://github.com/seba-1511" target="_blank" rel="noopener" title="github" class="md-footer-social__link fa fa-github"></a>
+    
+      <a href="https://twitter.com/seba1511" target="_blank" rel="noopener" title="twitter" class="md-footer-social__link fa fa-twitter"></a>
+    
+      <a href="https://github.com/seba-1511/plotify/issues/new" target="_blank" rel="noopener" title="bug" class="md-footer-social__link fa fa-bug"></a>
+    
+  </div>
+
+    </div>
+  </div>
+</footer>
+      
+    </div>
+    
+      <script src="../../assets/javascripts/application.c33a9706.js"></script>
+      
+      <script>app.initialize({version:"1.2.4",url:{base:"../.."}})</script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js"></script>
+      
+        <script src="https://cdn.jsdelivr.net/npm/katex/dist/contrib/mathtex-script-type.min.js"></script>
+      
+    
+  </body>
+</html>
