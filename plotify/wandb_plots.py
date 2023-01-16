@@ -130,6 +130,7 @@ def wandb_plot(config):
 
     Example configuration:
 
+    ~~~python
     config = {
         'type': pl.PublicationPlot,
         'title': 'PT Tasks',
@@ -170,6 +171,7 @@ def wandb_plot(config):
             },
         ],
     }
+    ~~~
     """
 
     # enable LaTeX

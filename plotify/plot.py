@@ -1,27 +1,24 @@
 #!/usr/bin/env python3
 
 import os
-import subprocess
 import numpy as np
 import copy
 import statistics as stats
-import colorsys
-import warnings
 import matplotlib as mpl
 import matplotlib.pyplot as plt
-import matplotlib.colors as mc
 
 from mpl_toolkits.mplot3d import Axes3D #required for 3D plots
 from matplotlib import image as mpimg
 from matplotlib.patches import Circle, Rectangle, Arrow, FancyBboxPatch, BoxStyle
 from matplotlib import patheffects
 
-from distutils.spawn import find_executable
 from tempfile import gettempdir
 from collections.abc import Iterable
 from itertools import cycle
 from time import time
-from subprocess import Popen
+
+from .utils import usetex
+from .colors import MAUREENSTONE_COLORS, Vibrant, LIGHT_GRAY
 
 # high-definition images in IPython notebooks
 try:
@@ -40,32 +37,10 @@ MEM_IMG = BytesIO()
 
 
 FONT_SIZE = 20
-MAUREENSTONE_COLORS = ['#396AB1', '#DA7C30', '#3E9651', '#CF2529', '#535154', '#6B4C9A', '#922428', '#F8B620', '#E377C2']
-Maureen = {
-    'blue': MAUREENSTONE_COLORS[0],
-    'orange': MAUREENSTONE_COLORS[1],
-    'green': MAUREENSTONE_COLORS[2],
-    'red': MAUREENSTONE_COLORS[3],
-    'black': MAUREENSTONE_COLORS[4],
-    'purple': MAUREENSTONE_COLORS[5],
-    'cardinal': MAUREENSTONE_COLORS[6],
-    'gold': MAUREENSTONE_COLORS[7],
-    'pink': MAUREENSTONE_COLORS[8],
-}
-Vibrant = {
-    'cyan': '#33BBEE',
-    'magenta': '#EE3377',
-    'teal': '#009988',
-    'orange': '#EE7733',
-    'blue': '#0077BB',
-    'red': '#CC3311',
-    'gray': '#BBBBBB',
-}
 MARKERS = ['o', 'X', 'v', '*', 'd', 's', '*', 'p']
-LIGHT_GRAY = '#D3D3D3'
 PALETTE_NAME = MAUREENSTONE_COLORS
 COLORMAP_3D = 'YlGnBu'
-TEMP_FILENAME = os.path.join(gettempdir(), 'sebplot')
+TEMP_FILENAME = os.path.join(gettempdir(), 'plotify')
 TEMP_FILE_EXT = '.png'
 
 mpl.style.use('seaborn-poster')
@@ -77,42 +52,6 @@ mpl.rcParams['ps.fonttype'] = 42
 mpl.rcParams['mathtext.fontset'] = 'cm'  # Font for tex
 
 
-def usetex(use=True, silent=False, force=False):
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore")
-        if not use:
-            mpl.rc('text', usetex=False)
-        elif find_executable('latex'):
-            if force or Popen(
-                ['kpsewhich', 'type1ec.sty'],
-                stdout=subprocess.DEVNULL,
-                stderr=subprocess.DEVNULL).communicate()[0]:
-                    mpl.rc('text', usetex=True)
-        elif not silent:
-            print('texlive-full is not installed, plotify cannot use tex.')
-
-
-def lighten_color(color, amount=0.5):
-    """
-    Taken from:
-    https://stackoverflow.com/questions/37765197/darken-or-lighten-a-color-in-matplotlib/49601444
-
-    Lightens the given color by multiplying (1-luminosity) by the given amount.
-    Input can be matplotlib color string, hex string, or RGB tuple.
-
-    Examples:
-    >> lighten_color('g', 0.3)
-    >> lighten_color('#F034A3', 0.6)
-    >> lighten_color((.3,.55,.1), 0.5)
-    """
-    try:
-        c = mc.cnames[color]
-    except:
-        c = color
-    c = colorsys.rgb_to_hls(*mc.to_rgb(c))
-    return colorsys.hls_to_rgb(c[0], max(0, min(1, amount * c[1])), c[2])
-
-
 def set_box_color(canvas, bp, color):
     artists = bp['boxes'] + bp['whiskers'] + bp['caps']
     for a in artists:
@@ -121,9 +60,40 @@ def set_box_color(canvas, bp, color):
         a.set_color('white')
 
 
-class Plot(object):
+class Plot:
 
-    def __init__(self, title='', height=3900.0, width=7200.0, dpi=600.0, plot3d=False, border=True):
+    def __init__(
+        self,
+        title='',
+        height=3900.0,
+        width=7200.0,
+        dpi=600.0,
+        plot3d=False,
+        border=True,
+    ):
+        """
+        ## Description
+
+        Creates a Plot object.
+
+        ## Arguments
+
+        * `title`: The title of the plot. See `set_title`.
+        * `height`: The height of the plot.
+        * `width`: The width of the plot.
+        * `dpi`: The resolution of the plot.
+        * `plot3d`: Whether the plot is a 3D plot or not.
+        * `border`: Whether to draw a thin black border around the frame of the plot.
+
+        ## Example
+
+        ~~~python
+        plot = pl.Plot('Title')
+        ~~~
+
+        ![basic](/assets/images/api/basic.png)
+
+        """
         usetex(True, silent=True)
         self.dpi = float(dpi)
         self.figure = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
@@ -133,17 +103,34 @@ class Plot(object):
         if plot3d:
             # self.canvas = self.figure.add_subplot(1, 1, 1, projection='3d')
             self.canvas = self.figure.gca(projection='3d')
-            self.subtitle = self.canvas.text(x=0.5, y=0.90, z=0.0, s='', transform=self.figure.transFigure, fontsize=FONT_SIZE-2, ha='center', style='italic', color='gray')
+            self.subtitle = self.canvas.text(
+                x=0.5,
+                y=0.90,
+                z=0.0,
+                s='',
+                transform=self.figure.transFigure,
+                fontsize=FONT_SIZE-2,
+                ha='center',
+                style='italic',
+                color='gray',
+            )
         else:
             self.canvas = self.figure.add_subplot(1, 1, 1, frameon=border)
-            self.subtitle = self.canvas.text(x=0.5, y=0.90, s='', transform=self.figure.transFigure, fontsize=FONT_SIZE-2, ha='center', style='italic', color='gray')
+            self.subtitle = self.canvas.text(
+                x=0.5,
+                y=0.90,
+                s='',
+                transform=self.figure.transFigure,
+                fontsize=FONT_SIZE-2,
+                ha='center',
+                style='italic',
+                color='gray',
+            )
         self.set_palette('maureen')
         self.set_grid('horizontal')
         self.colormap = COLORMAP_3D
         self._box_num_sets = 2
         self._box_curr_set = 0
-#        self.legend_location = 'upper right'
-#        self.legend_location = 'best'
         self.set_legend(loc='best')
         self._outset_bbox_to_anchor = {
             'upper center': (0.5, 1.12),
@@ -271,6 +258,33 @@ class Plot(object):
         return img_np[:, :, :3]
 
     def errorbar(self, x, y, errors=None, vertical=True, *args, **kwargs):
+        """
+        ## Description
+
+        Like `plot`, but also adds error bars on the points.
+
+        The size of the error bars is given by `errors` (a list).
+
+        ## Arguments
+
+        * `x`: x-coordinates of the points to plot.
+        * `y`: y-coordinates of the points to plot.
+        * `errors`: list of error sizes of length `len(x)`.
+        * `vertical`: whether error bars are drawn vertically or horizontally. 
+        * `*args`: positional arguments passed to  Matplotlib's errorbar function.
+        * `**kwargs`: keyword arguments passed to Matplotlib's errorbar function.
+
+        ## Example
+
+        ~~~python
+        x = np.arange(10)
+        plot = pl.Plot('Title')
+        plot.errorbar(x=x, y=x**2, errors=x, label=r'$f(x) = x^2$')
+        ~~~
+
+        ![plot](/assets/images/api/errorbar.png)
+
+        """
         if errors is None:
             errors = [0.0 for _ in y]
         name = 'yerr' if vertical else 'xerr'
@@ -306,7 +320,40 @@ class Plot(object):
             **kwargs,
         )
 
-    def plot(self, x, y=None, jitter=0.000, smooth_window=0, smooth_std=True, *args, **kwargs):
+    def plot(
+        self,
+        x,
+        y=None,
+        jitter=0.000,
+        smooth_window=0,
+        smooth_std=True,
+        *args,
+        **kwargs,
+    ):
+        """
+        ## Description
+
+        Plots a line defined by points in `x` (and `y`).
+
+        ## Arguments
+
+        * `x`: x-coordinates.
+        * `y`: y-coordinates, if None then `x` is used as `y` and `x` is `range(0, len(x))`.
+        * `jitter`: Pointwise or float value for shading around curve.
+        * `*args`: positional arguments passed to  Matplotlib's plot function.
+        * `**kwargs`: keyword arguments passed to Matplotlib's plot function.
+
+        ## Example
+
+        ~~~python
+        x = np.arange(10)
+        plot = pl.Plot('Title')
+        plot.plot(x=x, y=x**2, jitter=5.0, label=r'$f(x) = x^2$', linestyle='dashed')
+        ~~~
+
+        ![plot](/assets/images/api/plot.png)
+
+        """
         if y is None:
             y = x
             x = list( range(1, 1 +len(y)))
@@ -500,6 +547,27 @@ class Plot(object):
         return positions
 
     def scatter(self, *args, **kwargs):
+        """
+        ## Description
+
+        Scatter points defined by `x` (and `y`).
+
+        ## Arguments
+
+        * `*args`: positional arguments passed to  Matplotlib's plot function.
+        * `**kwargs`: keyword arguments passed to Matplotlib's plot function.
+
+        ## Example
+
+        ~~~python
+        x = np.arange(10)
+        plot = pl.Plot('Title')
+        plot.scatter(x, x**2, label=r'$f(x) = x^2$')
+        ~~~
+
+        ![plot](/assets/images/api/scatter.png)
+
+        """
         color = kwargs.pop('color', None)
         if color is None:
             color = next(self.colors)
@@ -510,14 +578,52 @@ class Plot(object):
             marker = None
         self.canvas.scatter(color=color, marker=marker, *args, **kwargs)
 
-    def heatmap(self, heatvalues, xlabels=None, ylabels=None, show_values=False, cbar_title='', *args, **kwargs):
-        '''
-        heatvalues: 2D grid to plot. (list of list or np.array)
-        xlabels: list of names
-        ylabels: list of names
-        show_values: bool of whether to write values inside heat box
-        interpolation: nearest / kaiser / hanning / gaussian / spline16
-        '''
+    def heatmap(
+        self,
+        heatvalues,
+        xlabels=None,
+        ylabels=None,
+        show_values=False,
+        cbar_title='',
+        *args,
+        **kwargs,
+    ):
+        """
+        ## Description
+
+        Draws a heatmap given an array of heat values.
+
+        ## Arguments
+
+        * `heatvalues`: 2D grid to plot. (list of list or np.array)
+        * `xlabels`: list of names.
+        * `ylabels`: list of names.
+        * `show_values`: bool of whether to write values inside heat box.
+        * `cbar_title`: title of the color bar.
+        * `*args`: positional arguments passed to  Matplotlib's imshow function.
+        * `**kwargs`: keyword arguments passed to Matplotlib's imshow function.
+
+        Keyword arguments of interest:
+
+        * `interpolation`: nearest / kaiser / hanning / gaussian / spline16
+
+        ## Example
+
+        ~~~python
+        values = np.arange(100).reshape(10, 10)
+        plot = pl.Plot('Title')
+        plot.heatmap(
+            heatvalues=values,
+            xlabels=[str(x) for x in range(10)],
+            ylabels=[str(10 - x) for x in range(10)],
+            show_values=True,
+            cbar_title='My Color Bar',
+        )
+        ~~~
+
+        ![plot](/assets/images/api/heatmap.png)
+
+        """
         self.set_grid('none')
         self.canvas.tick_params(axis=u'both', which=u'both',length=0)
         self.canvas.set_xticks([])
@@ -565,10 +671,42 @@ class Plot(object):
         self.figure.subplots_adjust(left=0.3, right=0.8)
 
     def contour(self, x, y, z=None, fill=True, *args, **kwargs):
+        """
+        ## Description
+
+        Draws the contours of a 3D function.
+
+        ## Arguments
+
+        * `x`: x-coordinates of the points where z is evaluated.
+        * `y`: y-coordinates of the points where z is evaluated.
+        * `z`: function or 2D-array of values where a function was evaluated given `x` and `y` values.
+        * `fill`: whether to fill the contour plot.
+        * `*args`: positional arguments passed to  Matplotlib's contour / contourf function.
+        * `**kwargs`: keyword arguments passed to Matplotlib's contour / contourf function.
+
+        ## Example
+
+        ~~~python
+        x = y = np.linspace(-10, 10, num=100)
+        f = lambda x, y: 0.5 * x**3 + 10.0 * y**2
+        plot = pl.Plot('Title')
+        plot.contour(x, y, f, fill=True)
+        ~~~
+
+        ![plot](/assets/images/api/contour.png)
+
+        """
         X, Y, Z = self._3d_preprocess(x, y, z)
         self.set_grid(axis=None)
         if fill:
-            cont = self.canvas.contourf(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
+            cont = self.canvas.contourf(
+                X, Y, Z,
+                zdir='x',
+                cmap=self.colormap,
+                *args,
+                **kwargs,
+            )
         else:
             cont = self.canvas.contour(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
         return cont
@@ -651,6 +789,29 @@ class Plot(object):
                 arrowprops=arrowprops, *args, **kwargs)
 
     def set_title(self, title, loc='center', x=None, y=0.98, text_obj=None):
+        """
+        ## Description
+
+        Sets the title of the plot.
+
+        ## Arguments
+
+        * `title`: Text of the title.
+        * `loc`: Location of the title.
+        * `x`: x-coordinate of the title.
+        * `y`: y-coordinate of the title.
+        * `text_obj`: A text object where the title is set.
+
+        ## Example
+
+        ~~~python
+        plot = pl.Plot('Title')
+        plot.set_title('New and Much Longer Title', loc='right', x=0.9, y=0.92)
+        ~~~
+
+        ![plot](/assets/images/api/set_title.png)
+
+        """
         if text_obj is None:
             text_obj = self.title
         text_obj.set_text(title)
@@ -880,7 +1041,6 @@ class Image(Drawing):
         super(Image, self).__init__(*args, **kwargs)
         image = mpimg.imread(path)
         self.canvas.imshow(image)
-
 
 
 class Plot3D(Plot):

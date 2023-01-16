@@ -1,5 +1,1 @@
-numpy
-matplotlib
-Pillow
-moviepy
-plotly
+.

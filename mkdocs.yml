@@ -1,0 +1,93 @@
+
+nav:
+  - Home: index.md
+  - Documentation:
+    - Plot: api/plots.md
+    - More Plots: api/more_plots.md
+    - Colors: api/colors.md
+    - Smoothing: api/smoothing.md
+    - Utilities: api/utils.md
+    - WandB: api/wandb.md
+    - TensorBoard: api/tensorboard.md
+  - Changelog: changelog.md
+  - GitHub: https://github.com/seba-1511/plotify/
+
+docs_dir: ./docs
+site_name: plotify
+site_url: http://plotify.net
+site_author: 'Séb Arnold'
+google_analytics: ['UA-68693545-3', 'seba-1511.github.com']
+repo_name: 'seba-1511/plotify'
+repo_url: 'https://github.com/seba-1511/plotify'
+edit_uri: ''
+theme:
+  name: 'material'
+  logo: 'assets/images/plotify-logo.png'
+  favicon: 'assets/images/favicon.ico'
+  palette:
+    primary: 'white'
+    accent: 'orange'
+  font:
+      text: 'Source Sans Pro'
+      code: 'Ubuntu Mono'
+  features:
+    - header.autohide
+
+extra_javascript:
+    - https://cdn.jsdelivr.net/npm/katex/dist/katex.min.js
+    - https://cdn.jsdelivr.net/npm/katex/dist/contrib/mathtex-script-type.min.js
+
+extra_css:
+    - https://cdn.jsdelivr.net/npm/katex/dist/katex.min.css
+    - 'assets/css/custom.css'
+
+extra:
+  social:
+    - type: 'github'
+      link: 'https://github.com/seba-1511'
+    - type: 'twitter'
+      link: 'https://twitter.com/seba1511'
+    - type: 'bug'
+      link: 'https://github.com/seba-1511/plotify/issues/new'
+
+plugins:
+  - search
+  - autorefs
+  - mkdocstrings:
+      default_handler: python
+      handlers:
+        python:
+          setup_commands:
+              - import pytkdocs_tweaks
+              - pytkdocs_tweaks.main()
+          selection:
+              inherited_members: true
+          rendering:
+            show_source: false
+            show_root_heading: true
+            show_root_full_path: true
+            show_category_heading: true
+            show_signature: true
+            show_signature_annotations: true
+            separate_signature: false
+            group_by_category: false
+            member_order: 'source'
+            show_bases: true
+            show_if_no_docstring: true
+            show_submodules: false
+            heading_level: 3
+
+markdown_extensions:
+  - mdx_math
+  - admonition
+  - pymdownx.superfences
+  - pymdownx.details
+  - codehilite:
+      guess_lang: true
+      linenums: true
+  - toc:
+      permalink: true
+      toc_depth: 4
+  - markdown_katex:
+      no_inline_svg: True
+      insert_fonts_css: True

@@ -11,35 +11,33 @@ import numpy as np
 
 def _one_sided_smoothing(x_before, y_before, smoothing_temperature=1.0):
     """
-    [[Source]](https://github.com/seba-1511/cherry/blob/master/cherry/plot.py)
-
-    **Decription**
+    ## Decription
 
     One side (regular) exponential moving average for smoothing a curve
     It evenly resamples points baesd on x-axis and then averages y values with
     weighting factor decreasing exponentially.
 
-    **Arguments**
+    ## Arguments
 
     * **x_before** (ndarray) - x values. Required to be in accending order.
     * **y_before** (ndarray) - y values. Required to have same size as x_before.
     * **smoothing_temperature** (float, *optional*, default=1.0) - the number of previous
       steps trusted. Used to calculate the decay factor.
 
-    **Return**
+    ## Return
 
     * **x_after** (ndarray) - x values after resampling.
     * **y_after** (ndarray) - y values after smoothing.
     * **y_count** (ndarray) - decay values at each steps.
 
-    **Credit**
+    ## Credit
 
     Adapted from OpenAI's baselines implementation.
 
-    **Example**
+    ## Example
 
     ~~~python
-    from cherry.plot import _one_sided_smoothing as osmooth
+    from plotify.smoothing import _one_sided_smoothing as osmooth
     x_smoothed, y_smoothed, y_counts = osmooth(
         x_original,
         y_original,
@@ -93,34 +91,32 @@ def _one_sided_smoothing(x_before, y_before, smoothing_temperature=1.0):
 
 def exponential_smoothing(x, y=None, temperature=1.0):
     """
-    [[Source]](https://github.com/seba-1511/cherry/blob/master/cherry/plot.py)
-
-    **Decription**
+    ## Decription
 
     Two-sided exponential moving average for smoothing a curve.
     It performs regular exponential moving average twice from two different
     sides and then combines the results together.
 
-    **Arguments**
+    ## Arguments
 
     * **x** (ndarray/tensor/list) - x values, in accending order.
     * **y** (ndarray/tensor/list) - y values.
     * **temperature** (float, *optional*, default=1.0) - The higher,
       the smoother.
 
-    **Return**
+    ## Return
 
     * ndarray - x values after resampling.
     * ndarray - y values after smoothing.
 
-    **Credit**
+    ## Credit
 
     Adapted from OpenAI's baselines implementation.
 
-    **Example**
+    ## Example
 
     ~~~python
-    from cherry.plot import exponential_smoothing
+    from plotify.smoothing import exponential_smoothing
     x_smoothed, y_smoothed, _ = exponential_smoothing(
         x_original,
         y_original,
@@ -157,6 +153,28 @@ def exponential_smoothing(x, y=None, temperature=1.0):
 
 
 def smooth(x, y=None, temperature=1.0):
+    """
+    ## Decription
+
+    Simple wrapper around exponential smoothing.
+
+    Returns 1 value (smoothed `x`) if `y` is None.
+
+    Returns 2 values (smoothed `x` and `y`) if `y` is not None.
+
+    ## Example
+
+    ~~~python
+    x = np.arange(100)
+    y = np.logspace(-50, 50)
+
+    # single value
+    smooth_x = plotify.smoothing.smooth(x, temperature=20.0)
+
+    # double value
+    smooth_x, smooth_y = plotify.smoothing.smooth(x, y)
+    ~~~
+    """
     # Not officially supported.
     result = exponential_smoothing(x=x, y=y, temperature=temperature)
     if y is None:
