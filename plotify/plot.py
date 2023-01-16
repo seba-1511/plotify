@@ -91,7 +91,7 @@ class Plot:
         plot = pl.Plot('Title')
         ~~~
 
-        ![basic](/assets/images/api/basic.png)
+        ![basic](../../assets/images/api/basic.png)
 
         """
         usetex(True, silent=True)
@@ -282,7 +282,7 @@ class Plot:
         plot.errorbar(x=x, y=x**2, errors=x, label=r'$f(x) = x^2$')
         ~~~
 
-        ![plot](/assets/images/api/errorbar.png)
+        ![plot](../../assets/images/api/errorbar.png)
 
         """
         if errors is None:
@@ -351,7 +351,7 @@ class Plot:
         plot.plot(x=x, y=x**2, jitter=5.0, label=r'$f(x) = x^2$', linestyle='dashed')
         ~~~
 
-        ![plot](/assets/images/api/plot.png)
+        ![plot](../../assets/images/api/plot.png)
 
         """
         if y is None:
@@ -565,7 +565,7 @@ class Plot:
         plot.scatter(x, x**2, label=r'$f(x) = x^2$')
         ~~~
 
-        ![plot](/assets/images/api/scatter.png)
+        ![plot](../../assets/images/api/scatter.png)
 
         """
         color = kwargs.pop('color', None)
@@ -621,7 +621,7 @@ class Plot:
         )
         ~~~
 
-        ![plot](/assets/images/api/heatmap.png)
+        ![plot](../../assets/images/api/heatmap.png)
 
         """
         self.set_grid('none')
@@ -694,7 +694,7 @@ class Plot:
         plot.contour(x, y, f, fill=True)
         ~~~
 
-        ![plot](/assets/images/api/contour.png)
+        ![plot](../../assets/images/api/contour.png)
 
         """
         X, Y, Z = self._3d_preprocess(x, y, z)
@@ -809,7 +809,7 @@ class Plot:
         plot.set_title('New and Much Longer Title', loc='right', x=0.9, y=0.92)
         ~~~
 
-        ![plot](/assets/images/api/set_title.png)
+        ![plot](../../assets/images/api/set_title.png)
 
         """
         if text_obj is None:
