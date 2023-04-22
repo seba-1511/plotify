@@ -100,5 +100,14 @@ ENV/
 # mypy
 .mypy_cache/
 
-# custom 
+# Pyre type checker
+.pyre/
+
+# Custom
 .tags
+docs/mkdocs.yml
+.DS_Store
+**/.DS_Store
+log_install.txt
+.all_objects.cache
+outputs/**

@@ -25,7 +25,7 @@ if __name__ == '__main__':
     # Setup Scatter Graph
     x = np.linspace(-7, 7, 30)
     q = Plot('Scatter \(PuBuGn\)', 500, 500, 100)
-    q.canvas.axis('off')
+    q.axes.axis('off')
 
     # Scatter animation
     def fn(d):

@@ -251,7 +251,7 @@ def wandb_plot(config):
                     raise ValueError(f'Unknown \'shade\': {shade}')
 
                 y_shade = np.array(y_shade)
-                plot.canvas.fill_between(
+                plot.axes.fill_between(
                     x=x_linear,
                     y1=y_linear - y_shade,
                     y2=y_linear + y_shade,

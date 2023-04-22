@@ -4,7 +4,7 @@ import plotify as pl
 import numpy as np
 
 # pl.usetex(force=True)
-plot = pl.ModernPlot(width=2500)
+plot = pl.ModernPlot()
 plot.set_palette('vibrant')
 plot.set_axis('Iterations', r'Values $(\times 1,000)$')
 plot.set_grid('horizontal', granularity='fine')
@@ -30,3 +30,12 @@ plot.plot(np.arange(num_points), np.exp(np.arange(num_points)) / 1000,
 plot.set_legend(title='Curve Type')
 
 plot.save('outputs/test.pdf', bbox_inches='tight')
+
+
+"""
+Still todo:
+    - implement install_google_font
+    - implement plotify.markers
+    - rename BasePlot and create custom Plot (and propagate)
+        - redraw the API figure, ensure they look good
+"""

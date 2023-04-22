@@ -1,4 +1,4 @@
-#!/usr/bin/env python3
+# -*- coding=utf-8 -*-
 
 from matplotlib import font_manager
 import matplotlib.patheffects as path_effects
@@ -31,12 +31,14 @@ class PublicationPlot(Plot):
 class LowResPlot(Plot):
 
     def __init__(self, title='', height=975.0, width=1800.0, dpi=210.0, *args, **kwargs):
-        super(LowResPlot, self).__init__(title,
-                                         height,
-                                         width,
-                                         dpi,
-                                         *args,
-                                         **kwargs)
+        super(LowResPlot, self).__init__(
+             title=title,
+             height=height,
+             width=width,
+             dpi=dpi,
+             *args,
+             **kwargs,
+        )
         self._outset_bbox_to_anchor = {
             'upper center': (0.5, 1.17),
             'lower center': (0.5, -0.40),
@@ -59,7 +61,7 @@ class ModernPlot(PublicationPlot):
     def __init__(self, *args, **kwargs):
         super(ModernPlot, self).__init__(*args, **kwargs)
         self.set_font('Open Sans')
-        self.update_settings({
+        self.update_rcparams({
             'font.variant': 'normal',
             'font.weight': 'light',
             'legend.fancybox': False,
@@ -72,27 +74,32 @@ class ModernPlot(PublicationPlot):
             'ytick.labelsize': 14,
             'ytick.minor.visible': False,
         })
-        axis_label_font = font_manager.FontProperties(
-            family='Open Sans',
-            size=13,
-            weight='semibold',
-        )
-        self.canvas.xaxis.label.set_fontproperties(axis_label_font)
-        self.canvas.yaxis.label.set_fontproperties(axis_label_font)
 
     def _preprint(self):
         self._legend_options['title_fontproperties'] = {
             'weight': 'bold',
+            'size': 13,
         }
+
+        # set axis tick font
         ticks_font = font_manager.FontProperties(
-            family=self.settings['font.sans-serif'],
-            size=17,
+            family=self.rcparams['font.sans-serif'],
+            size=14,
             weight='light',
         )
-        for label in self.canvas.get_xticklabels():
+        for label in self.axes.get_xticklabels():
             label.set_fontproperties(ticks_font)
-        for label in self.canvas.get_yticklabels():
+        for label in self.axes.get_yticklabels():
             label.set_fontproperties(ticks_font)
+
+        # set axis label font
+        axis_label_font = font_manager.FontProperties(
+            family=self.rcparams['font.sans-serif'],
+            size=13,
+            weight='semibold',
+        )
+        self.axes.xaxis.label.set_fontproperties(axis_label_font)
+        self.axes.yaxis.label.set_fontproperties(axis_label_font)
         return super(ModernPlot, self)._preprint()
 
     def set_title(self, title, x=0.273, y=0.885, **kwargs):

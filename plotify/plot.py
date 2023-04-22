@@ -96,16 +96,17 @@ class Plot:
 
         """
         usetex(True, silent=True)
-        self.settings = {}
+        self.rcparams = {}
         self.dpi = float(dpi)
         self.figure = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
         self.height = height
         self.width = width
         self.title = self.figure.suptitle(title, fontsize=FONT_SIZE)
         if plot3d:
-            # self.canvas = self.figure.add_subplot(1, 1, 1, projection='3d')
-            self.canvas = self.figure.gca(projection='3d')
-            self.subtitle = self.canvas.text(
+            # self.axes = self.figure.add_subplot(1, 1, 1, projection='3d')
+            self.axes = self.figure.gca(projection='3d')
+            self.canvas = self.axes  # for backward compatibility
+            self.subtitle = self.axes.text(
                 x=0.5,
                 y=0.90,
                 z=0.0,
@@ -117,8 +118,8 @@ class Plot:
                 color='gray',
             )
         else:
-            self.canvas = self.figure.add_subplot(1, 1, 1, frameon=border)
-            self.subtitle = self.canvas.text(
+            self.axes = self.figure.add_subplot(1, 1, 1, frameon=border)
+            self.subtitle = self.axes.text(
                 x=0.5,
                 y=0.90,
                 s='',
@@ -141,14 +142,14 @@ class Plot:
             'lower right': (1.25, -0.025),
         }
         self.markers = cycle(MARKERS)
-        self.canvas.tick_params(width=0.8)
+        self.axes.tick_params(width=0.8)
 
     def _preprint(self):
-        handles, labels = self.canvas.get_legend_handles_labels()
+        handles, labels = self.axes.get_legend_handles_labels()
         if len(handles) > 0:
             legend_options = copy.copy(self._legend_options)
             show = legend_options.pop('visible', True)
-            legend = self.canvas.legend(frameon=True, **legend_options)
+            legend = self.axes.legend(frameon=True, **legend_options)
             legend.set_visible(show)
 
     def _3d_preprocess(self, x, y, z):
@@ -198,7 +199,7 @@ class Plot:
         return edge, face, fill_bool
 
     def show(self):
-        with plt.rc_context(self.settings):
+        with plt.rc_context(self.rcparams):
             h, w = self.figure.get_figheight(), self.figure.get_figwidth()
             dpi = self.figure.get_dpi()
             self.figure.set_dpi(75.0)
@@ -248,13 +249,13 @@ class Plot:
                 msg = 'HTML export error. Is plotly installed ?'
                 raise Exception(msg)
         else:
-            with plt.rc_context(self.settings):
+            with plt.rc_context(self.rcparams):
                 self._preprint()
                 self.figure.savefig(path, bbox_inches=bbox_inches, **kwargs)
 
     def numpy(self):
         from PIL import Image as PILImage
-        with plt.rc_context(self.settings):
+        with plt.rc_context(self.rcparams):
             self._preprint()
             canvas = self.figure.canvas
             canvas.draw()
@@ -312,7 +313,7 @@ class Plot:
         if markevery is None:
             markevery = 1 if len(x) < 20 else len(x) // 10
         markersize = kwargs.pop('markersize', 8.5)
-        self.canvas.errorbar(
+        self.axes.errorbar(
             x=x,
             y=y,
             color=color,
@@ -392,7 +393,7 @@ class Plot:
         if markevery is None:
             markevery = 1 if len(x) < 20 else len(x) // 10
         markersize = kwargs.pop('markersize', 8.5)
-        self.canvas.plot(
+        self.axes.plot(
             x,
             y,
             color=color,
@@ -404,13 +405,13 @@ class Plot:
         if isinstance(jitter, list):
             top = [v + j for v, j in zip(y, jitter)]
             low = [v - j for v, j in zip(y, jitter)]
-            self.canvas.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
+            self.axes.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
         elif jitter > 0.0:
             x = np.array(x)
             y = np.array(y)
             top = y + jitter
             low = y - jitter
-            self.canvas.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
+            self.axes.fill_between(x, low, top, alpha=0.15, linewidth=0.0, color=color)
 
     def bar(self, x, y, show_values=False, num_box_sets=None, spacing=1.0, center_ticks=False, *args, **kwargs):
 
@@ -449,7 +450,7 @@ class Plot:
             positions = np.arange(len(x)) * (spacing * self._box_num_sets) \
                 + self._box_curr_set * box_set_spacing
         for pos, value, ci95, col in zip(positions, y_means, y_ci95, colors):
-            self.canvas.bar(
+            self.axes.bar(
                 x=pos,
                 height=value,
                 width=0.7,
@@ -467,22 +468,22 @@ class Plot:
             # (e.g. when plotted one at a time.)
             margin = 0.05 * min(y_means)
             for x_m, y_m, col in zip(reversed(x_means), reversed(y_means), reversed(colors)):
-                text = self.canvas.text(x_m, y_m-margin, '%.2f' % y_m, color='white',
+                text = self.axes.text(x_m, y_m-margin, '%.2f' % y_m, color='white',
                                         horizontalalignment='center',
                                         verticalalignment='top',
                                         fontweight='bold')
                 text.set_path_effects([patheffects.withStroke(linewidth=2.0, foreground=col)])
 
         # Ticks formatting
-        self.canvas.set_xticks(ticks=[], minor=False)
+        self.axes.set_xticks(ticks=[], minor=False)
         if center_ticks:
             mid_positions = np.array(range(len(x))) * (spacing * self._box_num_sets) + (self._box_num_sets - 1) * (box_set_spacing / 2.0)
-            self.canvas.set_xticks(ticks=mid_positions, minor=False)
-            self.canvas.set_xticklabels(x)
+            self.axes.set_xticks(ticks=mid_positions, minor=False)
+            self.axes.set_xticklabels(x)
         else:
-            self.canvas.set_xticks(ticks=positions, minor=False)
-            self.canvas.set_xticklabels(x)
-        plt.setp(self.canvas.get_xticklabels(),
+            self.axes.set_xticks(ticks=positions, minor=False)
+            self.axes.set_xticklabels(x)
+        plt.setp(self.axes.get_xticklabels(),
                  rotation=35,
                  ha='right',
                  rotation_mode='anchor')
@@ -513,23 +514,23 @@ class Plot:
         if positions is None:
             positions = np.array(range(len(x))) * (spacing * self._box_num_sets) \
                       + self._box_curr_set * 0.8
-        boxplot = self.canvas.boxplot(y,
+        boxplot = self.axes.boxplot(y,
                                       positions=positions,
                                       sym='',
                                       patch_artist=True,
                                       widths=0.6,
                                       labels=x,
                                       )
-        set_box_color(self.canvas, boxplot, color)
+        set_box_color(self.axes, boxplot, color)
 
         # Print median values on plot
         if show_values:
             y_means = [stats.median(v) for v in y]
-            x_means = self.canvas.get_xticks()
+            x_means = self.axes.get_xticks()
             # Reversed because we want the latest plotted ticks.
             # (e.g. when plotted one at a time.)
             for x_m, y_m in zip(reversed(x_means), reversed(y_means)):
-                text = self.canvas.text(x_m, y_m, '%.2f' % y_m, color='white',
+                text = self.axes.text(x_m, y_m, '%.2f' % y_m, color='white',
                                         horizontalalignment='center',
                                         verticalalignment='bottom',
                                         fontweight='bold')
@@ -538,10 +539,10 @@ class Plot:
         # Ticks formatting
         if center_ticks:
             mid_positions = np.array(range(len(x))) * (spacing * self._box_num_sets) + (self._box_num_sets - 1) * 0.4
-            self.canvas.set_xticks(ticks=[], minor=False)
-            self.canvas.set_xticks(ticks=mid_positions, minor=False)
-            self.canvas.set_xticklabels(x)
-        plt.setp(self.canvas.get_xticklabels(),
+            self.axes.set_xticks(ticks=[], minor=False)
+            self.axes.set_xticks(ticks=mid_positions, minor=False)
+            self.axes.set_xticklabels(x)
+        plt.setp(self.axes.get_xticklabels(),
                  rotation=35,
                  ha='right',
                  rotation_mode='anchor')
@@ -582,7 +583,7 @@ class Plot:
             marker = next(self.markers)
         elif marker is False:
             marker = None
-        self.canvas.scatter(color=color, marker=marker, *args, **kwargs)
+        self.axes.scatter(color=color, marker=marker, *args, **kwargs)
 
     def heatmap(
         self,
@@ -631,9 +632,9 @@ class Plot:
 
         """
         self.set_grid('none')
-        self.canvas.tick_params(axis=u'both', which=u'both',length=0)
-        self.canvas.set_xticks([])
-        self.canvas.set_yticks([])
+        self.axes.tick_params(axis=u'both', which=u'both',length=0)
+        self.axes.set_xticks([])
+        self.axes.set_yticks([])
         cmap = kwargs.pop('cmap', None)
         interpolation = kwargs.pop('interpolation', 'nearest')
         aspect = kwargs.pop('aspect', None)
@@ -641,7 +642,7 @@ class Plot:
         norm = kwargs.pop('norm', mpl.colors.Normalize())
         if 'maureen' not in self.palette:
             cmap = self.palette
-        im = self.canvas.imshow(heatvalues,
+        im = self.axes.imshow(heatvalues,
                                 cmap=cmap,
                                 norm=norm,
                                 interpolation=interpolation,
@@ -649,21 +650,21 @@ class Plot:
                                 origin=origin,
                                 *args,
                                 **kwargs)
-        cbar = self.figure.colorbar(im, ax=self.canvas)
+        cbar = self.figure.colorbar(im, ax=self.axes)
         cbar.ax.set_ylabel(cbar_title, rotation=-90, va="bottom")
         cbar.outline.set_visible(False)
         cbar.ax.tick_params(axis=u'both', which=u'both', length=0)
         if xlabels is not None:
-            self.canvas.set_xticks(np.arange(len(heatvalues[0])))
-            self.canvas.set_xticklabels(xlabels)
-            plt.setp(self.canvas.get_xticklabels(),
+            self.axes.set_xticks(np.arange(len(heatvalues[0])))
+            self.axes.set_xticklabels(xlabels)
+            plt.setp(self.axes.get_xticklabels(),
                      rotation=35,
                      ha='right',
                      rotation_mode='anchor')
 
         if ylabels is not None:
-            self.canvas.set_yticks(np.arange(len(heatvalues)))
-            self.canvas.set_yticklabels(ylabels)
+            self.axes.set_yticks(np.arange(len(heatvalues)))
+            self.axes.set_yticklabels(ylabels)
 
         if show_values:
             for y, row in enumerate(heatvalues):
@@ -706,7 +707,7 @@ class Plot:
         X, Y, Z = self._3d_preprocess(x, y, z)
         self.set_grid(axis=None)
         if fill:
-            cont = self.canvas.contourf(
+            cont = self.axes.contourf(
                 X, Y, Z,
                 zdir='x',
                 cmap=self.colormap,
@@ -714,7 +715,7 @@ class Plot:
                 **kwargs,
             )
         else:
-            cont = self.canvas.contour(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
+            cont = self.axes.contour(X, Y, Z, zdir='x', cmap=self.colormap, *args, **kwargs)
         return cont
 
     def circle(self, x, y, radius, fill=None, color=None, alpha=0.5,
@@ -722,7 +723,7 @@ class Plot:
         edgecolor, facecolor, fill_bool = self._get_edge_face_color(fill, color)
         c = Circle((x, y), radius, edgecolor=edgecolor, facecolor=facecolor,
                    alpha=alpha, linewidth=linewidth, fill=fill_bool, *args, **kwargs)
-        self.canvas.add_artist(c)
+        self.axes.add_artist(c)
 
     def rectangle(self, x, y, width, height, fill=None, color=None, alpha=0.5,
                   linewidth=1.5, *args, **kwargs):
@@ -732,7 +733,7 @@ class Plot:
         r = Rectangle((x, y), width=width, height=height, edgecolor=edgecolor,
                       facecolor=facecolor, alpha=alpha, linewidth=linewidth,
                       fill=fill_bool, *args, **kwargs)
-        self.canvas.add_artist(r)
+        self.axes.add_artist(r)
 
     def arrow(self, start, end, width=1.0, fill=None, color=None, linewidth=1.0,
               *args, **kwargs):
@@ -747,7 +748,7 @@ class Plot:
         r = Arrow(x, y, dx, dy, width=width, edgecolor=edgecolor,
                   facecolor=facecolor, fill=fill_bool, linewidth=linewidth,
                   *args, **kwargs)
-        self.canvas.add_artist(r)
+        self.axes.add_artist(r)
 
     def fancybox(self, x, y, width, height, style='round', fill=None,
                  color=None, alpha=0.5, linewidth=1.5, *args, **kwargs):
@@ -776,10 +777,10 @@ class Plot:
         r = FancyBboxPatch((x, y), width=width, height=height, boxstyle=style, edgecolor=edgecolor,
                       facecolor=facecolor, alpha=alpha, linewidth=linewidth,
                       fill=fill_bool, *args, **kwargs)
-        self.canvas.add_artist(r)
+        self.axes.add_artist(r)
 
     def text(self, text, xytext, *args, **kwargs):
-        self.canvas.annotate(text, xytext, textcoords='data', *args, **kwargs)
+        self.axes.annotate(text, xytext, textcoords='data', *args, **kwargs)
 
     def annotate(self, text, xytext, xylabel, rad=0.0, shape='->', width=0.5,
                  color='#000000', *args, **kwargs):
@@ -791,11 +792,11 @@ class Plot:
                 'facecolor': color,
                 'edgecolor': color,
                 }
-        self.canvas.annotate(text, xylabel, xytext, xycoords='data', textcoords='data', 
+        self.axes.annotate(text, xylabel, xytext, xycoords='data', textcoords='data', 
                 arrowprops=arrowprops, *args, **kwargs)
 
     def set_font(self, name):
-        self.update_settings({
+        self.update_rcparams({
             'mathtext.fontset': 'cm',
             'font.family': name,
             'font.sans-serif': name,
@@ -869,13 +870,13 @@ class Plot:
         elif y == 'decimal':
             yra = float('inf')
         if x is not None:
-            self.canvas.ticklabel_format(style='sci', axis='x', scilimits=(-xra, xra))
+            self.axes.ticklabel_format(style='sci', axis='x', scilimits=(-xra, xra))
         if y is not None:
-            self.canvas.ticklabel_format(style='sci', axis='y', scilimits=(-yra, yra))
+            self.axes.ticklabel_format(style='sci', axis='y', scilimits=(-yra, yra))
 
     def set_axis(self, xtitle='', ytitle=''):
-        self.canvas.set_xlabel(xtitle)
-        self.canvas.set_ylabel(ytitle)
+        self.axes.set_xlabel(xtitle)
+        self.axes.set_ylabel(ytitle)
 
     def set_palette(self, palette, num_colors=8):
         self.palette = palette
@@ -895,16 +896,16 @@ class Plot:
         self.colormap = cm
 
     def set_xticks(self, positions, labels=None):
-        self.canvas.set_xticks([])
-        self.canvas.set_xticks(positions)
+        self.axes.set_xticks([])
+        self.axes.set_xticks(positions)
         if labels is not None:
-            self.canvas.set_xticklabels(labels)
+            self.axes.set_xticklabels(labels)
 
     def set_yticks(self, positions, labels=None):
-        self.canvas.set_yticks([])
-        self.canvas.set_yticks(positions)
+        self.axes.set_yticks([])
+        self.axes.set_yticks(positions)
         if labels is not None:
-            self.canvas.set_yticklabels(labels)
+            self.axes.set_yticklabels(labels)
 
     def set_dimensions(self, height=None, width=None):
         if height is not None:
@@ -927,21 +928,21 @@ class Plot:
         if x is not None:
             x_scale, x_base = scale_base(x)
             if x_scale in ('log', 'symlog'):
-                self.canvas.set_xscale(x_scale, base=x_base)
+                self.axes.set_xscale(x_scale, base=x_base)
             else:
-                self.canvas.set_xscale(x_scale)
+                self.axes.set_xscale(x_scale)
         if y is not None:
             y_scale, y_base = scale_base(y)
             if y_scale in ('log', 'symlog'):
-                self.canvas.set_yscale(y_scale, base=y_base)
+                self.axes.set_yscale(y_scale, base=y_base)
             else:
-                self.canvas.set_yscale(y_scale)
+                self.axes.set_yscale(y_scale)
         if z is not None:
             z_scale, z_base = scale_base(z)
             if z_scale in ('log', 'symlog'):
-                self.canvas.set_zscale(z_scale, base=z_base)
+                self.axes.set_zscale(z_scale, base=z_base)
             else:
-                self.canvas.set_zscale(z_scale)
+                self.axes.set_zscale(z_scale)
 
     def set_lims(self, x=None, y=None, z=None):
         """
@@ -949,26 +950,26 @@ class Plot:
         none to re-use current ones.
         """
         if x is not None:
-            xmin, xmax = self.canvas.get_xlim()
+            xmin, xmax = self.axes.get_xlim()
             if x[0] is not None:
                 xmin = x[0]
             if x[1] is not None:
                 xmax = x[1]
-            self.canvas.set_xlim(xmin, xmax)
+            self.axes.set_xlim(xmin, xmax)
         if y is not None:
-            ymin, ymax = self.canvas.get_ylim()
+            ymin, ymax = self.axes.get_ylim()
             if y[0] is not None:
                 ymin = y[0]
             if y[1] is not None:
                 ymax = y[1]
-            self.canvas.set_ylim(ymin, ymax)
+            self.axes.set_ylim(ymin, ymax)
         if z is not None:
-            zmin, zmax = self.canvas.get_zlim()
+            zmin, zmax = self.axes.get_zlim()
             if z[0] is not None:
                 zmin = z[0]
             if z[1] is not None:
                 zmax = z[1]
-            self.canvas.set_zlim(zmin, zmax)
+            self.axes.set_zlim(zmin, zmax)
 
     def set_grid(self, axis='full', granularity='fine'):
         """
@@ -983,22 +984,22 @@ class Plot:
         elif granularity == 'coarse':
             granularity = 'major'
         if both or axis == 'vertical':
-            self.canvas.xaxis.grid(
+            self.axes.xaxis.grid(
                 which=granularity,
                 color=LIGHT_GRAY,
                 linestyle='-',
                 linewidth=0.7,
             )
         if both or axis == 'horizontal':
-            self.canvas.yaxis.grid(
+            self.axes.yaxis.grid(
                 which=granularity,
                 color=LIGHT_GRAY,
                 linestyle='-',
                 linewidth=0.7,
             )
         if axis is None or axis == 'none' or axis == 'off':
-            self.canvas.xaxis.grid(False)
-            self.canvas.yaxis.grid(False)
+            self.axes.xaxis.grid(False)
+            self.axes.yaxis.grid(False)
 
     def set_legend(
         self,
@@ -1030,15 +1031,15 @@ class Plot:
         legend_options.update(kwargs)
         self._legend_options = legend_options
 
-    def update_settings(self, updates):
-        self.settings.update(updates)
+    def update_rcparams(self, updates):
+        self.rcparams.update(updates)
 
     def save_legend(self, path):
-        handles, labels = self.canvas.get_legend_handles_labels()
+        handles, labels = self.axes.get_legend_handles_labels()
         if len(handles) > 0:
             legend_options = copy.copy(self._legend_options)
             show = legend_options.pop('visible', True)
-            legend = self.canvas.legend(frameon=True, **legend_options)
+            legend = self.axes.legend(frameon=True, **legend_options)
             expand = [-5, -5, 5, 5]
             fig = legend.figure
             fig.canvas.draw()
@@ -1064,12 +1065,12 @@ class Drawing(Plot):
 
     def __init__(self, *args, **kwargs):
         super(Drawing, self).__init__(*args, **kwargs)
-        self.canvas.axis('off')
+        self.axes.axis('off')
 
     def _preprint(self, *args, **kwargs):
         super(Drawing, self)._preprint(*args, **kwargs)
-        if self.canvas.legend_ is not None:
-            self.canvas.legend_.remove()
+        if self.axes.legend_ is not None:
+            self.axes.legend_.remove()
 
 
 class Image(Drawing):
@@ -1077,7 +1078,7 @@ class Image(Drawing):
     def __init__(self, path, *args, **kwargs):
         super(Image, self).__init__(*args, **kwargs)
         image = mpimg.imread(path)
-        self.canvas.imshow(image)
+        self.axes.imshow(image)
 
 
 class Plot3D(Plot):
@@ -1091,7 +1092,7 @@ class Plot3D(Plot):
         color = kwargs.pop('color', None)
         if color is None:
             color = next(self.colors)
-        self.canvas.plot(x, y, zs=z, color=color, *args, **kwargs)
+        self.axes.plot(x, y, zs=z, color=color, *args, **kwargs)
 
     def scatter(self, x, y, z=0, *args, **kwargs):
         if hasattr(z, '__call__'):
@@ -1099,11 +1100,11 @@ class Plot3D(Plot):
         color = kwargs.pop('color', None)
         if color is None:
             color = next(self.colors)
-        self.canvas.scatter(xs=x, ys=y, zs=z, c=color, *args, **kwargs)
+        self.axes.scatter(xs=x, ys=y, zs=z, c=color, *args, **kwargs)
 
     def surface(self, x, y, z=None, alpha=0.25, linewidth=0, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
-        self.canvas.plot_surface(X=X, Y=Y, Z=Z, rstride=1, cstride=1,
+        self.axes.plot_surface(X=X, Y=Y, Z=Z, rstride=1, cstride=1,
                                  cmap=self.colormap,
                                  linewidth=linewidth,
                                  antialiased=True,
@@ -1113,25 +1114,25 @@ class Plot3D(Plot):
 
     def wireframe(self, x, y, z=None, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
-        self.canvas.plot_wireframe(X=X, Y=Y, Z=Z, color=next(self.colors), *args, **kwargs)
+        self.axes.plot_wireframe(X=X, Y=Y, Z=Z, color=next(self.colors), *args, **kwargs)
 
     def projection(self, x, y, z=None, alpha=0.1, linewidth=0, *args, **kwargs):
         X, Y, Z = self._3d_preprocess(x, y, z)
         xmin = np.min(x)
         ymin = np.min(Y)
         zmin = np.min(Z)
-        self.canvas.plot_surface(X, Y, Z, rstride=1, cstride=1,
+        self.axes.plot_surface(X, Y, Z, rstride=1, cstride=1,
                 linewidth=linewidth, alpha=alpha, cmap=self.colormap,
                 *args, **kwargs)
-        self.canvas.contour(X, Y, Z, zdir='z', offset=zmin, cmap=self.colormap)
-        self.canvas.contour(X, Y, Z, zdir='x', offset=xmin, cmap=self.colormap)
-        self.canvas.contour(X, Y, Z, zdir='y', offset=ymin, cmap=self.colormap)
+        self.axes.contour(X, Y, Z, zdir='z', offset=zmin, cmap=self.colormap)
+        self.axes.contour(X, Y, Z, zdir='x', offset=xmin, cmap=self.colormap)
+        self.axes.contour(X, Y, Z, zdir='y', offset=ymin, cmap=self.colormap)
 
     def set_camera(self, elev=None, azim=None):
         """
         Both parameters are angles in [0, 360].
         """
-        self.canvas.view_init(elev, azim)
+        self.axes.view_init(elev, azim)
 
     def set_notation(self, x=None, y=None, z=None):
         if x == 'scientific':
@@ -1148,16 +1149,16 @@ class Plot3D(Plot):
             zra = float('inf')
         print(x, y, z)
         if x is not None:
-            self.canvas.ticklabel_format(style='sci', axis='x', scilimits=(-xra, xra))
+            self.axes.ticklabel_format(style='sci', axis='x', scilimits=(-xra, xra))
         if y is not None:
-            self.canvas.ticklabel_format(style='sci', axis='y', scilimits=(-yra, yra))
+            self.axes.ticklabel_format(style='sci', axis='y', scilimits=(-yra, yra))
         if z is not None:
-            self.canvas.ticklabel_format(style='sci', axis='z', scilimits=(-zra, zra))
+            self.axes.ticklabel_format(style='sci', axis='z', scilimits=(-zra, zra))
 
     def set_axis(self, xtitle='', ytitle='', ztitle='', notation='scientific'):
-        self.canvas.set_xlabel(xtitle, labelpad=25)
-        self.canvas.set_ylabel(ytitle, labelpad=25)
-        self.canvas.set_zlabel(ztitle, labelpad=25)
+        self.axes.set_xlabel(xtitle, labelpad=25)
+        self.axes.set_ylabel(ytitle, labelpad=25)
+        self.axes.set_zlabel(ztitle, labelpad=25)
 
 
 class Container(Plot):
@@ -1168,27 +1169,27 @@ class Container(Plot):
         if width is None:
             width = 4200.0 * cols
         super(Container, self).__init__(height=height, width=width, *args, **kwargs)
-        self.canvas.axis('off')
+        self.axes.axis('off')
         self.rows = rows
         self.cols = cols
         self.shape = (rows, cols)
-        self.canvases = []
+        self.axeses = []
         self.plots = []
         for i in range(rows):
             self.plots.append([])
-            self.canvases.append([])
+            self.axeses.append([])
             for j in range(cols):
                 subplot = self.figure.add_subplot(rows, cols, i * cols + j + 1)
                 subplot.axis('off')
                 self.plots[i].append(None)
-                self.canvases[i].append(subplot)
+                self.axeses[i].append(subplot)
 #        self.figure.set_tight_layout(False)
 
     def _preprint(self):
         for i in range(self.rows):
             for j in range(self.cols):
                 plot = self.plots[i][j]
-                canvas = self.canvases[i][j]
+                canvas = self.axeses[i][j]
                 if plot is not None:
                     img_fname = TEMP_FILENAME + str(time()) + TEMP_FILE_EXT
                     plot.save(img_fname, bbox_inches='tight')
