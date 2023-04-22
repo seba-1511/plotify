@@ -1,7 +1,6 @@
 <center>
-<img src="./assets/images/plotify-logo-square.png" width="150px" />
-<br />
-![plotify](./assets/images/plotify.png)
+<img src='./assets/images/plotify-logo-kde.png' width="60px" style='padding-bottom: 5px; margin-right: 10px;'/>
+<img src='./assets/images/plotify.png' max-width="150px" />
 </center>
 
 --------------------------------------------------------------------------------
