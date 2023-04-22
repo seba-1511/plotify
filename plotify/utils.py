@@ -28,6 +28,6 @@ def usetex(use=True, silent=False, force=False):
                 stdout=subprocess.DEVNULL,
                 stderr=subprocess.DEVNULL
             ).communicate()[0]:
-                    mpl.rc('text', usetex=True)
+                mpl.rc('text', usetex=True)
         elif not silent:
             print('texlive-full is not installed, plotify cannot use tex.')

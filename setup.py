@@ -38,5 +38,6 @@ setup(
         'plotly',
         'scipy',
         'wandb',
+        'ttf-opensans',
     ],
 )

@@ -5,6 +5,7 @@ nav:
     - Plot: api/plots.md
     - More Plots: api/more_plots.md
     - Colors: api/colors.md
+    - Fonts: api/fonts.md
     - Smoothing: api/smoothing.md
     - Utilities: api/utils.md
     - WandB: api/wandb.md

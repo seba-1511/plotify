@@ -11,6 +11,7 @@ from mpl_toolkits.mplot3d import Axes3D #required for 3D plots
 from matplotlib import image as mpimg
 from matplotlib.patches import Circle, Rectangle, Arrow, FancyBboxPatch, BoxStyle
 from matplotlib import patheffects
+from matplotlib import font_manager
 
 from tempfile import gettempdir
 from collections.abc import Iterable
@@ -95,6 +96,7 @@ class Plot:
 
         """
         usetex(True, silent=True)
+        self.settings = {}
         self.dpi = float(dpi)
         self.figure = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
         self.height = height
@@ -196,19 +198,20 @@ class Plot:
         return edge, face, fill_bool
 
     def show(self):
-        h, w = self.figure.get_figheight(), self.figure.get_figwidth()
-        dpi = self.figure.get_dpi()
-        self.figure.set_dpi(75.0)
-        self.figure.set_figheight(3.5, forward=True)
-        self.figure.set_figwidth(3.5, forward=True)
-        self.figure.set_size_inches((2*3.5, 2*3.5), forward=True)
-        self._preprint()
-        self.figure.show()
-        plt.draw()
-        plt.show(self.figure)
-        self.figure.set_dpi(dpi)
-        self.figure.set_figheight(h, forward=True)
-        self.figure.set_figwidth(w, forward=True)
+        with plt.rc_context(self.settings):
+            h, w = self.figure.get_figheight(), self.figure.get_figwidth()
+            dpi = self.figure.get_dpi()
+            self.figure.set_dpi(75.0)
+            self.figure.set_figheight(3.5, forward=True)
+            self.figure.set_figwidth(3.5, forward=True)
+            self.figure.set_size_inches((2*3.5, 2*3.5), forward=True)
+            self._preprint()
+            self.figure.show()
+            plt.draw()
+            plt.show(self.figure)
+            self.figure.set_dpi(dpi)
+            self.figure.set_figheight(h, forward=True)
+            self.figure.set_figwidth(w, forward=True)
 
     def save(self, path, bbox_inches='tight', **kwargs):
         # create path if non-existant
@@ -245,17 +248,19 @@ class Plot:
                 msg = 'HTML export error. Is plotly installed ?'
                 raise Exception(msg)
         else:
-            self._preprint()
-            self.figure.savefig(path, bbox_inches=bbox_inches, **kwargs)
+            with plt.rc_context(self.settings):
+                self._preprint()
+                self.figure.savefig(path, bbox_inches=bbox_inches, **kwargs)
 
     def numpy(self):
         from PIL import Image as PILImage
-        self._preprint()
-        canvas = self.figure.canvas
-        canvas.draw()
-        img_np = np.array(PILImage.frombytes('RGB',
-                                             canvas.get_width_height(),
-                                             canvas.tostring_rgb()))
+        with plt.rc_context(self.settings):
+            self._preprint()
+            canvas = self.figure.canvas
+            canvas.draw()
+            img_np = np.array(PILImage.frombytes('RGB',
+                                                 canvas.get_width_height(),
+                                                 canvas.tostring_rgb()))
         return img_np[:, :, :3]
 
     def errorbar(self, x, y, errors=None, vertical=True, *args, **kwargs):
@@ -789,7 +794,23 @@ class Plot:
         self.canvas.annotate(text, xylabel, xytext, xycoords='data', textcoords='data', 
                 arrowprops=arrowprops, *args, **kwargs)
 
-    def set_title(self, title, loc='center', x=None, y=0.98, text_obj=None):
+    def set_font(self, name):
+        self.update_settings({
+            'mathtext.fontset': 'cm',
+            'font.family': name,
+            'font.sans-serif': name,
+            'font.serif': name,
+        })
+
+    def set_title(
+        self,
+        title,
+        loc='center',
+        x=None,
+        y=0.98,
+        text_obj=None,
+        **kwargs,
+    ):
         """
         ## Description
 
@@ -801,6 +822,7 @@ class Plot:
         * `loc`: Location of the title.
         * `x`: x-coordinate of the title.
         * `y`: y-coordinate of the title.
+        * `font`: Optional font name string.
         * `text_obj`: A text object where the title is set.
 
         ## Example
@@ -978,7 +1000,17 @@ class Plot:
             self.canvas.xaxis.grid(False)
             self.canvas.yaxis.grid(False)
 
-    def set_legend(self, loc='best', title=None, show=True, inset=True, ncol=1, alpha=0.8, **kwargs):
+    def set_legend(
+        self,
+        loc='best',
+        title=None,
+        show=True,
+        inset=True,
+        ncol=1,
+        alpha=0.8,
+        round_corners=False,
+        **kwargs,
+    ):
         # Here process the position
         legend_options = {}
         legend_location = loc
@@ -993,9 +1025,13 @@ class Plot:
             'ncol': ncol,
             'framealpha': alpha,
             'title': title,
+            'fancybox': round_corners,
         }
         legend_options.update(kwargs)
         self._legend_options = legend_options
+
+    def update_settings(self, updates):
+        self.settings.update(updates)
 
     def save_legend(self, path):
         handles, labels = self.canvas.get_legend_handles_labels()
