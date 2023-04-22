@@ -20,6 +20,7 @@ from time import time
 
 from .utils import usetex
 from .colors import MAUREENSTONE_COLORS, Vibrant, LIGHT_GRAY
+from .markers import Marker, MARKERS
 
 # high-definition images in IPython notebooks
 try:
@@ -38,7 +39,7 @@ MEM_IMG = BytesIO()
 
 
 FONT_SIZE = 20
-MARKERS = ['o', 'X', 'v', '*', 'd', 's', '*', 'p']
+# MARKERS = ['o', 'X', 'v', '*', 'd', 's', '*', 'p']
 PALETTE_NAME = MAUREENSTONE_COLORS
 COLORMAP_3D = 'YlGnBu'
 TEMP_FILENAME = os.path.join(gettempdir(), 'plotify')
@@ -310,6 +311,10 @@ class BasePlot:
         marker = kwargs.pop('marker', None)
         if marker is None:
             marker = next(self.markers)
+        if isinstance(marker, Marker):
+            kwargs.setdefault('markerfacecolor', marker.facecolor)
+            kwargs.setdefault('markeredgewidth', marker.edgewidth)
+            marker = marker.symbol
         elif marker is False:
             marker = None
         markevery = kwargs.pop('markevery', None)
@@ -390,6 +395,10 @@ class BasePlot:
         marker = kwargs.pop('marker', None)
         if marker is None:
             marker = next(self.markers)
+        if isinstance(marker, Marker):
+            kwargs.setdefault('markerfacecolor', marker.facecolor)
+            kwargs.setdefault('markeredgewidth', marker.edgewidth)
+            marker = marker.symbol
         elif marker is False:
             marker = None
         markevery = kwargs.pop('markevery', None)
@@ -584,6 +593,8 @@ class BasePlot:
         marker = kwargs.pop('marker', None)
         if marker is None:
             marker = next(self.markers)
+        if isinstance(marker, Marker):
+            marker = marker.symbol
         elif marker is False:
             marker = None
         self.axes.scatter(color=color, marker=marker, *args, **kwargs)
@@ -621,7 +632,7 @@ class BasePlot:
 
         ~~~python
         values = np.arange(100).reshape(10, 10)
-        plot = pl.Plot('Title')
+        plot = pl.Plot(height=3900.0, width=7200.0)
         plot.heatmap(
             heatvalues=values,
             xlabels=[str(x) for x in range(10)],

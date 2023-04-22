@@ -33,7 +33,7 @@ if __name__ == "__main__":
 
     # heatmap
     values = np.arange(100).reshape(10, 10)
-    plot = pl.Plot('Title')
+    plot = pl.Plot(height=3900.0, width=7200.0)
     plot.heatmap(
         heatvalues=values,
         xlabels=[str(x) for x in range(10)],

@@ -3,7 +3,6 @@ import plotify as pl
 import numpy as np
 
 plot = pl.ModernPlot()
-plot.set_font('Open Sans')
 plot.set_palette('vibrant')
 plot.set_axis('Iterations', r'Values $(\times 1,000)$')
 plot.set_grid('horizontal', granularity='fine')
@@ -17,14 +16,26 @@ plot.set_subtitle(r'$\int f(x) dx$')
 
 # plot data
 num_points = 10
-plot.plot(np.arange(num_points), np.arange(num_points)**1 / 1000,
-          label=r'Linear', markerfacecolor='white', markeredgewidth=2.0)
-plot.plot(np.arange(num_points), np.arange(num_points)**2 / 1000,
-          label='Quadratic', markerfacecolor=None, markeredgewidth=1.0)
-plot.plot(np.arange(num_points), np.arange(num_points)**3 / 1000,
-          label='Cubic', markerfacecolor='white', markeredgewidth=2.0)
-plot.plot(np.arange(num_points), np.exp(np.arange(num_points)) / 1000,
-          label='Exponential', markerfacecolor=None, markeredgewidth=1.0)
+plot.plot(
+    np.arange(num_points),
+    np.arange(num_points)**1 / 1000,
+    label=r'Linear',
+)
+plot.plot(
+    np.arange(num_points),
+    np.arange(num_points)**2 / 1000,
+    label='Quadratic',
+)
+plot.plot(
+    np.arange(num_points),
+    np.arange(num_points)**3 / 1000,
+    label='Cubic',
+)
+plot.plot(
+    np.arange(num_points),
+    np.exp(np.arange(num_points)) / 1000,
+    label='Exponential',
+)
 
 plot.set_legend(title='Curve Type')
 

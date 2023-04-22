@@ -9,6 +9,7 @@ from .custom_plots import Plot, PublicationPlot, LowResPlot, ListContainer, Mode
 from . import utils
 from . import fonts
 from . import colors
+from . import markers
 from . import custom_plots
 from . import smoothing
 from . import wandb_plots
