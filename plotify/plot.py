@@ -106,6 +106,7 @@ class BasePlot:
         self.height = height
         self.width = width
         self.title = self.figure.suptitle(title, fontsize=FONT_SIZE)
+        self.set_font('Open Sans')
         if plot3d:
             # self.axes = self.figure.add_subplot(1, 1, 1, projection='3d')
             self.axes = self.figure.gca(projection='3d')
