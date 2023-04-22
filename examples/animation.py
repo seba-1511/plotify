@@ -1,7 +1,7 @@
 #!/usr/bin/env python
 
 import numpy as np
-from plotify import Plot, Drawing, Plot3D, Animation
+from plotify import BasePlot, Drawing, Plot3D, Animation
 
 if __name__ == '__main__':
     x = np.linspace(-7, 7, 50)
@@ -24,7 +24,7 @@ if __name__ == '__main__':
 
     # Setup Scatter Graph
     x = np.linspace(-7, 7, 30)
-    q = Plot('Scatter \(PuBuGn\)', 500, 500, 100)
+    q = BasePlot('Scatter \(PuBuGn\)', 500, 500, 100)
     q.axes.axis('off')
 
     # Scatter animation

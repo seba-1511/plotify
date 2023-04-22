@@ -10,7 +10,7 @@ The API for creating Plot objects.
     import plotify as pl
     ~~~
 
-::: plotify.Plot
+::: plotify.BasePlot
     selection:
       members:
         - __init__
@@ -32,6 +32,8 @@ The API for creating Plot objects.
         - set_legend
         - set_dimensions
         - set_dpi
+        - set_font
+        - update_rcparams
         - plot
         - scatter
         - errorbar

@@ -6,13 +6,7 @@ import numpy as np
 import plotify as pl
 
 
-def new_plot():
-    return pl.Plot()
-
-
 if __name__ == "__main__":
-
-    pl.Plot = pl.ModernPlot
 
     # basic
     plot = pl.Plot('Title')

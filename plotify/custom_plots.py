@@ -3,10 +3,10 @@
 from matplotlib import font_manager
 import matplotlib.patheffects as path_effects
 
-from plotify import Plot, Container
+from plotify import BasePlot, Container
 
 
-class PublicationPlot(Plot):
+class PublicationPlot(BasePlot):
 
     def __init__(self, title='', height=2600.0, width=2600.0, dpi=530.0, *args, **kwargs):
         super(PublicationPlot, self).__init__(
@@ -28,7 +28,20 @@ class PublicationPlot(Plot):
         super(PublicationPlot, self).set_subtitle(title, loc=loc, x=x, y=y)
 
 
-class LowResPlot(Plot):
+class Plot(PublicationPlot):
+
+    def __init__(self, *args, width=7500.0, **kwargs):
+        super(Plot, self).__init__(*args, width=width, **kwargs)
+
+    def set_title(self, title, loc='left', x=0.275, y=0.94, **kwargs):
+        super(PublicationPlot, self).set_title(
+            title=title, loc=loc, x=x, y=y, **kwargs)
+
+    def set_subtitle(self, title, loc='right', x=0.95, y=0.90):
+        super(PublicationPlot, self).set_subtitle(title, loc=loc, x=x, y=y)
+
+
+class LowResPlot(BasePlot):
 
     def __init__(self, title='', height=975.0, width=1800.0, dpi=210.0, *args, **kwargs):
         super(LowResPlot, self).__init__(
@@ -78,7 +91,7 @@ class ModernPlot(PublicationPlot):
     def _preprint(self):
         self._legend_options['title_fontproperties'] = {
             'weight': 'bold',
-            'size': 13,
+            # 'size': 13,
         }
 
         # set axis tick font

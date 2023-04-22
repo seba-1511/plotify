@@ -4,7 +4,7 @@ from ._version import __version__
 from .plot import *
 from .utils import usetex
 from .colors import Vibrant, Maureen, lighten_color
-from .custom_plots import PublicationPlot, LowResPlot, ListContainer, ModernPlot
+from .custom_plots import Plot, PublicationPlot, LowResPlot, ListContainer, ModernPlot
 
 from . import utils
 from . import fonts

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import numpy as np
-from plotify import Plot, PublicationPlot, LowResPlot, Drawing, Plot3D, Container, Image
+from plotify import BasePlot, PublicationPlot, LowResPlot, Drawing, Plot3D, Container, Image
 
 if __name__ == '__main__':
 #    x = np.linspace(-7, 7, 50)

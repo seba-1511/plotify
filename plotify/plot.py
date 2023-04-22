@@ -61,7 +61,7 @@ def set_box_color(canvas, bp, color):
         a.set_color('white')
 
 
-class Plot:
+class BasePlot:
 
     def __init__(
         self,
@@ -96,7 +96,10 @@ class Plot:
 
         """
         usetex(True, silent=True)
-        self.rcparams = {}
+        self.rcparams = {
+            'legend.title_fontsize': 12,
+            'legend.fontsize': 14,
+        }
         self.dpi = float(dpi)
         self.figure = plt.figure(figsize=(width/dpi, height/dpi), dpi=dpi)
         self.height = height
@@ -105,7 +108,6 @@ class Plot:
         if plot3d:
             # self.axes = self.figure.add_subplot(1, 1, 1, projection='3d')
             self.axes = self.figure.gca(projection='3d')
-            self.canvas = self.axes  # for backward compatibility
             self.subtitle = self.axes.text(
                 x=0.5,
                 y=0.90,
@@ -129,6 +131,7 @@ class Plot:
                 style='italic',
                 color='gray',
             )
+        self.canvas = self.axes  # for backward compatibility
         self.set_palette('maureen')
         self.set_grid('horizontal')
         self.colormap = COLORMAP_3D
@@ -707,7 +710,7 @@ class Plot:
         X, Y, Z = self._3d_preprocess(x, y, z)
         self.set_grid(axis=None)
         if fill:
-            cont = self.axes.contourf(
+            cont = self.canvas.contourf(
                 X, Y, Z,
                 zdir='x',
                 cmap=self.colormap,
@@ -1027,6 +1030,9 @@ class Plot:
             'framealpha': alpha,
             'title': title,
             'fancybox': round_corners,
+            'title_fontproperties': {
+                'weight': 'bold',
+            }
         }
         legend_options.update(kwargs)
         self._legend_options = legend_options
@@ -1061,7 +1067,7 @@ class Plot:
         usetex(*args, **kwargs)
 
 
-class Drawing(Plot):
+class Drawing(BasePlot):
 
     def __init__(self, *args, **kwargs):
         super(Drawing, self).__init__(*args, **kwargs)
@@ -1081,7 +1087,7 @@ class Image(Drawing):
         self.axes.imshow(image)
 
 
-class Plot3D(Plot):
+class Plot3D(BasePlot):
 
     def __init__(self, *args, **kwargs):
         super(Plot3D, self).__init__(plot3d=True, *args, **kwargs)
@@ -1161,7 +1167,7 @@ class Plot3D(Plot):
         self.axes.set_zlabel(ztitle, labelpad=25)
 
 
-class Container(Plot):
+class Container(BasePlot):
 
     def __init__(self, rows=1, cols=2, height=None, width=None, *args, **kwargs):
         if height is None:
