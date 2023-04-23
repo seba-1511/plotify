@@ -11,7 +11,7 @@ plot.set_subtitle(r'Subtitle: $y = f(x)$')
 
 # settings
 plot.set_palette('vibrant')
-plot.set_axis(r'Argument $x$', r'Values $f(x) / 1,000$')
+plot.set_axis(x=r'Argument $x$', y=r'Values $f(x) / 1,000$')
 plot.set_notation(x='scientific', y='decimal')
 plot.set_scales(x='linear', y='log2')
 plot.set_grid('horizontal', granularity='coarse')
