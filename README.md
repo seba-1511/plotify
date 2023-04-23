@@ -1,6 +1,6 @@
 <center>
-<img src='./assets/images/plotify-logo-kde.png' width="60px" style='padding-bottom: 5px; margin-right: 10px;'/>
-<img src='./assets/images/plotify.png' max-width="150px" />
+<img src='https://sebarnold.net/plotify/assets/images/plotify-logo-kde.png' width="60px" style='padding-bottom: 5px; margin-right: 10px;'/>
+<img src='https://sebarnold.net/plotify/assets/images/plotify.png' max-width="150px" />
 </center>
 
 --------------------------------------------------------------------------------
@@ -13,7 +13,7 @@
 
 <center>
 <a href="https://github.com/seba-1511/plotify/blob/examples/modern_plot.py" />
-<img src='./assets/images/examples/modern_plot.png' max-width="100%" />
+<img src='https://sebarnold.net/plotify/assets/images/examples/modern_plot.png' max-width="100%" />
 </a>
 </center>
 
