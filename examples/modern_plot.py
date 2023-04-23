@@ -46,4 +46,4 @@ plot.plot(
     linestyle='-.',
 )
 
-plot.save('docs/assets/images/examples/modern_plot.png', bbox_inches='tight')
+plot.save('docs/assets/images/examples/modern_plot.png')
