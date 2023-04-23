@@ -139,6 +139,7 @@ class Plot:
             'lower right': (1.25, -0.025),
         }
         self.markers = cycle(MARKERS)
+        self.canvas.tick_params(width=0.8)
 
     def _preprint(self):
         handles, labels = self.canvas.get_legend_handles_labels()

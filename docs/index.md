@@ -1,4 +1,6 @@
 <center>
+<img src="./assets/images/plotify-logo-square.png" width="150px" />
+<br />
 ![plotify](./assets/images/plotify.png)
 </center>
 
