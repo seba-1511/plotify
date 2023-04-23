@@ -1,25 +1,4 @@
-<p align="center">
-<img src='https://sebarnold.net/plotify/assets/images/plotify-logo-kde.png' width="60px" style='padding-bottom: 5px; margin-right: 10px;'/>
-<img src='https://sebarnold.net/plotify/assets/images/plotify.png' max-width="150px" />
-</p>
 
---------------------------------------------------------------------------------
-
-![Test Status](https://github.com/seba-1511/plotify/workflows/Testing/badge.svg?branch=master)
-
-# Example
-
-#### Output
-
-<center>
-<a href="https://github.com/seba-1511/plotify/blob/examples/modern_plot.py" />
-<img src='https://sebarnold.net/plotify/assets/images/examples/modern_plot.png' max-width="100%" />
-</a>
-</center>
-
-#### Code
-
-~~~python
 import plotify as pl
 import numpy as np
 
@@ -68,15 +47,3 @@ plot.plot(
 )
 
 plot.save('docs/assets/images/examples/modern_plot.png', bbox_inches='tight')
-~~~
-
-# Install
-
-`pip install plotify`
-
-# Resources
-
-* GitHub: [github.com/seba-1511/plotify](https://github.com/seba-1511/plotify)
-* Documentation: [sebarnold.net/plotify](https://sebarnold.net/plotify)
-* Contact: [sebarnold.net](https://sebarnold.net)
-

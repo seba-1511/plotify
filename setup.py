@@ -1,23 +1,43 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
 
+import re
 from setuptools import (
-    setup as install,
+    setup,
     find_packages,
 )
 
-VERSION = '0.1.18'
+# Parses version number: https://stackoverflow.com/a/7071358
+VERSIONFILE = 'plotify/_version.py'
+verstrline = open(VERSIONFILE, "rt").read()
+VSRE = r"^__version__ = ['\"]([^'\"]*)['\"]"
+mo = re.search(VSRE, verstrline, re.M)
+if mo:
+    VERSION = mo.group(1)
+else:
+    raise RuntimeError('Unable to find version string in %s.' % (VERSIONFILE,))
 
-install(
+# Installs the package
+setup(
     name='plotify',
+    packages=find_packages(),
     version=VERSION,
-    description="Make beautiful plots, fast.",
-#    long_description=open('README.md').read(),
+    description='Beautiful plots, fast.',
+    long_description=open('README.md').read(),
+    long_description_content_type='text/markdown',
     author='Seb Arnold',
     author_email='smr.arnold@gmail.com',
-    url='http://www.seba1511.com',
+    url='https://learnables.github.com/plotify',
     download_url='https://github.com/seba-1511/plotify/archive/' + str(VERSION) + '.zip',
     license='License :: OSI Approved :: Apache Software License',
-    packages=find_packages(exclude=["tests"]),
     classifiers=[],
-    install_requires=['numpy', 'matplotlib>=3.3.0', 'Pillow', 'plotly'],
+    scripts=[],
+    install_requires=[
+        'numpy',
+        'matplotlib>=3.3.0',
+        'Pillow',
+        'plotly',
+        'scipy',
+        'wandb',
+        'ttf-opensans',
+    ],
 )

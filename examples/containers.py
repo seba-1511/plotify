@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-from plotify import Plot, Container
+from plotify import BasePlot, Container
 
 
 def set_all(cont, plot):
@@ -10,9 +10,9 @@ def set_all(cont, plot):
 
 
 if __name__ == '__main__':
-    native = Plot('Native')
+    native = BasePlot('Native')
     native.set_axis('x-axis', 'y-axis')
-    square = Plot(title='Square', width=3000, height=3000)
+    square = BasePlot(title='Square', width=3000, height=3000)
     square.set_axis('x-axis', 'y-axis')
     for i in range(1, 6, 2):
         for j in range(1, 6, 2):

@@ -5,6 +5,12 @@ import requests
 
 class TensorboardAPI:
 
+    """
+    ## Description
+
+    Helper class to fetch values from a running TensorBoard server.
+    """
+
     def __init__(self, address=None, run=None, tag=None):
         if address is None:
             address = 'http://localhost:6006'
@@ -12,7 +18,13 @@ class TensorboardAPI:
         self.run = run
         self.tag = tag
 
-    def fetch_scalars(self, address=None, run=None, tag=None, return_steps=True):
+    def fetch_scalars(
+        self,
+        address=None,
+        run=None,
+        tag=None,
+        return_steps=True,
+    ):
         if address is None:
             address = self.address
         if run is None:
