@@ -1,7 +1,7 @@
 
-# Custom Plots
+# Plot Subclasses
 
-The following classes inherit from `BasePlot`.
+The following are subclasses from `BasePlot` and follow the same API (they just have different default).
 
 ## Predefined 2D Plots
 
