@@ -891,9 +891,9 @@ class BasePlot:
         if y is not None:
             self.axes.ticklabel_format(style='sci', axis='y', scilimits=(-yra, yra))
 
-    def set_axis(self, xtitle='', ytitle=''):
-        self.axes.set_xlabel(xtitle)
-        self.axes.set_ylabel(ytitle)
+    def set_axis(self, x='', y=''):
+        self.axes.set_xlabel(x)
+        self.axes.set_ylabel(y)
 
     def set_palette(self, palette, num_colors=8):
         self.palette = palette
@@ -1175,10 +1175,10 @@ class Plot3D(BasePlot):
         if z is not None:
             self.axes.ticklabel_format(style='sci', axis='z', scilimits=(-zra, zra))
 
-    def set_axis(self, xtitle='', ytitle='', ztitle='', notation='scientific'):
-        self.axes.set_xlabel(xtitle, labelpad=25)
-        self.axes.set_ylabel(ytitle, labelpad=25)
-        self.axes.set_zlabel(ztitle, labelpad=25)
+    def set_axis(self, x='', y='', z='', notation='scientific'):
+        self.axes.set_xlabel(x, labelpad=25)
+        self.axes.set_ylabel(y, labelpad=25)
+        self.axes.set_zlabel(z, labelpad=25)
 
 
 class Container(BasePlot):
