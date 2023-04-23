@@ -1,7 +1,14 @@
 
-# More Plots
+# Custom Plots
+
+The following classes inherit from `BasePlot`.
 
 ## Predefined 2D Plots
+
+::: plotify.custom_plots.Plot
+    selection:
+      members:
+        - __init__
 
 ::: plotify.custom_plots.PublicationPlot
     selection:
@@ -9,6 +16,11 @@
         - __init__
 
 ::: plotify.custom_plots.LowResPlot
+    selection:
+      members:
+        - __init__
+
+::: plotify.custom_plots.ModernPlot
     selection:
       members:
         - __init__

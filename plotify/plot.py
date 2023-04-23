@@ -313,8 +313,9 @@ class BasePlot:
         if marker is None:
             marker = next(self.markers)
         if isinstance(marker, Marker):
-            kwargs.setdefault('markerfacecolor', marker.facecolor)
-            kwargs.setdefault('markeredgewidth', marker.edgewidth)
+            kwargs.setdefault('markerfacecolor', marker.color)
+            kwargs.setdefault('markersize', marker.size)
+            kwargs.setdefault('markeredgewidth', marker.width)
             marker = marker.symbol
         elif marker is False:
             marker = None
@@ -397,8 +398,9 @@ class BasePlot:
         if marker is None:
             marker = next(self.markers)
         if isinstance(marker, Marker):
-            kwargs.setdefault('markerfacecolor', marker.facecolor)
-            kwargs.setdefault('markeredgewidth', marker.edgewidth)
+            kwargs.setdefault('markerfacecolor', marker.color)
+            kwargs.setdefault('markersize', marker.size)
+            kwargs.setdefault('markeredgewidth', marker.width)
             marker = marker.symbol
         elif marker is False:
             marker = None

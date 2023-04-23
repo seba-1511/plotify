@@ -7,22 +7,22 @@ Plotify provides a generic way to define markers and some of their properties:
 
 From which a set of preconfigured markers is defined:
 
-::: plotify.markers.Circle
+::: plotify.markers.circle
 
-::: plotify.markers.Cross
+::: plotify.markers.cross
 
-::: plotify.markers.Diamond
+::: plotify.markers.diamond
 
-::: plotify.markers.DownTriangle
+::: plotify.markers.pentagone
 
-::: plotify.markers.LeftTriangle
+::: plotify.markers.square
 
-::: plotify.markers.Pentagone
+::: plotify.markers.star
 
-::: plotify.markers.RightTriangle
+::: plotify.markers.triangle_up
 
-::: plotify.markers.Square
+::: plotify.markers.triangle_down
 
-::: plotify.markers.Star
+::: plotify.markers.triangle_left
 
-::: plotify.markers.UpTriangle
+::: plotify.markers.triangle_right

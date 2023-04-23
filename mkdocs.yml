@@ -2,8 +2,8 @@
 nav:
   - Home: index.md
   - Documentation:
-    - Plot: api/plots.md
-    - More Plots: api/more_plots.md
+    - Plot API: api/plots.md
+    - Custom Plots: api/more_plots.md
     - Colors: api/colors.md
     - Fonts: api/fonts.md
     - Markers: api/markers.md

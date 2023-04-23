@@ -1,30 +1,53 @@
 
 class Marker:
 
-    def __init__(self, symbol='o', facecolor=None, edgewidth=2.0):
+    def __init__(self, symbol='o', fill=True, size=8.5):
         self.symbol = symbol
-        self.facecolor = facecolor
-        self.edgewidth = edgewidth
+
+        if fill:
+            self.width = 0.0
+            self.color = None
+        else:
+            self.width = 2.0
+            self.color = 'white'
+
+        self.size = size
+        if size == 'small':
+            self.size = 6.0
+            if not fill:
+                self.width = 1.0
+        elif size == 'large':
+            self.size = 8.5
+            if fill:
+                self.width = 2.0
+
+    def __call__(self, **kwargs):
+        new_args = {
+            'symbol': kwargs.get('symbol', self.symbol),
+            'fill': kwargs.get('fill', self.color is None),
+            'size': kwargs.get('size', self.size),
+        }
+        return Marker(**new_args)
 
 
-Circle = Marker(symbol='o', facecolor='white', edgewidth=2.0)
-Cross = Marker(symbol='X', facecolor=None, edgewidth=2.0)
-DownTriangle = Marker(symbol='v', facecolor='white', edgewidth=2.0)
-UpTriangle = Marker(symbol='^', facecolor='white', edgewidth=2.0)
-LeftTriangle = Marker(symbol='<', facecolor='white', edgewidth=2.0)
-RightTriangle = Marker(symbol='>', facecolor='white', edgewidth=2.0)
-Star = Marker(symbol='*', facecolor=None, edgewidth=2.0)
-Diamond = Marker(symbol='d', facecolor='white', edgewidth=2.0)
-Square = Marker(symbol='s', facecolor='white', edgewidth=2.0)
-Pentagone = Marker(symbol='p', facecolor='white', edgewidth=2.0)
+circle = Marker(symbol='o', fill=False, size='large')
+cross = Marker(symbol='X', fill=True, size='large')
+triangle_down = Marker(symbol='v', fill=False, size='large')
+triangle_up = Marker(symbol='^', fill=False, size='large')
+triangle_left = Marker(symbol='<', fill=False, size='large')
+triangle_right = Marker(symbol='>', fill=False, size='large')
+star = Marker(symbol='*', fill=True, size='large')
+diamond = Marker(symbol='d', fill=False, size='large')
+square = Marker(symbol='s', fill=False, size='large')
+pentagone = Marker(symbol='p', fill=False, size='large')
 
 MARKERS = [
-    Circle,
-    Cross,
-    DownTriangle,
-    Star,
-    Diamond,
-    Square,
-    UpTriangle,
-    Pentagone,
+    circle,
+    cross,
+    triangle_down,
+    star,
+    diamond,
+    square,
+    triangle_up,
+    pentagone,
 ]
