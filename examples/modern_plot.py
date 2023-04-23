@@ -2,41 +2,48 @@
 import plotify as pl
 import numpy as np
 
-plot = pl.ModernPlot()
-plot.set_palette('vibrant')
-plot.set_axis('Iterations', r'Values $(\times 1,000)$')
-plot.set_grid('horizontal', granularity='fine')
-plot.set_notation(x='scientific', y='decimal')
+# create plot object
+plot = pl.ModernPlot(width=7500.0)
 
 # title
-plot.set_title('mini-ImageNet')
+plot.set_title('Modern Plot Title')
+plot.set_subtitle(r'Subtitle: $y = f(x)$')
 
-# subtitle
-plot.set_subtitle(r'$\int f(x) dx$')
+# settings
+plot.set_palette('vibrant')
+plot.set_axis(r'Argument $x$', r'Values $f(x) / 1,000$')
+plot.set_notation(x='scientific', y='decimal')
+plot.set_scales(x='linear', y='log2')
+plot.set_grid('horizontal', granularity='coarse')
+plot.set_legend(title='Curve Family')
 
 # plot data
 num_points = 10
+xs = np.arange(1, 1 + num_points)
 plot.plot(
-    np.arange(num_points),
-    np.arange(num_points)**1 / 1000,
+    x=xs,
+    y=xs / 1000,
     label=r'Linear',
+    linestyle='dashed',
 )
 plot.plot(
-    np.arange(num_points),
-    np.arange(num_points)**2 / 1000,
+    x=xs,
+    y=xs**2 / 1000,
     label='Quadratic',
+    linestyle='dotted',
 )
 plot.plot(
-    np.arange(num_points),
-    np.arange(num_points)**3 / 1000,
+    x=xs,
+    y=xs**3 / 1000,
     label='Cubic',
+    marker=False,
 )
 plot.plot(
-    np.arange(num_points),
-    np.exp(np.arange(num_points)) / 1000,
+    x=xs,
+    y=np.exp(xs) / 1000,
     label='Exponential',
+    marker=pl.markers.square(size='large'),
+    linestyle='-.',
 )
 
-plot.set_legend(title='Curve Type')
-
-plot.save('outputs/test.pdf', bbox_inches='tight')
+plot.save('docs/assets/images/examples/modern_plot.png', bbox_inches='tight')
