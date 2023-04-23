@@ -5,7 +5,7 @@
 
 --------------------------------------------------------------------------------
 
-![Test Status](https://github.com/seba-1511/plotify/workflows/Testing/badge.svg?branch=master)
+<!-- ![Test Status](https://github.com/seba-1511/plotify/workflows/Testing/badge.svg?branch=master) -->
 
 # Example
 
