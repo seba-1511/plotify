@@ -11,7 +11,7 @@
       <meta http-equiv="x-ua-compatible" content="ie=edge">
       
       
-        <link rel="canonical" href="http://plotify.net/api/colors/">
+        <link rel="canonical" href="http://plotify.net/api/fonts/">
       
       
         <meta name="author" content="Séb Arnold">
@@ -40,7 +40,7 @@
     
     
       
-        <title>Colors - plotify</title>
+        <title>Fonts - plotify</title>
       
     
     
@@ -120,7 +120,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#colors" tabindex="0" class="md-skip">
+      <a href="#fonts" tabindex="0" class="md-skip">
         Skip to content
       </a>
     
@@ -146,7 +146,7 @@
             </span>
             <span class="md-header-nav__topic">
               
-                Colors
+                Fonts
               
             </span>
           
@@ -312,6 +312,18 @@
           
           
 
+
+  <li class="md-nav__item">
+    <a href="../colors/" title="Colors" class="md-nav__link">
+      Colors
+    </a>
+  </li>
+
+        
+          
+          
+          
+
   
 
 
@@ -323,11 +335,11 @@
     
     
       <label class="md-nav__link md-nav__link--active" for="__toc">
-        Colors
+        Fonts
       </label>
     
-    <a href="./" title="Colors" class="md-nav__link md-nav__link--active">
-      Colors
+    <a href="./" title="Fonts" class="md-nav__link md-nav__link--active">
+      Fonts
     </a>
     
       
@@ -341,36 +353,16 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#plotify.colors.Maureen" class="md-nav__link">
-    Maureen
+  <a href="#plotify.fonts.add_font" class="md-nav__link">
+    add_font()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#plotify.colors.Vibrant" class="md-nav__link">
-    Vibrant
+  <a href="#plotify.fonts.add_ttf_directory" class="md-nav__link">
+    add_ttf_directory()
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#utilities" class="md-nav__link">
-    Utilities
-  </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#plotify.colors.lighten_color" class="md-nav__link">
-    lighten_color()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -382,18 +374,6 @@
   
 </nav>
     
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../fonts/" title="Fonts" class="md-nav__link">
-      Fonts
-    </a>
   </li>
 
         
@@ -507,36 +487,16 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#plotify.colors.Maureen" class="md-nav__link">
-    Maureen
+  <a href="#plotify.fonts.add_font" class="md-nav__link">
+    add_font()
   </a>
   
 </li>
       
         <li class="md-nav__item">
-  <a href="#plotify.colors.Vibrant" class="md-nav__link">
-    Vibrant
+  <a href="#plotify.fonts.add_ttf_directory" class="md-nav__link">
+    add_ttf_directory()
   </a>
-  
-</li>
-      
-        <li class="md-nav__item">
-  <a href="#utilities" class="md-nav__link">
-    Utilities
-  </a>
-  
-    <nav class="md-nav">
-      <ul class="md-nav__list">
-        
-          <li class="md-nav__item">
-  <a href="#plotify.colors.lighten_color" class="md-nav__link">
-    lighten_color()
-  </a>
-  
-</li>
-        
-      </ul>
-    </nav>
   
 </li>
       
@@ -557,71 +517,58 @@
               
                 
                 
-                <h1 id="colors">Colors<a class="headerlink" href="#colors" title="Permanent link">&para;</a></h1>
-<p>Plotify provides 2 color palettes:</p>
-
-
-  <div class="doc doc-object doc-attribute">
-
-
-
-<h3 id="plotify.colors.Maureen" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">plotify</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Maureen</span></code>
-
-
-<a href="#plotify.colors.Maureen" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents first">
-
-    </div>
-
-  </div>
-
-
-
-  <div class="doc doc-object doc-attribute">
-
-
-
-<h3 id="plotify.colors.Vibrant" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">plotify</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">Vibrant</span></code>
-
-
-<a href="#plotify.colors.Vibrant" class="headerlink" title="Permanent link">&para;</a></h3>
-
-    <div class="doc doc-contents first">
-
-    </div>
-
-  </div>
-
-<h2 id="utilities">Utilities<a class="headerlink" href="#utilities" title="Permanent link">&para;</a></h2>
+                <h1 id="fonts">Fonts<a class="headerlink" href="#fonts" title="Permanent link">&para;</a></h1>
+<p>Plotify provides utlities to add custom fonts to Matplotlib.</p>
 
 
   <div class="doc doc-object doc-function">
 
 
 
-<h3 id="plotify.colors.lighten_color" class="doc doc-heading">
-<code class="highlight language-python"><span class="n">plotify</span><span class="o">.</span><span class="n">colors</span><span class="o">.</span><span class="n">lighten_color</span><span class="p">(</span><span class="n">color</span><span class="p">,</span> <span class="n">amount</span> <span class="o">=</span> <span class="mf">0.5</span><span class="p">)</span></code>
+<h3 id="plotify.fonts.add_font" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">plotify</span><span class="o">.</span><span class="n">fonts</span><span class="o">.</span><span class="n">add_font</span><span class="p">(</span><span class="n">path</span><span class="p">)</span></code>
 
 
-<a href="#plotify.colors.lighten_color" class="headerlink" title="Permanent link">&para;</a></h3>
+<a href="#plotify.fonts.add_font" class="headerlink" title="Permanent link">&para;</a></h3>
 
     <div class="doc doc-contents first">
 
-      <h5 id="plotify.colors.lighten_color--description">Description<a class="headerlink" href="#plotify.colors.lighten_color--description" title="Permanent link">&para;</a></h5>
-<p>Lightens a color by a given amount.</p>
-<p>Lightens the given color by multiplying (1-luminosity) by the given amount.
-Input can be matplotlib color string, hex string, or RGB tuple.</p>
-<p>The higher the amount, the lighter the color.</p>
-<h5 id="plotify.colors.lighten_color--references">References<a class="headerlink" href="#plotify.colors.lighten_color--references" title="Permanent link">&para;</a></h5>
-<p>Taken from:</p>
-<p><a href="https://stackoverflow.com/questions/37765197/darken-or-lighten-a-color-in-matplotlib/49601444">StackOverflow</a></p>
-<h5 id="plotify.colors.lighten_color--example">Example<a class="headerlink" href="#plotify.colors.lighten_color--example" title="Permanent link">&para;</a></h5>
-<div class="highlight"><pre><span></span><code><span class="n">lighten_color</span><span class="p">(</span><span class="s1">&#39;g&#39;</span><span class="p">,</span> <span class="mf">0.3</span><span class="p">)</span>
-<span class="n">lighten_color</span><span class="p">(</span><span class="s1">&#39;#F034A3&#39;</span><span class="p">,</span> <span class="mf">0.6</span><span class="p">)</span>
-<span class="n">lighten_color</span><span class="p">((</span><span class="mf">.3</span><span class="p">,</span><span class="mf">.55</span><span class="p">,</span><span class="mf">.1</span><span class="p">),</span> <span class="mf">0.5</span><span class="p">)</span>
+      <h5 id="plotify.fonts.add_font--description">Description<a class="headerlink" href="#plotify.fonts.add_font--description" title="Permanent link">&para;</a></h5>
+<p>Adds a font file to Matplotlib.</p>
+<h5 id="plotify.fonts.add_font--arguments">Arguments<a class="headerlink" href="#plotify.fonts.add_font--arguments" title="Permanent link">&para;</a></h5>
+<ul>
+<li><code>path</code>: Path to the ttf / otf file.</li>
+</ul>
+<h5 id="plotify.fonts.add_font--example">Example<a class="headerlink" href="#plotify.fonts.add_font--example" title="Permanent link">&para;</a></h5>
+<div class="highlight"><pre><span></span><code><span class="n">plotify</span><span class="o">.</span><span class="n">fonts</span><span class="o">.</span><span class="n">add_font</span><span class="p">(</span><span class="s1">&#39;my_file.ttf&#39;</span><span class="p">)</span>
+</code></pre></div>
+
+    </div>
+
+  </div>
+
+
+
+  <div class="doc doc-object doc-function">
+
+
+
+<h3 id="plotify.fonts.add_ttf_directory" class="doc doc-heading">
+<code class="highlight language-python"><span class="n">plotify</span><span class="o">.</span><span class="n">fonts</span><span class="o">.</span><span class="n">add_ttf_directory</span><span class="p">(</span><span class="n">dir_path</span><span class="p">)</span></code>
+
+
+<a href="#plotify.fonts.add_ttf_directory" class="headerlink" title="Permanent link">&para;</a></h3>
+
+    <div class="doc doc-contents first">
+
+      <h5 id="plotify.fonts.add_ttf_directory--description">Description<a class="headerlink" href="#plotify.fonts.add_ttf_directory--description" title="Permanent link">&para;</a></h5>
+<p>Adds all ttf files in a directory</p>
+<h5 id="plotify.fonts.add_ttf_directory--arguments">Arguments<a class="headerlink" href="#plotify.fonts.add_ttf_directory--arguments" title="Permanent link">&para;</a></h5>
+<ul>
+<li><code>dir_path</code>: Path to the ttf / otf directory.</li>
+</ul>
+<h5 id="plotify.fonts.add_ttf_directory--example">Example<a class="headerlink" href="#plotify.fonts.add_ttf_directory--example" title="Permanent link">&para;</a></h5>
+<div class="highlight"><pre><span></span><code><span class="n">plotify</span><span class="o">.</span><span class="n">fonts</span><span class="o">.</span><span class="n">add_ttf_directory</span><span class="p">(</span><span class="s1">&#39;my_file.ttf&#39;</span><span class="p">)</span>
 </code></pre></div>
 
     </div>
@@ -648,7 +595,7 @@ Input can be matplotlib color string, hex string, or RGB tuple.</p>
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../more_plots/" title="Plot Subclasses" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../colors/" title="Colors" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -657,19 +604,19 @@ Input can be matplotlib color string, hex string, or RGB tuple.</p>
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                Plot Subclasses
+                Colors
               </span>
             </div>
           </a>
         
         
-          <a href="../fonts/" title="Fonts" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
+          <a href="../markers/" title="Markers" class="md-flex md-footer-nav__link md-footer-nav__link--next" rel="next">
             <div class="md-flex__cell md-flex__cell--stretch md-footer-nav__title">
               <span class="md-flex__ellipsis">
                 <span class="md-footer-nav__direction">
                   Next
                 </span>
-                Fonts
+                Markers
               </span>
             </div>
             <div class="md-flex__cell md-flex__cell--shrink">
