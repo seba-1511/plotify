@@ -22,8 +22,8 @@ repo_url: 'https://github.com/seba-1511/plotify'
 edit_uri: ''
 theme:
   name: 'material'
-  logo: 'assets/images/plotify-logo-square.png'
-  favicon: 'assets/images/favicon.ico'
+  logo: 'assets/images/plotify-logo-kde.png'
+  favicon: 'assets/images/favicons/favicon.ico'
   palette:
     primary: 'white'
     accent: 'orange'
