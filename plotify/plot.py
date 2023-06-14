@@ -814,10 +814,10 @@ class BasePlot:
 
     def set_font(self, name):
         self.update_rcparams({
-            # 'mathtext.fontset': 'cm',
-            'font.family': name,
+            'mathtext.fontset': 'cm',
+            'font.family': 'sans-serif',
             'font.sans-serif': name,
-            'font.serif': name,
+            # 'font.serif': name,
         })
 
     def set_title(

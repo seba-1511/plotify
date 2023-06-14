@@ -43,6 +43,11 @@ def fetch_smooth_curves(
             print('Key \'' + y_key + '\' not found for run: ' + run_id + ' - skipping.')
             continue
 
+        # need to sort wandb keys
+        sort_order = run_xs.argsort()
+        run_ys = run_ys[sort_order]
+        run_xs = run_xs[sort_order]
+
         # cut x_curves to x_lims here (before smoothing)
         if max_x is not None and max_x < run_xs[-1]:
             cutoff = np.argmax(run_xs > max_x)
@@ -178,7 +183,15 @@ def wandb_plot(config):
     pl.usetex()
 
     # setup plot
-    plot = config.get('type', pl.LowResPlot)()
+    PlotClass = config.get('type', pl.LowResPlot)
+    class_args = {}
+    if 'width' in config:
+        class_args['width'] = config.get('width')
+    if 'height' in config:
+        class_args['height'] = config.get('height')
+    if 'dpi' in config:
+        class_args['dpi'] = config.get('dpi')
+    plot = PlotClass(**class_args)
     plot.set_title(config.get('title'))
     plot.set_subtitle(config.get('subtitle'))
     plot.set_axis(config.get('xtitle'), config.get('ytitle'))
