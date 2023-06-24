@@ -891,9 +891,11 @@ class BasePlot:
         if y is not None:
             self.axes.ticklabel_format(style='sci', axis='y', scilimits=(-yra, yra))
 
-    def set_axis(self, x='', y=''):
-        self.axes.set_xlabel(x)
-        self.axes.set_ylabel(y)
+    def set_axis(self, x=None, y=None):
+        if x is not None:
+            self.axes.set_xlabel(x)
+        if y is not None:
+            self.axes.set_ylabel(y)
 
     def set_palette(self, palette, num_colors=8):
         self.palette = palette
@@ -1183,7 +1185,7 @@ class Plot3D(BasePlot):
 
 class Container(BasePlot):
 
-    def __init__(self, rows=1, cols=2, height=None, width=None, *args, **kwargs):
+    def __init__(self, rows=1, cols=2, height=None, width=None, pad=0.0, w_pad=0.0, h_pad=0.0, *args, **kwargs):
         if height is None:
             height = 2600.0 * rows
         if width is None:
@@ -1203,7 +1205,7 @@ class Container(BasePlot):
                 subplot.axis('off')
                 self.plots[i].append(None)
                 self.axeses[i].append(subplot)
-#        self.figure.set_tight_layout(False)
+        self.figure.tight_layout(pad=pad, w_pad=w_pad, h_pad=h_pad)
 
     def _preprint(self):
         for i in range(self.rows):
