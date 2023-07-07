@@ -1,0 +1,255 @@
+#!/usr/bin/env python3
+
+"""
+TODO:
+    - Plugin system through --register, which adds options such as colors, markers, parsers, etc.
+    - average and align multiple curves
+    - smooth after averaging?
+"""
+
+import collections
+import dataclasses
+import json
+import numpy as np
+import os
+import plotify as pl
+import simple_parsing as sp
+import typing
+import yaml
+
+
+colors = {
+    'blue': pl.Maureen['blue'],
+    'orange': pl.Maureen['orange'],
+    'green': pl.Maureen['green'],
+    'red': pl.Maureen['red'],
+    'black': pl.Maureen['black'],
+    'purple': pl.Maureen['purple'],
+    'cardinal': pl.Maureen['cardinal'],
+    'gold': pl.Maureen['gold'],
+    'pink': pl.Maureen['pink'],
+    'vibrant-cyan': '#33BBEE',
+    'vibrant-magenta': '#EE3377',
+    'vibrant-teal': '#009988',
+    'vibrant-orange': '#EE7733',
+    'vibrant-blue': '#0077BB',
+    'vibrant-red': '#CC3311',
+    'vibrant-gray': '#BBBBBB',
+}
+
+markers = {
+    'circle': pl.markers.circle,
+    'cross': pl.markers.cross,
+    'triangle_down': pl.markers.triangle_down,
+    'star': pl.markers.star,
+    'diamond': pl.markers.diamond,
+    'square': pl.markers.square,
+    'triangle_up': pl.markers.triangle_up,
+    'pentagone': pl.markers.pentagone,
+}
+
+def toerr(accs):
+    return [1. - a for a in accs]
+
+
+def to01(percentages):
+    return [p/100. for p in percentages]
+
+
+def parse_color(color_name=None):
+    if color_name is None:
+        return None
+    return colors[color_name]
+
+
+def parse_marker(marker_name=None):
+    if marker_name is None:
+        return None
+    if len(marker_name) == 1:
+        return marker_name
+    size = 'large'
+    marker = marker_name
+    if '-' in marker_name:
+        marker, size = marker_name.split('-')
+    return markers[marker](size=size)
+
+
+def fetch_tensorboard_data(result):
+    tb = pl.tensorboard_plots.TensorboardAPI(
+        tag=result.get('tag'),
+        address=result.get('address', 'http://localhost:6006'),
+    )
+    xs, ys = tb.fetch_scalars(
+        run=result.get('run'),
+        tag=result.get('tag'),
+    )
+    return xs, ys
+
+
+def fetch_wandb_data(result):
+    xs, ys = pl.wandb_plots.fetch_smooth_curves(
+        x_key=result.get('x_key', '_step'),
+        y_key=result.get('y_key'),
+        wandb_ids=result.get('ids'),
+        samples=result.get('samples'),
+        smooth_temperature=0.0,
+    )
+    xs, ys = pl.wandb_plots.average_align_curves(
+        x_curves=xs,
+        y_curves=ys,
+        samples=result.get('samples'),
+    )
+    return xs, ys
+
+
+def fetch_csv_data(result):
+    content = np.loadtxt(
+        fname=result.get('file'),
+        comments=result.get('comments', '#'),
+        delimiter=result.get('delimiter', ','),
+        skiprows=result.get('skiprows', 0),
+        dtype=str,
+    )
+    if 'y_col' in result:
+        ys = content[:, result.get('y_col')].reshape(-1)
+    elif 'y_row' in result:
+        ys = content[result.get('y_row')].reshape(-1)
+    else:
+        raise ValueError('csv: needs y_col or y_row key.')
+
+    if 'x_col' in result:
+        xs = content[:, result.get('x_col')].reshape(-1)
+    elif 'x_row' in result:
+        xs = content[result.get('x_row')].reshape(-1)
+    else:
+        raise ValueError('csv: needs x_col or x_row key.')
+
+    def parse(val): return float(
+        val.strip().replace('"', '').replace('\'', '')
+    )
+    xs = [parse(x) for x in xs]
+    ys = [parse(y) for y in ys]
+    return xs, ys
+
+
+def fetch_json_data(result):
+    with open(result.get('file')) as fd:
+        content = json.load(fd)
+    xs = content[result.get('x_key', 'xs')]
+    ys = content[result.get('y_key', 'ys')]
+    return xs, ys
+
+
+def fetch_multicurve_data(results):
+    raise NotImplementedError
+
+
+readers = {
+    'tensorboard': fetch_tensorboard_data,
+    'wandb': fetch_wandb_data,
+    'csv': fetch_csv_data,
+    'json': fetch_json_data,
+    'multicurve': fetch_multicurve_data,
+}
+
+
+def main(args):
+
+    # parse config
+    base_dir = os.path.dirname(args.path)
+    with open(args.path) as fd:
+        plot_configs = yaml.unsafe_load(fd.read())
+
+    # create plots
+    for plot_name in plot_configs:
+        filename, extension = os.path.splitext(plot_name)
+        if extension not in ['.png', '.pdf']:
+            continue
+        config = plot_configs[plot_name]
+
+        # display settings
+        pl.usetex(force=config.get('usetex', False))
+        plot = pl.Plot(
+            width=config.get('width', 7500.0),
+            height=config.get('height', 2600.0),
+            dpi=config.get('dpi', 530.0),
+        )
+        plot.set_title(config.get('title'))
+        plot.set_subtitle(config.get('subtitle'))
+        plot.set_axis(config.get('xaxis', ''), config.get('yaxis', ''))
+        plot.set_lims(x=config.get('xlims'), y=config.get('ylims'))
+        plot.set_scales(
+            x=config.get('xscale', 'linear'),
+            y=config.get('yscale', 'linear')
+        )
+        plot.set_legend(
+            loc=config.get('legend_loc', 'best'),
+            alpha=config.get('legend_alpha', None),
+            fancybox=False,
+        )
+
+        # plot results
+        for result in config.get('results', []):
+
+            # obtain data
+            label = result.get('label')
+            xs = ys = None
+            for reader in readers.keys():
+                try:
+                    if reader in result:
+                        xs, ys = readers[reader](result.get(reader))
+                        break
+                except:
+                    print(f'Error fetching: {label} - skipping.')
+                    continue
+            else:
+                print(f'No reader found for {label} - skipping. (valid readers: {list(readers.keys())})')
+
+            if ys is not None:
+                if xs is None:
+                    xs = list(range(len(ys)))
+
+                # preprocess
+                if 'temperature' in result and result.get('temperature') > 0.0:
+                    xs, ys = pl.smoothing.smooth(
+                        x=xs,
+                        y=ys,
+                        temperature=result.get('temperature'),
+                    )
+                if result.get('preprocessing') == 'to01':
+                    ys = to01(ys)
+                elif result.get('preprocessing') == 'toerr':
+                    ys = toerr(ys)
+                elif result.get('preprocessing') is not None:
+                    xs, ys = eval(result.get('preprocessing'))(xs, ys)
+
+                # post-process
+                xs_postprocessing = result.get('x_postprocessing', 'lambda x: x')
+                xs = eval(xs_postprocessing)(xs)
+                values_postprocessing = result.get('y_postprocessing', 'lambda x: x')
+                ys = eval(values_postprocessing)(ys)
+
+                # plot
+                plot.plot(
+                    x=xs,
+                    y=ys,
+                    label=result.get('label'),
+                    color=parse_color(result.get('color')),
+                    marker=parse_marker(result.get('marker')),
+                    linestyle=result.get('linestyle'),
+                    linewidth=result.get('linewidth'),
+                    alpha=result.get('alpha'),
+                )
+
+        # save plot
+        plot.save(os.path.join(base_dir, plot_name))
+
+
+if __name__ == "__main__":
+
+    @dataclasses.dataclass
+    class Options:
+        path: str = sp.field(positional=True)
+        register: typing.List[str] = sp.field(positional=False, default=None)
+
+    main(sp.parse(Options))

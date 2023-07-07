@@ -30,7 +30,9 @@ setup(
     download_url='https://github.com/seba-1511/plotify/archive/' + str(VERSION) + '.zip',
     license='License :: OSI Approved :: Apache Software License',
     classifiers=[],
-    scripts=[],
+    scripts=[
+        'bin/plotify',
+    ],
     install_requires=[
         'numpy',
         'matplotlib>=3.3.0',
