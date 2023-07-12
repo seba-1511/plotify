@@ -41,5 +41,7 @@ setup(
         'scipy',
         'wandb',
         'ttf-opensans',
+        'simple-parsing',
+        'pyyaml',
     ],
 )
