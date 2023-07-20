@@ -7,13 +7,13 @@ TODO:
     - smooth after averaging?
 """
 
-import collections
 import dataclasses
 import json
 import numpy as np
 import os
 import plotify as pl
 import simple_parsing as sp
+import traceback
 import typing
 import yaml
 
@@ -40,12 +40,14 @@ colors = {
 markers = {
     'circle': pl.markers.circle,
     'cross': pl.markers.cross,
-    'triangle_down': pl.markers.triangle_down,
-    'star': pl.markers.star,
     'diamond': pl.markers.diamond,
-    'square': pl.markers.square,
-    'triangle_up': pl.markers.triangle_up,
     'pentagone': pl.markers.pentagone,
+    'square': pl.markers.square,
+    'star': pl.markers.star,
+    'triangle_down': pl.markers.triangle_down,
+    'triangle_left': pl.markers.triangle_left,
+    'triangle_right': pl.markers.triangle_right,
+    'triangle_up': pl.markers.triangle_up,
 }
 
 def toerr(accs):
@@ -200,8 +202,10 @@ def main(args):
                         xs, ys = readers[reader](result.get(reader))
                         break
                 except:
-                    print(f'Error fetching: {label} - skipping.')
-                    continue
+                    print(f'Error fetching: {label} - skipping. (Run with --verbose for stack trace.)')
+                    if args.verbose:
+                        traceback.print_exc()
+                    break
             else:
                 print(f'No reader found for {label} - skipping. (valid readers: {list(readers.keys())})')
 
@@ -249,7 +253,8 @@ if __name__ == "__main__":
 
     @dataclasses.dataclass
     class Options:
-        path: str = sp.field(positional=True)
-        register: typing.List[str] = sp.field(positional=False, default=None)
+        path: str = sp.field(positional=True)  # path of yaml file to plot
+        register: typing.List[str] = sp.field(positional=False, default=None)  # list of python files to register hooks
+        verbose: bool = sp.field(positional=False, default=False)  # for stack traces and debugging
 
     main(sp.parse(Options))
