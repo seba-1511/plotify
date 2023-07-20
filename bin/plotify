@@ -205,6 +205,7 @@ def main(args):
                     print(f'Error fetching: {label} - skipping. (Run with --verbose for stack trace.)')
                     if args.verbose:
                         traceback.print_exc()
+                        print('')
                     break
             else:
                 print(f'No reader found for {label} - skipping. (valid readers: {list(readers.keys())})')
