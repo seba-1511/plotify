@@ -50,6 +50,7 @@ markers = {
     'triangle_up': pl.markers.triangle_up,
 }
 
+
 def toerr(accs):
     return [1. - a for a in accs]
 
@@ -157,6 +158,11 @@ readers = {
 
 def main(args):
 
+    if len(args.register):
+        for file_name in args.register:
+            file_path = os.path.join(os.getcwd(), file_name)
+            exec(open(file_path).read(), globals(), locals())
+
     # parse config
     base_dir = os.path.dirname(args.path)
     with open(args.path) as fd:
@@ -168,6 +174,8 @@ def main(args):
         if extension not in ['.png', '.pdf']:
             continue
         config = plot_configs[plot_name]
+        if args.verbose:
+            print('\n' + filename + ':')
 
         # display settings
         pl.usetex(force=config.get('usetex', False))
@@ -248,6 +256,7 @@ def main(args):
 
         # save plot
         plot.save(os.path.join(base_dir, plot_name))
+        plot.close()
 
 
 if __name__ == "__main__":
