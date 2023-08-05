@@ -3,6 +3,7 @@ import colorsys
 import matplotlib.colors as mc
 
 
+LIGHT_GRAY = '#D3D3D3'
 MAUREENSTONE_COLORS = [
     '#396AB1',
     '#DA7C30',
@@ -34,7 +35,17 @@ Vibrant = {
     'red': '#CC3311',
     'gray': '#BBBBBB',
 }
-LIGHT_GRAY = '#D3D3D3'
+Google = {
+    'red': '#EA4335',
+    'yellow': '#FBBC04',
+    'green': '#34A853',
+    'blue': '#4285F4',
+    'gray': '#9AA0A6',
+    'orange': '#FA7B17',
+    'pink': '#F439A0',
+    'purple': '#A142F4',
+    'cyan': '#24C1E0',
+}
 
 
 def lighten_color(color, amount=0.5):

@@ -451,7 +451,7 @@ class BasePlot:
         color = kwargs.pop('color', None)
         if color is None:
             color = next(self.colors)
-        if isinstance(color, Iterable):
+        if isinstance(color, (tuple, list)):
           colors = color
         else:
           colors = [color, ] * len(y_means)
